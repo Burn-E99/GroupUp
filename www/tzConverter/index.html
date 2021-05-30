@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="HandheldFriendly" content="true"/> 
+		
+		<meta name="author" content="Ean Milligan (ean@milligan.dev)">
+		<meta name="designer" content="Ean Milligan (ean@milligan.dev)">
+		<meta name="publisher" content="Ean Milligan (ean@milligan.dev)">
+		
+		<title>Group Up Time Checker</title>
+		<meta name="description" content="The Artificer Discord Bot is a advanced dice rolling bot utilizing the Roll20 format.  The Artificer is fast and reliable and free to use.">
+		<meta name="keywords" content="The Artificer, Discord bot, dice roller, dice rolling, roll, rolling, dice, roller, bot, artificer">
+		<meta name="robots" content="index, follow">
+		<meta name="revisit-after" content="7 days">
+		<meta name="distribution" content="web">
+		<meta name="robots" content="noodp, noydir">
+
+		<meta name="distribution" content="web">
+		<meta name="web_author" content="Ean Milligan (ean@milligan.dev)">
+
+		<link rel="shortcut icon" href="./favicon.ico">
+
+		<style>
+			body {
+				font-family: sans-serif;
+				font-size: 5rem;
+
+				height: 100vh;
+				padding: 0;
+				margin: 0;
+				overflow: hidden;
+
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				text-align: center;
+
+				color: #dcddde;
+				background-color: #2f3136;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="message">
+			I don't know why you are here, the URL should have a timestamp in it.
+		</div>
+		<script>
+			if (window.location.hash) {
+				console.log(window.location.hash)
+				var groupDate = new Date(parseInt(window.location.hash.substr(1)));
+
+				document.getElementById("message").innerText = "Your event is happening at:\n\n" + groupDate.toLocaleString();
+			}
+		</script>
+	</body>
+</html>
