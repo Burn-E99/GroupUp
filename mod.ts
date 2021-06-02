@@ -19,7 +19,7 @@ import intervals from "./src/intervals.ts";
 import { LFGActivities } from "./src/games.ts";
 import { JoinLeaveType } from "./src/lfgHandlers.d.ts";
 import { handleLFGStep, handleMemberJoin, handleMemberLeave } from "./src/lfgHandlers.ts";
-import { constantCmds, editBtns } from "./src/constantCmds.ts";
+import { constantCmds, editBtns, lfgStepQuestions } from "./src/constantCmds.ts";
 
 import { DEBUG, LOCALMODE } from "./flags.ts";
 import config from "./config.ts";
@@ -35,7 +35,7 @@ const dbClient = await new Client().connect({
 
 // Initialize logging client with folder to use for logs, needs --allow-write set on Deno startup
 initLog("logs", DEBUG);
-log(LT.INFO, `${config.name} Starting up . . .`)
+log(LT.INFO, `${config.name} Starting up . . .`);
 
 // Handle idling out the active builders
 const activeBuilders: Array<BuildingLFG> = [];
@@ -158,10 +158,12 @@ startBot({
 									}
 								]
 							}
+						}).catch(e =>{
+							log(LT.WARN, `Failed to send message | ${JSON.stringify(e)}`);
 						});
 					}
 					
-					else if (hasGuildPermissions(message.guildId, message.authorId, ["ADMINISTRATOR"])) {
+					else if (await hasGuildPermissions(message.guildId, message.authorId, ["ADMINISTRATOR"])) {
 						const newPrefix = message.content.replace(`<@!${botId}>`, "").trim();
 
 						if (newPrefix.length <= 10) {
@@ -191,6 +193,8 @@ startBot({
 											}
 										]
 									}
+								}).catch(e =>{
+									log(LT.WARN, `Failed to send message | ${JSON.stringify(e)}`);
 								});
 							} else {
 								message.send({
@@ -202,6 +206,8 @@ startBot({
 											}
 										]
 									}
+								}).catch(e =>{
+									log(LT.WARN, `Failed to send message | ${JSON.stringify(e)}`);
 								});
 							}
 						} else {
@@ -214,6 +220,8 @@ startBot({
 										}
 									]
 								}
+							}).catch(e =>{
+								log(LT.WARN, `Failed to send message | ${JSON.stringify(e)}`);
 							});
 						}
 					}
@@ -282,6 +290,8 @@ startBot({
 										]
 									}
 								]
+							}).catch(e =>{
+								log(LT.WARN, `Failed to edit message | ${JSON.stringify(e)}`);
 							});
 
 							activeLFGPosts.push({
@@ -298,10 +308,14 @@ startBot({
 							));
 						}
 						
-						await activeBuilders[activeIdx].questionMsg.delete()
+						await activeBuilders[activeIdx].questionMsg.delete().catch(e =>{
+							log(LT.WARN, `Failed to delete message | ${JSON.stringify(e)}`);
+						});
 						activeBuilders.splice(activeIdx, 1);
 					}
-					await message.delete();
+					await message.delete().catch(e =>{
+						log(LT.WARN, `Failed to delete message | ${JSON.stringify(e)}`);
+					});
 				}
 				return;
 			}
@@ -359,242 +373,257 @@ startBot({
 				
 				// Create a new LFG
 				else if (subcmd === "create" || subcmd === "c") {
-					const lfgMsg = await message.send(`Creating new LFG post for <@${message.authorId}>.  Please reply with the requested information and watch as your LFG post gets created!`);
+					try {
+						const lfgMsg = await message.send(`Creating new LFG post for <@${message.authorId}>.  Please reply with the requested information and watch as your LFG post gets created!`);
 
-					const gameButtons: Array<ButtonComponent> = Object.keys(LFGActivities).map(game => {
-						return {
-							type: 2,
-							label: game,
-							customId: `building@set_game#${game}`,
-							style: DiscordButtonStyles.Primary
-						};
-					});
+						const gameButtons: Array<ButtonComponent> = Object.keys(LFGActivities).map(game => {
+							return {
+								type: 2,
+								label: game,
+								customId: `building@set_game#${game}`,
+								style: DiscordButtonStyles.Primary
+							};
+						});
 
-					const buttonComps: Array<ActionRow> = [];
+						const buttonComps: Array<ActionRow> = [];
 
-					const temp: Array<ActionRow["components"]> = [];
+						const temp: Array<ActionRow["components"]> = [];
 
-					gameButtons.forEach((btn, idx) => {
-						if (!temp[Math.floor(idx/5)]) {
-							temp[Math.floor(idx/5)] = [btn];
-						} else {
-							temp[Math.floor(idx/5)].push(btn);
-						}
-					});
+						gameButtons.forEach((btn, idx) => {
+							if (!temp[Math.floor(idx/5)]) {
+								temp[Math.floor(idx/5)] = [btn];
+							} else {
+								temp[Math.floor(idx/5)].push(btn);
+							}
+						});
 
-					temp.forEach(btns => {
-						if (btns.length && btns.length <= 5) {
-							buttonComps.push({
-								type: 1,
-								components: btns
-							});
-						}
-					});
+						temp.forEach(btns => {
+							if (btns.length && btns.length <= 5) {
+								buttonComps.push({
+									type: 1,
+									components: btns
+								});
+							}
+						});
 
-					const question = await message.send({
-						content: "Please select a game from the list below.  If your game is not listed, please type it out:",
-						components: buttonComps
-					});
+						const question = await message.send({
+							content: lfgStepQuestions.set_game,
+							components: buttonComps
+						});
 
-					activeBuilders.push({
-						userId: message.authorId,
-						channelId: message.channelId,
-						step: "set_game",
-						lfgMsg: lfgMsg,
-						questionMsg: question,
-						lastTouch: new Date(),
-						maxIdle: 60,
-						editing: false
-					});
+						activeBuilders.push({
+							userId: message.authorId,
+							channelId: message.channelId,
+							step: "set_game",
+							lfgMsg: lfgMsg,
+							questionMsg: question,
+							lastTouch: new Date(),
+							maxIdle: 60,
+							editing: false
+						});
 
-					message.delete();
+						message.delete();
+					}
+					catch (e) {
+						log(LT.WARN, `LFG failed at step | create | ${JSON.stringify(e)}`);
+					}
 				}
 
 				// Delete an existing LFG
 				else if (subcmd === "delete" || subcmd === "d") {
-					// User provided a Uid, use it
-					if (lfgUid) {
-						const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId && lfgUid === lfg.lfgUid));
+					try {
+						// User provided a Uid, use it
+						if (lfgUid) {
+							const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId && lfgUid === lfg.lfgUid));
 
-						// Found one, delete
-						if (matches.length) {
-							await deleteMessage(matches[0].channelId, matches[0].messageId, "User requested LFG to be deleted.");
-							const lfgIdx = activeLFGPosts.findIndex(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId && lfgUid === lfg.lfgUid));
-							
-							activeLFGPosts.splice(lfgIdx, 1);
-							
-							localStorage.setItem("activeLFGPosts", JSON.stringify(activeLFGPosts, (_key, value) =>
-								typeof value === "bigint" ? value.toString() + "n" : value
-							));
+							// Found one, delete
+							if (matches.length) {
+								await deleteMessage(matches[0].channelId, matches[0].messageId, "User requested LFG to be deleted.");
+								const lfgIdx = activeLFGPosts.findIndex(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId && lfgUid === lfg.lfgUid));
+								
+								activeLFGPosts.splice(lfgIdx, 1);
+								
+								localStorage.setItem("activeLFGPosts", JSON.stringify(activeLFGPosts, (_key, value) =>
+									typeof value === "bigint" ? value.toString() + "n" : value
+								));
 
-							const m = await message.send(constantCmds.lfgDelete3);
-							setTimeout(() => {
-								m.delete();
-								message.delete();
-							}, 5000);
+								const m = await message.send(constantCmds.lfgDelete3);
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 5000);
+							}
+
+							// Did not find one
+							else {
+								const m = await message.send(constantCmds.lfgDelete1);
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 5000);
+							}
 						}
 
-						// Did not find one
+						// User did not provide a Uid, find it automatically
 						else {
-							const m = await message.send(constantCmds.lfgDelete1);
-							setTimeout(() => {
-								m.delete();
-								message.delete();
-							}, 5000);
-						}
+							const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId));
+
+							// Found one, delete
+							if (matches.length === 1) {
+								await deleteMessage(matches[0].channelId, matches[0].messageId, "User requested LFG to be deleted.");
+								const lfgIdx = activeLFGPosts.findIndex(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId));
+								
+								activeLFGPosts.splice(lfgIdx, 1);
+								
+								localStorage.setItem("activeLFGPosts", JSON.stringify(activeLFGPosts, (_key, value) =>
+									typeof value === "bigint" ? value.toString() + "n" : value
+								));
+
+								const m = await message.send(constantCmds.lfgDelete3);
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 5000);
+							}
+
+							// Found multiple, notify user
+							else if (matches.length) {
+								const deleteMsg = constantCmds.lfgDelete2;
+								const deepCloningFailedSoThisIsTheSolution = constantCmds.lfgDelete2.embed.fields[0].value;
+								matches.forEach(mt => {
+									deleteMsg.embed.fields[0].value += `[${mt.lfgUid}](https://discord.com/channels/${message.guildId}/${mt.channelId}/${mt.messageId})\n`
+								});
+
+								deleteMsg.embed.fields[0].value += "\nThis message will self descruct in 30 seconds."
+
+								const m = await message.send(deleteMsg);
+								constantCmds.lfgDelete2.embed.fields[0].value = deepCloningFailedSoThisIsTheSolution;
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 30000);
+							}
+
+							// Found none, notify user you cannot delete other's lfgs
+							else {
+								const m = await message.send(constantCmds.lfgDelete1);
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 5000);
+							}
+						}	
 					}
-
-					// User did not provide a Uid, find it automatically
-					else {
-						const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId));
-
-						// Found one, delete
-						if (matches.length === 1) {
-							await deleteMessage(matches[0].channelId, matches[0].messageId, "User requested LFG to be deleted.");
-							const lfgIdx = activeLFGPosts.findIndex(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId));
-							
-							activeLFGPosts.splice(lfgIdx, 1);
-							
-							localStorage.setItem("activeLFGPosts", JSON.stringify(activeLFGPosts, (_key, value) =>
-								typeof value === "bigint" ? value.toString() + "n" : value
-							));
-
-							const m = await message.send(constantCmds.lfgDelete3);
-							setTimeout(() => {
-								m.delete();
-								message.delete();
-							}, 5000);
-						}
-
-						// Found multiple, notify user
-						else if (matches.length) {
-							const deleteMsg = constantCmds.lfgDelete2;
-							const deepCloningFailedSoThisIsTheSolution = constantCmds.lfgDelete2.embed.fields[0].value;
-							matches.forEach(mt => {
-								deleteMsg.embed.fields[0].value += `[${mt.lfgUid}](https://discord.com/channels/${message.guildId}/${mt.channelId}/${mt.messageId})\n`
-							});
-
-							deleteMsg.embed.fields[0].value += "\nThis message will self descruct in 30 seconds."
-
-							const m = await message.send(deleteMsg);
-							constantCmds.lfgDelete2.embed.fields[0].value = deepCloningFailedSoThisIsTheSolution;
-							setTimeout(() => {
-								m.delete();
-								message.delete();
-							}, 30000);
-						}
-
-						// Found none, notify user you cannot delete other's lfgs
-						else {
-							const m = await message.send(constantCmds.lfgDelete1);
-							setTimeout(() => {
-								m.delete();
-								message.delete();
-							}, 5000);
-						}
+					catch (e) {
+						log(LT.WARN, `LFG failed at step | delete | ${JSON.stringify(e)}`);
 					}
 				}
 
 				// Edit an existing LFG
 				else if (subcmd === "edit" || subcmd === "e") {
-					// User provided a Uid, use it
-					if (lfgUid) {
-						const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId && lfgUid === lfg.lfgUid));
+					try {
+						// User provided a Uid, use it
+						if (lfgUid) {
+							const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId && lfgUid === lfg.lfgUid));
 
-						// Found one, edit
-						if (matches.length) {
-							const lfgMessage = await (await getMessage(matches[0].channelId, matches[0].messageId)).edit({
-								content: `Editing new LFG post for <@${matches[0].ownerId}>.  Please reply with the requested information and watch as your LFG post gets edited!`
-							});
-							const question = await message.send({
-								content: "Please select an item to edit from the buttons below:",
-								components: [{
-									type: 1,
-									components: editBtns
-								}]
-							});
+							// Found one, edit
+							if (matches.length) {
+								const lfgMessage = await (await getMessage(matches[0].channelId, matches[0].messageId)).edit({
+									content: `Editing new LFG post for <@${matches[0].ownerId}>.  Please reply with the requested information and watch as your LFG post gets edited!`
+								});
+								const question = await message.send({
+									content: "Please select an item to edit from the buttons below:",
+									components: [{
+										type: 1,
+										components: editBtns
+									}]
+								});
 
-							activeBuilders.push({
-								userId: matches[0].ownerId,
-								channelId: matches[0].channelId,
-								step: "edit_btn",
-								lfgMsg: lfgMessage,
-								questionMsg: question,
-								lastTouch: new Date(),
-								maxIdle: 60,
-								editing: true
-							});
+								activeBuilders.push({
+									userId: matches[0].ownerId,
+									channelId: matches[0].channelId,
+									step: "edit_btn",
+									lfgMsg: lfgMessage,
+									questionMsg: question,
+									lastTouch: new Date(),
+									maxIdle: 60,
+									editing: true
+								});
 
-							message.delete();
+								message.delete();
+							}
+
+							// Did not find one
+							else {
+								const m = await message.send(constantCmds.lfgEdit1);
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 5000);
+							}
 						}
 
-						// Did not find one
+						// User did not provide a Uid, find it automatically
 						else {
-							const m = await message.send(constantCmds.lfgEdit1);
-							setTimeout(() => {
-								m.delete();
+							const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId));
+
+							// Found one, edit
+							if (matches.length === 1) {
+								const lfgMessage = await (await getMessage(matches[0].channelId, matches[0].messageId)).edit({
+									content: `Editing new LFG post for <@${matches[0].ownerId}>.  Please reply with the requested information and watch as your LFG post gets edited!`
+								});
+								const question = await message.send({
+									content: "Please select an item to edit from the buttons below:",
+									components: [{
+										type: 1,
+										components: editBtns
+									}]
+								});
+
+								activeBuilders.push({
+									userId: matches[0].ownerId,
+									channelId: matches[0].channelId,
+									step: "edit_btn",
+									lfgMsg: lfgMessage,
+									questionMsg: question,
+									lastTouch: new Date(),
+									maxIdle: 60,
+									editing: true
+								});
+
 								message.delete();
-							}, 5000);
+							}
+
+							// Found multiple, notify user
+							else if (matches.length) {
+								const deleteMsg = constantCmds.lfgEdit2;
+								const deepCloningFailedSoThisIsTheSolution = constantCmds.lfgEdit2.embed.fields[0].value;
+								matches.forEach(mt => {
+									deleteMsg.embed.fields[0].value += `[${mt.lfgUid}](https://discord.com/channels/${message.guildId}/${mt.channelId}/${mt.messageId})\n`
+								});
+
+								deleteMsg.embed.fields[0].value += "\nThis message will self descruct in 30 seconds."
+
+								const m = await message.send(deleteMsg);
+								constantCmds.lfgEdit2.embed.fields[0].value = deepCloningFailedSoThisIsTheSolution;
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 30000);
+							}
+
+							// Found none, notify user you cannot edit other's lfgs
+							else {
+								const m = await message.send(constantCmds.lfgEdit1);
+								setTimeout(() => {
+									m.delete();
+									message.delete();
+								}, 5000);
+							}
 						}
 					}
-
-					// User did not provide a Uid, find it automatically
-					else {
-						const matches = activeLFGPosts.filter(lfg => (message.authorId === lfg.ownerId && message.channelId === lfg.channelId));
-
-						// Found one, edit
-						if (matches.length === 1) {
-							const lfgMessage = await (await getMessage(matches[0].channelId, matches[0].messageId)).edit({
-								content: `Editing new LFG post for <@${matches[0].ownerId}>.  Please reply with the requested information and watch as your LFG post gets edited!`
-							});
-							const question = await message.send({
-								content: "Please select an item to edit from the buttons below:",
-								components: [{
-									type: 1,
-									components: editBtns
-								}]
-							});
-
-							activeBuilders.push({
-								userId: matches[0].ownerId,
-								channelId: matches[0].channelId,
-								step: "edit_btn",
-								lfgMsg: lfgMessage,
-								questionMsg: question,
-								lastTouch: new Date(),
-								maxIdle: 60,
-								editing: true
-							});
-
-							message.delete();
-						}
-
-						// Found multiple, notify user
-						else if (matches.length) {
-							const deleteMsg = constantCmds.lfgEdit2;
-							const deepCloningFailedSoThisIsTheSolution = constantCmds.lfgEdit2.embed.fields[0].value;
-							matches.forEach(mt => {
-								deleteMsg.embed.fields[0].value += `[${mt.lfgUid}](https://discord.com/channels/${message.guildId}/${mt.channelId}/${mt.messageId})\n`
-							});
-
-							deleteMsg.embed.fields[0].value += "\nThis message will self descruct in 30 seconds."
-
-							const m = await message.send(deleteMsg);
-							constantCmds.lfgEdit2.embed.fields[0].value = deepCloningFailedSoThisIsTheSolution;
-							setTimeout(() => {
-								m.delete();
-								message.delete();
-							}, 30000);
-						}
-
-						// Found none, notify user you cannot edit other's lfgs
-						else {
-							const m = await message.send(constantCmds.lfgEdit1);
-							setTimeout(() => {
-								m.delete();
-								message.delete();
-							}, 5000);
-						}
+					catch (e) {
+						log(LT.WARN, `LFG failed at step | edit | ${JSON.stringify(e)}`);
 					}
 				}
 			}
@@ -657,6 +686,9 @@ startBot({
 		interactionCreate: async (interact: Interaction) => {
 			if (interact.type === DiscordInteractionTypes.MessageComponent) {
 				if (interact.message && interact.data && (interact.data as ButtonData).customId && interact.member) {
+					log(LT.INFO, `Handling Button ${(interact.data as ButtonData).customId}`);
+					console.log(LT.LOG, `Button Data | ${JSON.stringify(interact)}`);
+
 					sendInteractionResponse(BigInt(interact.id), interact.token, {
 						type: 6
 					});
@@ -720,7 +752,7 @@ startBot({
 						}
 						case "active": {
 							const member = await structures.createDiscordenoMember(interact.member, BigInt(interact.guildId));
-							const message = await structures.createDiscordenoMessage(interact.message);
+							const message = await getMessage(BigInt(interact.channelId), BigInt(interact.message.id));
 
 							const embeds = message.embeds[0].fields || [];
 							let results: JoinLeaveType = {
@@ -766,7 +798,7 @@ startBot({
 									const nextComponents: Array<ActionRow> = [];
 									switch (action) {
 										case "set_game": {
-											nextQuestion = "Please select a game from the list below.  If your game is not listed, please type it out:";
+											nextQuestion = lfgStepQuestions.set_game;
 
 											const gameButtons: Array<ButtonComponent> = Object.keys(LFGActivities).map(game => {
 												return {

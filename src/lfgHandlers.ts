@@ -1,11 +1,14 @@
 import {
-	ActionRow, ButtonComponent, DiscordButtonStyles, EmbedField, DiscordenoMember
+	ActionRow, ButtonComponent, DiscordButtonStyles, EmbedField, DiscordenoMember,
+
+	LT, log
 } from "../deps.ts";
 
 import { JoinLeaveType } from "./lfgHandlers.d.ts";
 import { BuildingLFG } from "./mod.d.ts";
 import { LFGActivities } from "./games.ts";
-import { determineTZ } from "./timeUtils.ts"
+import { determineTZ } from "./timeUtils.ts";
+import { lfgStepQuestions } from "./constantCmds.ts";
 
 export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise<BuildingLFG> => {
 	const currentLFG = (wipLFG.lfgMsg.embeds[0] || { fields: undefined }).fields || [
@@ -47,10 +50,10 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 
 	switch (wipLFG.step) {
 		case "set_game": {
-			currentLFG[0].name = input;
+			currentLFG[0].name = input.substr(0, 254);
 
 			if (Object.prototype.hasOwnProperty.call(LFGActivities, input)) {
-				nextQuestion = "Please select an Activity from the list below.  Depending on the game selected, these may be categories you can use to drill down to a specific activity.\n\nIf your activity is not listed, please type it out:";
+				nextQuestion = lfgStepQuestions.set_activity_with_button;
 
 				let tempObj = {};
 				Object.entries(LFGActivities).some(e => {
@@ -88,7 +91,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 					}
 				});
 			} else {
-				nextQuestion = "Please type the activity name out:";
+				nextQuestion = lfgStepQuestions.set_activity_with_text;
 			}
 
 			wipLFG.step = "set_activity";
@@ -111,23 +114,23 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			});
 
 			currentLFG[0].name = `${game}:`;
-			currentLFG[0].value = input;
+			currentLFG[0].value = input.substr(0, 1023);
 
 			if (typeof tempObj === "number") {
 				// Activity
 				currentLFG[4].name = `Members Joined: ${currentLFG[4].value === "None" ? 0 : currentLFG[4].value.split("\n").length}/${tempObj}`;
 
-				nextQuestion = wipLFG.editing ? "Finalizing, please wait. . ." : "Please enter the time of the activity:";
+				nextQuestion = wipLFG.editing ? lfgStepQuestions.set_done : lfgStepQuestions.set_time;
 
 				wipLFG.step = wipLFG.editing ? "done" : "set_time";
 			} else if (!tempObj) {
 				// Custom
-				nextQuestion = "Please enter the max number of members for this activity:";
+				nextQuestion = lfgStepQuestions.set_player_cnt;
 
 				wipLFG.step = "set_player_cnt";
 			} else {
 				// Category
-				nextQuestion = "Please select an Activity from the list below.\n\nIf your activity is not listed, please type it out:";
+				nextQuestion = lfgStepQuestions.set_activity_from_category;
 
 				currentLFG[0].name = game;
 				
@@ -187,16 +190,16 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			});
 
 			currentLFG[0].name = `${game}:`;
-			currentLFG[0].value = input;
+			currentLFG[0].value = input.substr(0, 1023);
 
 			if (tempObj) {
 				currentLFG[4].name = `Members Joined: ${currentLFG[4].value === "None" ? 0 : currentLFG[4].value.split("\n").length}/${tempObj}`;
 				
-				nextQuestion =  wipLFG.editing ? "Finalizing, please wait. . ." : "Please enter the time of the activity:";
+				nextQuestion =  wipLFG.editing ? lfgStepQuestions.set_done : lfgStepQuestions.set_time;
 	
 				wipLFG.step = wipLFG.editing ? "done" : "set_time";
 			} else {
-				nextQuestion =  "Please enter the max number of members for this activity:";
+				nextQuestion =  lfgStepQuestions.set_player_cnt;
 
 				wipLFG.step = "set_player_cnt";
 			}
@@ -206,7 +209,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			if (parseInt(input)) {
 				currentLFG[4].name = `Members Joined: ${currentLFG[4].value === "None" ? 0 : currentLFG[4].value.split("\n").length}/${parseInt(input)}`;
 
-				nextQuestion = wipLFG.editing ? "Finalizing, please wait. . ." : "Please enter the time of the activity:";
+				nextQuestion = wipLFG.editing ? lfgStepQuestions.set_done : lfgStepQuestions.set_time;
 
 				wipLFG.step = wipLFG.editing ? "done" : "set_time";
 			} else {
@@ -227,13 +230,31 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			input.split(" ").forEach(c => {
 				if (c.includes("/")) {
 					lfgDate = c;
-				} else if (c.includes(":") || parseInt(c).toString() === c) {
-					lfgTime = c;
 				} else if (c.toLowerCase() === "am" || c.toLowerCase() === "pm") {
 					lfgPeriod = c.toLowerCase();
 				} else if (c.toLowerCase().includes("am") || c.toLowerCase().includes("pm")) {
 					lfgTime = c.substr(0, c.length - 2);
 					lfgPeriod = c.toLowerCase().includes("am") ? "am" : "pm";
+				} else if (c.includes(":")) {
+					lfgTime = c;
+				} else if (parseInt(c).toString() === (c.replace(/^0+/, '') || "0")) {
+					if (c.length === 4) {
+						if (parseInt(c) >= 1300) {
+							lfgTime = (parseInt(c) - 1200).toString();
+							lfgPeriod = "pm";
+						} else if (parseInt(c) >= 1200) {
+							lfgTime = c;
+							lfgPeriod = "pm";
+						} else {
+							lfgTime = c.startsWith("00") ? `12${c.substr(2)}` : c;
+							lfgPeriod = "am"
+						}
+
+						const hourLen = lfgTime.length === 4 ? 2 : 1;
+						lfgTime = `${lfgTime.substr(0, hourLen)}:${lfgTime.substr(hourLen)}`;
+					} else {
+						lfgTime = c;
+					}
 				} else {
 					lfgTZ = determineTZ(c);
 				}
@@ -254,20 +275,26 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			lfgTZ = lfgTZ.toUpperCase();
 
 			lfgDate = `${lfgDate.split("/")[0]}/${lfgDate.split("/")[1]}/${today.getFullYear()}`;
-			const lfgDateTime = new Date(`${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}`);
 
+			console.log(`${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}`);
+
+			const lfgDateTime = new Date(`${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}`);
 			lfgDate = `${lfgDate.split("/")[0]}/${lfgDate.split("/")[1]}`;
 			const lfgDateStr = `[${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}](https://groupup.eanm.dev/tz#${lfgDateTime.getTime()})`;
 
 			currentLFG[1].name = "Start Time (Click for Conversion):";
-			currentLFG[1].value = lfgDateStr;
+			currentLFG[1].value = lfgDateStr.substr(0, 1023);
 
 			if (isNaN(lfgDateTime.getTime())) {
-				nextQuestion = `Input time "${input}" is invalid, please make sure you have the timezone set correctly.\n\nPlease enter the time of the activity:`;
+				nextQuestion = `Input time "${input}" is invalid, please make sure you have the timezone set correctly.\n\n${lfgStepQuestions.set_time}`;
+
+				editFlag = false;
+			} else if (lfgDateTime.getTime() <= today.getTime()) {
+				nextQuestion = `Input time "${input}" is in the past, please make sure you are setting up the event to be in the future.\n\n${lfgStepQuestions.set_time}`;
 
 				editFlag = false;
 			} else {
-				nextQuestion = wipLFG.editing ? "Finalizing, please wait. . ." : "Please enter a description for the activity.  Enter `none` to skip:";
+				nextQuestion = wipLFG.editing ? lfgStepQuestions.set_done : lfgStepQuestions.set_desc;
 
 				wipLFG.step = wipLFG.editing ? "done" : "set_desc";
 			}
@@ -278,9 +305,9 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 				input = currentLFG[0].value;
 			}
 
-			currentLFG[3].value = input;
+			currentLFG[3].value = input.substr(0, 1023);
 
-			nextQuestion =  "Finalizing, please wait. . .";
+			nextQuestion =  lfgStepQuestions.set_done;
 
 			wipLFG.step = "done";
 			break;
@@ -289,18 +316,23 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			break;
 	}
 
-	if (editFlag) {
-		wipLFG.lfgMsg = await wipLFG.lfgMsg.edit({
-			embed: {
-				fields: currentLFG
-			}
+	try {
+		if (editFlag) {
+			wipLFG.lfgMsg = await wipLFG.lfgMsg.edit({
+				embed: {
+					fields: currentLFG
+				}
+			});
+		}
+
+		wipLFG.questionMsg = await wipLFG.questionMsg.edit({
+			content: nextQuestion,
+			components: nextComponents
 		});
 	}
-
-	wipLFG.questionMsg = await wipLFG.questionMsg.edit({
-		content: nextQuestion,
-		components: nextComponents
-	});
+	catch (e) {
+		log(LT.WARN, `Failed to edit active builder | ${wipLFG.userId}-${wipLFG.channelId} | ${JSON.stringify(e)}`);
+	}
 
 	return wipLFG;
 };

@@ -170,3 +170,14 @@ export const editBtns: ActionRow["components"] = [
 		style: DiscordButtonStyles.Primary
 	}
 ];
+
+export const lfgStepQuestions = {
+	"set_game": "Please select a game from the list below.  If your game is not listed, please type it out:",
+	"set_activity_with_button": "Please select an Activity from the list below.  Depending on the game selected, these may be categories you can use to drill down to a specific activity.\n\nIf your activity is not listed, please type it out:",
+	"set_activity_with_text": "Please type the activity name out:",
+	"set_activity_from_category": "Please select an Activity from the list below.\n\nIf your activity is not listed, please type it out:",
+	"set_player_cnt": "Please enter the max number of members for this activity:",
+	"set_time": "Please enter the time of the activity:\nRecommended format: `h:mm am/pm tz month/day`",
+	"set_desc": "Please enter a description for the activity.  Enter `none` to skip:",
+	"set_done": "Finalizing, please wait. . ."
+};
