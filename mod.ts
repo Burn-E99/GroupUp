@@ -361,7 +361,7 @@ startBot({
 					log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${JSON.stringify(e)}`);
 				});
 
-				const subcmd = args[0] || "help";
+				const subcmd = args[0].toLowerCase() || "help";
 				const lfgUid = (args[1] || "").toUpperCase();
 
 				// Learn how the LFG command works
@@ -687,7 +687,7 @@ startBot({
 			if (interact.type === DiscordInteractionTypes.MessageComponent) {
 				if (interact.message && interact.data && (interact.data as ButtonData).customId && interact.member) {
 					log(LT.INFO, `Handling Button ${(interact.data as ButtonData).customId}`);
-					console.log(LT.LOG, `Button Data | ${JSON.stringify(interact)}`);
+					log(LT.LOG, `Button Data | ${JSON.stringify(interact)}`);
 
 					sendInteractionResponse(BigInt(interact.id), interact.token, {
 						type: 6

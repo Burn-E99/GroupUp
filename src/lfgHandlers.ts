@@ -207,7 +207,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 		}
 		case "set_player_cnt": {
 			if (parseInt(input)) {
-				currentLFG[4].name = `Members Joined: ${currentLFG[4].value === "None" ? 0 : currentLFG[4].value.split("\n").length}/${parseInt(input)}`;
+				currentLFG[4].name = `Members Joined: ${currentLFG[4].value === "None" ? 0 : currentLFG[4].value.split("\n").length}/${Math.abs(parseInt(input)) || 1}`;
 
 				nextQuestion = wipLFG.editing ? lfgStepQuestions.set_done : lfgStepQuestions.set_time;
 
@@ -215,7 +215,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			} else {
 				editFlag = false;
 
-				nextQuestion = `Input max members "${input}" is invalid, please make sure you are only entering a number.\n\nPlease enter the max number of members for this activity:`
+				nextQuestion = `Input max members "${input}" is invalid, please make sure you are only entering a number.\n\n${lfgStepQuestions.set_player_cnt}`
 			}
 			break;
 		}
@@ -247,7 +247,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 							lfgPeriod = "pm";
 						} else {
 							lfgTime = c.startsWith("00") ? `12${c.substr(2)}` : c;
-							lfgPeriod = "am"
+							lfgPeriod = "am";
 						}
 
 						const hourLen = lfgTime.length === 4 ? 2 : 1;
@@ -255,6 +255,10 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 					} else {
 						lfgTime = c;
 					}
+				} else if (c.match(/^\d/)) {
+					const tzIdx = c.search(/[a-zA-Z]/);
+					lfgTime = c.substr(0, tzIdx);
+					lfgTZ = determineTZ(c.substr(tzIdx));
 				} else {
 					lfgTZ = determineTZ(c);
 				}
@@ -269,14 +273,15 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			}
 
 			if (!lfgPeriod) {
-				lfgPeriod = parseInt(lfgTime.split(":")[0]) >= 12 ? "pm" : "am";
+				lfgPeriod = today.getHours() >= 12 ? "pm" : "am";
 			}
+
 			lfgPeriod = lfgPeriod.toUpperCase();
 			lfgTZ = lfgTZ.toUpperCase();
 
 			lfgDate = `${lfgDate.split("/")[0]}/${lfgDate.split("/")[1]}/${today.getFullYear()}`;
 
-			console.log(`${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}`);
+			log(LT.LOG, `Date Time Debug | ${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}`);
 
 			const lfgDateTime = new Date(`${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}`);
 			lfgDate = `${lfgDate.split("/")[0]}/${lfgDate.split("/")[1]}`;
@@ -286,11 +291,11 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			currentLFG[1].value = lfgDateStr.substr(0, 1023);
 
 			if (isNaN(lfgDateTime.getTime())) {
-				nextQuestion = `Input time "${input}" is invalid, please make sure you have the timezone set correctly.\n\n${lfgStepQuestions.set_time}`;
+				nextQuestion = `Input time "${input}" (parsed as "${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}") is invalid, please make sure you have the timezone set correctly.\n\n${lfgStepQuestions.set_time}`;
 
 				editFlag = false;
 			} else if (lfgDateTime.getTime() <= today.getTime()) {
-				nextQuestion = `Input time "${input}" is in the past, please make sure you are setting up the event to be in the future.\n\n${lfgStepQuestions.set_time}`;
+				nextQuestion = `Input time "${input}" (parsed as "${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}") is in the past, please make sure you are setting up the event to be in the future.\n\n${lfgStepQuestions.set_time}`;
 
 				editFlag = false;
 			} else {

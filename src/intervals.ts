@@ -116,7 +116,7 @@ const lfgNotifier = async (activeLFGPosts: Array<ActiveLFG>): Promise<void> => {
 						editMsg += `<@${userId}>, `;
 						await sendDirectMessage(userId, {
 							embed: {
-								title: `Hello ${name}!  You event in ${guildName} starts in less than 10 minutes.`,
+								title: `Hello ${name}!  Your event in ${guildName} starts in less than 10 minutes.`,
 								fields: [
 									lfg[0],
 									{
