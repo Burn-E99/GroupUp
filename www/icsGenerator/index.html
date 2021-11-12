@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="HandheldFriendly" content="true"/> 
+		
+		<meta name="author" content="Ean Milligan (ean@milligan.dev)">
+		<meta name="designer" content="Ean Milligan (ean@milligan.dev)">
+		<meta name="publisher" content="Ean Milligan (ean@milligan.dev)">
+		
+		<title>Group Up ICS Generator</title>
+		<meta name="description" content="The Group Up Discord Bot is a fancy event scheduler.  This page generates an ICS file for people to add it to their calendar.">
+		<meta name="robots" content="index, follow">
+		<meta name="revisit-after" content="7 days">
+		<meta name="distribution" content="web">
+		<meta name="robots" content="noodp, noydir">
+
+		<meta name="distribution" content="web">
+		<meta name="web_author" content="Ean Milligan (ean@milligan.dev)">
+
+		<style>
+			body {
+				font-family: sans-serif;
+				font-size: 1rem;
+
+				height: 100vh;
+				padding: 0;
+				margin: 0;
+
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				color: #dcddde;
+				background-color: #2f3136;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<h1>How to use this ICS:</h1>
+			<p>
+				<h2>Google Calendar:</h2>
+				<ol>
+					<li>Click on the gear in the top right</li>
+					<li>Click on Settings</li>
+					<li>Click on the Import & Export button</li>
+					<li>Upload the ICS you just downloaded (if you didn't save it, click the link again and save it)</li>
+					<li>Click Import</li>
+					<li>Done!  You can now view the event in your calendar</li>
+				</ol>
+			</p>
+			<p>
+				<h2>Microsoft Outlook:</h2>
+				<ol>
+					<li>Click on File</li>
+					<li>Click on Open & Export</li>
+					<li>Click on Import/Export</li>
+					<li>Select Import an iCalendar (.ics) or vCalendar file (.vcs)</li>
+					<li>Click Next</li>
+					<li>Locate the ICS you just downloaded (if you didn't save it, click the link again and save it)</li>
+					<li>Click Import</li>
+					<li>Done!  You can now view the event in your calendar</li>
+				</ol>
+			</p>
+		</div>
+		<script>
+			if (window.location.search) {
+				var urlParams = new URLSearchParams(window.location.search);
+				var eventTimeRaw = parseInt(urlParams.get("t"));
+				var eventTime = new Date(eventTimeRaw);
+				var eventTime1hr = new Date(eventTimeRaw + 3600000);
+				var eventName = urlParams.get("n").replaceAll("+", " ");
+				var icsRaw = [
+					"BEGIN:VCALENDAR",
+					"BEGIN:VEVENT",
+					`UID:${eventTimeRaw}${eventName.toUpperCase().replaceAll(/[^\w]/gi, "")}`,
+					`DTSTAMP:${eventTime.getUTCFullYear()}${("0" + (eventTime.getUTCMonth() + 1)).slice(-2)}${("0" + eventTime.getUTCDate()).slice(-2)}T${("0" + eventTime.getUTCHours()).slice(-2)}${("0" + eventTime.getUTCMinutes()).slice(-2)}${("0" + eventTime.getUTCSeconds()).slice(-2)}Z`,
+					`DTSTART:${eventTime.getUTCFullYear()}${("0" + (eventTime.getUTCMonth() + 1)).slice(-2)}${("0" + eventTime.getUTCDate()).slice(-2)}T${("0" + eventTime.getUTCHours()).slice(-2)}${("0" + eventTime.getUTCMinutes()).slice(-2)}${("0" + eventTime.getUTCSeconds()).slice(-2)}Z`,
+					`DTEND:${eventTime1hr.getUTCFullYear()}${("0" + (eventTime1hr.getUTCMonth() + 1)).slice(-2)}${("0" + eventTime1hr.getUTCDate()).slice(-2)}T${("0" + eventTime1hr.getUTCHours()).slice(-2)}${("0" + eventTime1hr.getUTCMinutes()).slice(-2)}${("0" + eventTime1hr.getUTCSeconds()).slice(-2)}Z`,
+					`SUMMARY:${eventName}`,
+					"END:VEVENT",
+					"END:VCALENDAR"
+				];
+				var icsTxt = icsRaw.join("\r\n");
+				console.log(icsTxt);
+
+				var element = document.createElement("a");
+				element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(icsTxt));
+				element.setAttribute("download", `Group_Up_${eventName.toUpperCase().replaceAll(/[^\w]/gi, "")}.ics`);
+
+				element.style.display = "none";
+				document.body.appendChild(element);
+
+				element.click();
+
+				document.body.removeChild(element);
+			}
+		</script>
+	</body>
+</html>

@@ -10,8 +10,7 @@
 		<meta name="publisher" content="Ean Milligan (ean@milligan.dev)">
 		
 		<title>Group Up Time Checker</title>
-		<meta name="description" content="The Artificer Discord Bot is a advanced dice rolling bot utilizing the Roll20 format.  The Artificer is fast and reliable and free to use.">
-		<meta name="keywords" content="The Artificer, Discord bot, dice roller, dice rolling, roll, rolling, dice, roller, bot, artificer">
+		<meta name="description" content="The Group Up Discord Bot is a fancy event scheduler.  This page converts the time of an event to the user's local time.">
 		<meta name="robots" content="index, follow">
 		<meta name="revisit-after" content="7 days">
 		<meta name="distribution" content="web">
@@ -19,8 +18,6 @@
 
 		<meta name="distribution" content="web">
 		<meta name="web_author" content="Ean Milligan (ean@milligan.dev)">
-
-		<link rel="shortcut icon" href="./favicon.ico">
 
 		<style>
 			body {
@@ -49,9 +46,7 @@
 		</div>
 		<script>
 			if (window.location.hash) {
-				console.log(window.location.hash)
 				var groupDate = new Date(parseInt(window.location.hash.substr(1)));
-
 				document.getElementById("message").innerText = "Your event is happening at:\n\n" + groupDate.toLocaleString();
 			}
 		</script>

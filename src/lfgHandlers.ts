@@ -25,7 +25,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 		},
 		{
 			name: "Add to Calendar:",
-			value: "Coming Soon:tm:",
+			value: ". . .",
 			inline: true
 		},
 		{
@@ -289,8 +289,12 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			lfgDate = `${lfgDate.split("/")[0]}/${lfgDate.split("/")[1]}`;
 			const lfgDateStr = `[${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}](https://groupup.eanm.dev/tz#${lfgDateTime.getTime()})`;
 
+			const icsDetails = `${currentLFG[0].name} ${currentLFG[0].value}`;
+			const icsStr = `[Download ICS File](https://groupup.eanm.dev/ics?t=${lfgDateTime.getTime()}&n=${icsDetails.replaceAll(" ", "+")})`
+
 			currentLFG[1].name = "Start Time (Click for Conversion):";
 			currentLFG[1].value = lfgDateStr.substr(0, 1023);
+			currentLFG[2].value = icsStr.substr(0, 1023);
 
 			if (isNaN(lfgDateTime.getTime())) {
 				nextQuestion = `Input time "${input}" (parsed as "${lfgTime} ${lfgPeriod} ${lfgTZ} ${lfgDate}") is invalid, please make sure you have the timezone set correctly.\n\n${lfgStepQuestions.set_time}`;
