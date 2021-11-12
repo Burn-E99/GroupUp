@@ -6,7 +6,7 @@ import config from "../config.ts";
 
 export const constantCmds = {
 	help: {
-		embed: {
+		embeds: [{
 			title: `${config.name} Help`,
 			fields: [
 				{
@@ -32,10 +32,10 @@ export const constantCmds = {
 					`
 				}
 			]
-		}
+		}]
 	},
 	lfgHelp: {
-		embed: {
+		embeds: [{
 			title: `${config.name} LFG Help`,
 			fields: [
 				{
@@ -74,10 +74,10 @@ export const constantCmds = {
 					inline: true
 				}
 			]
-		}
+		}]
 	},
 	info: {
-		embed: {
+		embeds: [{
 			fields: [
 				{
 					name: "Group Up, the LFG bot",
@@ -86,67 +86,67 @@ export const constantCmds = {
 					Need help with this bot?  Join my support server [here](https://discord.gg/peHASXMZYv).`
 				}
 			]
-		}
+		}]
 	},
 	version: {
-		embed: {
+		embeds: [{
 			title: `My current version is ${config.version}`
-		}
+		}]
 	},
 	report: {
-		embed: {
+		embeds: [{
 			fields: [
 				{
 					name: "Failed command has been reported to my developer.",
 					value: "For more in depth support, and information about planned maintenance, please join the support server [here](https://discord.gg/peHASXMZYv)."
 				}
 			]
-		}
+		}]
 	},
 	lfgDelete1: {
-		embed: {
+		embeds: [{
 			fields: [
 				{
 					name: "Could not find any LFGs to delete.",
 					value: "Make sure you are the owner of the LFG and are running this command in the same channel as the LFG"
 				}
 			]
-		}
+		}]
 	},
 	lfgDelete2: {
-		embed: {
+		embeds: [{
 			fields: [
 				{
 					name: `Multiple LFGs found, please run this command again with the two character ID of the LFG you wish to delete.\n\nExample: \`${config.prefix}lfg delete XX\``,
 					value: "Click on the two character IDs below to view the LFG:\n"
 				}
 			]
-		}
+		}]
 	},
 	lfgDelete3: {
-		embed: {
+		embeds: [{
 			title: "LFG deleted."
-		}
+		}]
 	},
 	lfgEdit1: {
-		embed: {
+		embeds: [{
 			fields: [
 				{
 					name: "Could not find any LFGs to edit.",
 					value: "Make sure you are the owner of the LFG and are running this command in the same channel as the LFG"
 				}
 			]
-		}
+		}]
 	},
 	lfgEdit2: {
-		embed: {
+		embeds: [{
 			fields: [
 				{
 					name: `Multiple LFGs found, please run this command again with the two character ID of the LFG you wish to edit.\n\nExample: \`${config.prefix}lfg edit XX\``,
 					value: "Click on the two character IDs below to view the LFG:\n"
 				}
 			]
-		}
+		}]
 	}
 };
 

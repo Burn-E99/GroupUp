@@ -26,6 +26,8 @@ console.log("Attempt to drop all tables");
 await dbClient.execute(`DROP PROCEDURE IF EXISTS INC_CNT;`);
 await dbClient.execute(`DROP TABLE IF EXISTS command_cnt;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_prefix;`);
+await dbClient.execute(`DROP TABLE IF EXISTS guild_mod_role;`);
+await dbClient.execute(`DROP TABLE IF EXISTS guild_clean_channel;`);
 console.log("Tables dropped");
 
 console.log("Attempting to create table command_cnt");
@@ -59,6 +61,27 @@ await dbClient.execute(`
 		prefix char(10) NOT NULL,
 		PRIMARY KEY (guildid),
 		UNIQUE KEY guild_prefix_guildid_UNIQUE (guildid)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+`);
+console.log("Table created");
+
+console.log("Attempting to create table guild_mod_role");
+await dbClient.execute(`
+	CREATE TABLE guild_mod_role (
+		guildId bigint unsigned NOT NULL,
+		roleId bigint unsigned NOT NULL,
+		PRIMARY KEY (guildid),
+		UNIQUE KEY guild_mod_role_guildid_UNIQUE (guildid)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+`);
+console.log("Table created");
+
+console.log("Attempting to create table guild_clean_channel");
+await dbClient.execute(`
+	CREATE TABLE guild_clean_channel (
+		guildId bigint unsigned NOT NULL,
+		channelId bigint unsigned NOT NULL,
+		PRIMARY KEY (guildid, channelId)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 `);
 console.log("Table created");

@@ -37,7 +37,7 @@ export const LFGActivities = {
 		}
 	},
 	"Among Us": {
-		"Vanilla": 10,
-		"Modded": 10
+		"Vanilla": 15,
+		"Modded": 15
 	}
 };

@@ -28,10 +28,12 @@ export type GuildPrefixes = {
 	prefix: string
 }
 
-// TEMP
-export interface ButtonData {
-	/** with the value you defined for this component */
-	customId: string;
-	/** The type of this component */
-	componentType: 2;
+export type GuildModRoles = {
+	guildId: bigint,
+	roleId: bigint
+}
+
+export type GuildCleanChannels = {
+	guildId: bigint,
+	channelId: bigint
 }

@@ -4,11 +4,12 @@ import {
 	LT, log
 } from "../deps.ts";
 
-import { JoinLeaveType } from "./lfgHandlers.d.ts";
+import { JoinLeaveType, UrlIds } from "./lfgHandlers.d.ts";
 import { BuildingLFG } from "./mod.d.ts";
 import { LFGActivities } from "./games.ts";
 import { determineTZ } from "./timeUtils.ts";
 import { lfgStepQuestions } from "./constantCmds.ts";
+import { jsonStringifyBig } from "./utils.ts";
 
 export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise<BuildingLFG> => {
 	const currentLFG = (wipLFG.lfgMsg.embeds[0] || { fields: undefined }).fields || [
@@ -225,7 +226,8 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 			let lfgDate = `${today.getMonth() + 1}/${today.getDate()}`,
 				lfgTime = "",
 				lfgTZ = "",
-				lfgPeriod = "";
+				lfgPeriod = "",
+				overrodeTZ = false;
 			
 			input.split(" ").forEach(c => {
 				if (c.includes("/")) {
@@ -258,14 +260,14 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 				} else if (c.match(/^\d/)) {
 					const tzIdx = c.search(/[a-zA-Z]/);
 					lfgTime = c.substr(0, tzIdx);
-					lfgTZ = determineTZ(c.substr(tzIdx));
+					[lfgTZ, overrodeTZ] = determineTZ(c.substr(tzIdx));
 				} else {
-					lfgTZ = determineTZ(c);
+					[lfgTZ, overrodeTZ] = determineTZ(c);
 				}
 			});
 
 			if (!lfgTZ) {
-				lfgTZ = determineTZ("ET");
+				[lfgTZ, overrodeTZ] = determineTZ("ET");
 			}
 
 			if (!lfgTime.includes(":")) {
@@ -324,9 +326,9 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 	try {
 		if (editFlag) {
 			wipLFG.lfgMsg = await wipLFG.lfgMsg.edit({
-				embed: {
+				embeds: [{
 					fields: currentLFG
-				}
+				}]
 			});
 		}
 
@@ -336,7 +338,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 		});
 	}
 	catch (e) {
-		log(LT.WARN, `Failed to edit active builder | ${wipLFG.userId}-${wipLFG.channelId} | ${JSON.stringify(e)}`);
+		log(LT.WARN, `Failed to edit active builder | ${wipLFG.userId}-${wipLFG.channelId} | ${jsonStringifyBig(e)}`);
 	}
 
 	return wipLFG;
@@ -344,6 +346,7 @@ export const handleLFGStep = async (wipLFG: BuildingLFG, input: string): Promise
 
 export const handleMemberJoin = (lfg: EmbedField[], member: DiscordenoMember, alternate: boolean): JoinLeaveType => {
 	let success = false;
+	let justFilled = false;
 	
 	const userStr = `${member.username} - <@${member.id}>`;
 	
@@ -352,6 +355,7 @@ export const handleMemberJoin = (lfg: EmbedField[], member: DiscordenoMember, al
 	const maxMembers = parseInt(tempMembers[1]);
 
 	if (alternate && !lfg[5].value.includes(member.id.toString())) {
+		// remove from joined list
 		if (lfg[4].value.includes(member.id.toString())) {
 			const tempArr = lfg[4].value.split("\n");
 			const memberIdx = tempArr.findIndex(m => m.includes(member.id.toString()));
@@ -371,11 +375,12 @@ export const handleMemberJoin = (lfg: EmbedField[], member: DiscordenoMember, al
 		}
 
 		success = true;
-	} else if (!alternate &&currentMembers < maxMembers && !lfg[4].value.includes(member.id.toString())) {
+	} else if (!alternate && currentMembers < maxMembers && !lfg[4].value.includes(member.id.toString())) {
+		// remove from alternate list
 		if (lfg[5].value.includes(member.id.toString())) {
 			const tempArr = lfg[5].value.split("\n");
 			const memberIdx = tempArr.findIndex(m => m.includes(member.id.toString()));
-			tempArr.splice(memberIdx, 1)
+			tempArr.splice(memberIdx, 1);
 			lfg[5].value = tempArr.join("\n") || "None";
 		}
 
@@ -385,16 +390,34 @@ export const handleMemberJoin = (lfg: EmbedField[], member: DiscordenoMember, al
 			lfg[4].value += `\n${userStr}`;
 		}
 		currentMembers++;
+		justFilled = currentMembers === maxMembers;
 
 		lfg[4].name = `Members Joined: ${currentMembers}/${maxMembers}`;
 
 		success = true;
+	} else if (!alternate && currentMembers === maxMembers && !lfg[4].value.includes(member.id.toString())) {
+		// update user in alternate list to include the * to make them autojoin
+		if (lfg[5].value.includes(member.id.toString())) {
+			const tempArr = lfg[5].value.split("\n");
+			const memberIdx = tempArr.findIndex(m => m.includes(member.id.toString()));
+			tempArr[memberIdx] = `${tempArr[memberIdx]} *`;
+			lfg[5].value = tempArr.join("\n");
+		} else {
+			if (lfg[5].value === "None") {
+				lfg[5].value = `${userStr} *`;
+			} else {
+				lfg[5].value += `\n${userStr} *`;
+			}
+
+			success = true;
+		}
 	}
 
 	return {
 		embed: lfg,
 		success: success,
-		full: currentMembers === maxMembers
+		full: currentMembers === maxMembers,
+		justFilled: justFilled
 	};
 };
 
@@ -413,10 +436,25 @@ export const handleMemberLeave = (lfg: EmbedField[], member: DiscordenoMember): 
 		tempArr.splice(memberIdx, 1);
 		lfg[4].value = tempArr.join("\n") || "None";
 
-		if (currentMembers) {
-			currentMembers--;
+		if (lfg[5].value.includes("*")) {
+			// find first * user and move them to the joined list
+			const tempArr2 = lfg[5].value.split("\n");
+			const memberToMoveIdx = tempArr2.findIndex(m => m.includes("*"))
+			let memberToMove = tempArr2[memberToMoveIdx];
+			memberToMove = memberToMove.substr(0, memberToMove.length - 2);
+			tempArr.push(memberToMove);
+			lfg[4].value = tempArr.join("\n") || "None";
+
+			// Remove them from the alt list
+			tempArr2.splice(memberToMoveIdx, 1);
+			lfg[5].value = tempArr2.join("\n") || "None";
+		} else {
+			// update count since no users were marked as *
+			if (currentMembers) {
+				currentMembers--;
+			}
+			lfg[4].name = `Members Joined: ${currentMembers}/${maxMembers}`;
 		}
-		lfg[4].name = `Members Joined: ${currentMembers}/${maxMembers}`;
 
 		success = true;
 	}
@@ -433,6 +471,25 @@ export const handleMemberLeave = (lfg: EmbedField[], member: DiscordenoMember): 
 	return {
 		embed: lfg,
 		success: success,
-		full: currentMembers === maxMembers
+		full: currentMembers === maxMembers,
+		justFilled: false
+	};
+};
+
+export const urlToIds = (url: string): UrlIds => {
+	const strIds = {
+		guildId: "",
+		channelId: "",
+		messageId: ""
+	};
+
+	url = url.toLowerCase();
+
+	[strIds.guildId, strIds.channelId, strIds.messageId] = url.substr((url.indexOf("channels") + 9)).split("/");
+
+	return {
+		guildId: BigInt(strIds.guildId),
+		channelId: BigInt(strIds.channelId),
+		messageId: BigInt(strIds.messageId)
 	};
 };

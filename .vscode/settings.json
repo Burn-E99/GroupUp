@@ -8,5 +8,8 @@
     "spellright.language": [
         "en"
     ],
-    "spellright.documentTypes": []
+    "spellright.documentTypes": [],
+    "deno.suggest.imports.hosts": {
+        "https://deno.land": true
+    }
 }
