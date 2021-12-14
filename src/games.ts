@@ -9,18 +9,20 @@ export const LFGActivities = {
 		"Dungeons": {
 			"Prophecy": 3,
 			"Pit of Heresy": 3,
-			"Shattered Throne": 3
+			"Shattered Throne": 3,
+			"Grasp of Avarice": 3
 		},
 		"Crucible": {
+			"Crucible (Control)": 6,
+			"Crucible (Survival)": 3,
+			"Crucible (Elimination)": 3,
+			"Crucible (Private Match)": 12,
 			"Iron Banner": 6,
-			"Quickplay": 6,
-			"Competitive": 3,
-			"Trials of Osiris": 3,
-			"Private Match": 12
+			"Trials of Osiris": 3
 		},
 		"Gambit": {
-			"Classic": 4,
-			"Private Match": 8
+			"Gambit (Classic)": 4,
+			"Gambit (Private Match)": 8
 		},
 		"Exotic Missions": {
 			"Presage": 3,
@@ -28,6 +30,9 @@ export const LFGActivities = {
 		},
 		"Nightfall": 3,
 		"Miscellaneous": {
+			"Dares of Eternity": 6,
+			"Astral Alignment": 6,
+			"Shattered Realm": 3,
 			"Override": 6,
 			"Expunge": 3,
 			"Battlegrounds": 3,
