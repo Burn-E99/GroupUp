@@ -1,0 +1,14 @@
+[Unit]
+Description=Group Up Discord Bot
+Documentation=https://github.com/Burn-E99/GroupUp
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/run/deno.pid
+ExecStart=/root/.deno/bin/deno run --allow-write=./logs --location=https://groupup.local --allow-net .\mod.ts
+RestartSec=60
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
