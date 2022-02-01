@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 PIDFile=/run/deno.pid
-ExecStart=/root/.deno/bin/deno run --allow-write=./logs --location=https://groupup.local --allow-net .\mod.ts
+ExecStart=/root/.deno/bin/deno run --allow-write=./logs --location=https://groupup.local --allow-net /var/dbots/groupup/mod.ts
 RestartSec=60
 Restart=on-failure
 
