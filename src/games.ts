@@ -31,6 +31,7 @@ export const LFGActivities = {
 		}, */
 		"Nightfall": 3,
 		"Miscellaneous": {
+			"Weekly Witch Queen Campaign Mission": 3,
 			"Wellspring": 6,
 			"Dares of Eternity": 6,
 			// "Astral Alignment": 6,
