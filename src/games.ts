@@ -1,6 +1,7 @@
 export const LFGActivities = {
 	"Destiny 2": {
 		"Raids": {
+			"Vow of the Disciple": 6,
 			"Vault of Glass": 6,
 			"Deep Stone Crypt": 6,
 			"Garden of Salvation": 6,
@@ -24,21 +25,23 @@ export const LFGActivities = {
 			"Gambit (Classic)": 4,
 			"Gambit (Private Match)": 8
 		},
-		"Exotic Missions": {
-			"Presage": 3,
-			"Harbinger": 3
-		},
+		/* "Exotic Missions": {
+			// "Presage": 3,
+			// "Harbinger": 3
+		}, */
 		"Nightfall": 3,
 		"Miscellaneous": {
+			"Wellspring": 6,
 			"Dares of Eternity": 6,
-			"Astral Alignment": 6,
-			"Shattered Realm": 3,
-			"Override": 6,
-			"Expunge": 3,
-			"Battlegrounds": 3,
+			// "Astral Alignment": 6,
+			// "Shattered Realm": 3,
+			// "Override": 6,
+			// "Expunge": 3,
+			// "Battlegrounds": 3,
 			"Wrathborn Hunt": 3,
 			"Empire Hunt": 3,
-			"Nightmare Hunt": 3
+			"Vanguard Operations": 3
+			// "Nightmare Hunt": 3
 		}
 	},
 	"Among Us": {
