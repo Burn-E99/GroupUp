@@ -163,13 +163,13 @@ startBot({
 			// Handle messages not starting with the prefix
 			if (message.content.indexOf(prefix) !== 0) {
 				// Mentions
-				if (message.mentionedUserIds[0] === botId && message.content.trim().startsWith(`<@!${botId}>`)) {
+				if (message.mentionedUserIds[0] === botId && (message.content.trim().startsWith(`<@${botId}>`) || message.content.trim().startsWith(`<@!${botId}>`))) {
 					// Light telemetry to see how many times a command is being run
 					await dbClient.execute(`CALL INC_CNT("prefix");`).catch(e => {
 						log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${jsonStringifyBig(e)}`);
 					});
 
-					if (message.content.trim() === `<@!${botId}>`) {
+					if (message.content.trim() === `<@${botId}>` || message.content.trim() === `<@!${botId}>`) {
 						message.send({
 							embeds: [{
 								title: `Hello ${message.member?.username}, and thanks for using Group Up!`,
@@ -186,7 +186,7 @@ startBot({
 					}
 					
 					else if (await hasGuildPermissions(message.guildId, message.authorId, ["ADMINISTRATOR"])) {
-						const newPrefix = message.content.replace(`<@!${botId}>`, "").trim();
+						const newPrefix = message.content.replace(`<@!${botId}>`, "").replace(`<@${botId}>`, "").trim();
 
 						if (newPrefix.length <= 10) {
 							let success = true;
