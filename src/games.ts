@@ -8,10 +8,11 @@ export const LFGActivities = {
 			"Last Wish": 6
 		},
 		"Dungeons": {
+			"Duality": 3,
+			"Grasp of Avarice": 3,
 			"Prophecy": 3,
 			"Pit of Heresy": 3,
-			"Shattered Throne": 3,
-			"Grasp of Avarice": 3
+			"Shattered Throne": 3
 		},
 		"Crucible": {
 			"Crucible (Control)": 6,
