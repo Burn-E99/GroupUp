@@ -3,11 +3,11 @@
 
 import {
 	// MySQL deps
-	Client
-} from "../deps.ts";
+	Client,
+} from '../deps.ts';
 
-import { LOCALMODE } from "../flags.ts";
-import config from "../config.ts";
+import { LOCALMODE } from '../flags.ts';
+import config from '../config.ts';
 
 // Log into the MySQL DB
 const dbClient = await new Client().connect({
@@ -17,20 +17,20 @@ const dbClient = await new Client().connect({
 	password: config.db.password,
 });
 
-console.log("Attempting to create DB");
+console.log('Attempting to create DB');
 await dbClient.execute(`CREATE SCHEMA IF NOT EXISTS ${config.db.name};`);
 await dbClient.execute(`USE ${config.db.name}`);
-console.log("DB created");
+console.log('DB created');
 
-console.log("Attempt to drop all tables");
+console.log('Attempt to drop all tables');
 await dbClient.execute(`DROP PROCEDURE IF EXISTS INC_CNT;`);
 await dbClient.execute(`DROP TABLE IF EXISTS command_cnt;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_prefix;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_mod_role;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_clean_channel;`);
-console.log("Tables dropped");
+console.log('Tables dropped');
 
-console.log("Attempting to create table command_cnt");
+console.log('Attempting to create table command_cnt');
 await dbClient.execute(`
 	CREATE TABLE command_cnt (
 		command char(20) NOT NULL,
@@ -39,9 +39,9 @@ await dbClient.execute(`
 		UNIQUE KEY command_cnt_command_UNIQUE (command)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 `);
-console.log("Table created");
+console.log('Table created');
 
-console.log("Attempt creating increment Stored Procedure");
+console.log('Attempt creating increment Stored Procedure');
 await dbClient.execute(`
 	CREATE PROCEDURE INC_CNT(
 		IN cmd CHAR(20)
@@ -52,9 +52,9 @@ await dbClient.execute(`
 		UPDATE command_cnt SET count = oldcnt + 1 WHERE command = cmd;
 	END
 `);
-console.log("Stored Procedure created");
+console.log('Stored Procedure created');
 
-console.log("Attempting to create table guild_prefix");
+console.log('Attempting to create table guild_prefix');
 await dbClient.execute(`
 	CREATE TABLE guild_prefix (
 		guildId bigint unsigned NOT NULL,
@@ -63,9 +63,9 @@ await dbClient.execute(`
 		UNIQUE KEY guild_prefix_guildid_UNIQUE (guildid)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 `);
-console.log("Table created");
+console.log('Table created');
 
-console.log("Attempting to create table guild_mod_role");
+console.log('Attempting to create table guild_mod_role');
 await dbClient.execute(`
 	CREATE TABLE guild_mod_role (
 		guildId bigint unsigned NOT NULL,
@@ -74,9 +74,9 @@ await dbClient.execute(`
 		UNIQUE KEY guild_mod_role_guildid_UNIQUE (guildid)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 `);
-console.log("Table created");
+console.log('Table created');
 
-console.log("Attempting to create table guild_clean_channel");
+console.log('Attempting to create table guild_clean_channel');
 await dbClient.execute(`
 	CREATE TABLE guild_clean_channel (
 		guildId bigint unsigned NOT NULL,
@@ -84,7 +84,7 @@ await dbClient.execute(`
 		PRIMARY KEY (guildid, channelId)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 `);
-console.log("Table created");
+console.log('Table created');
 
 await dbClient.close();
-console.log("Done!");
+console.log('Done!');

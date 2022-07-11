@@ -1,16 +1,14 @@
-import {
-	EmbedField
-} from "../deps.ts";
+import { EmbedField } from '../deps.ts';
 
 export type JoinLeaveType = {
-	embed: EmbedField[],
-	success: boolean,
-	full: boolean,
-	justFilled: boolean
-}
+	embed: EmbedField[];
+	success: boolean;
+	full: boolean;
+	justFilled: boolean;
+};
 
 export type UrlIds = {
-	guildId: bigint,
-	channelId: bigint,
-	messageId: bigint
-}
+	guildId: bigint;
+	channelId: bigint;
+	messageId: bigint;
+};

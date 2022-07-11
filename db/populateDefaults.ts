@@ -2,11 +2,11 @@
 
 import {
 	// MySQL deps
-	Client
-} from "../deps.ts";
+	Client,
+} from '../deps.ts';
 
-import { LOCALMODE } from "../flags.ts";
-import config from "../config.ts";
+import { LOCALMODE } from '../flags.ts';
+import config from '../config.ts';
 
 // Log into the MySQL DB
 const dbClient = await new Client().connect({
@@ -17,14 +17,14 @@ const dbClient = await new Client().connect({
 	password: config.db.password,
 });
 
-console.log("Attempting to insert default commands into command_cnt");
-const commands = ["ping", "help", "info", "version", "report", "privacy", "lfg", "prefix"];
+console.log('Attempting to insert default commands into command_cnt');
+const commands = ['ping', 'help', 'info', 'version', 'report', 'privacy', 'lfg', 'prefix'];
 for (let i = 0; i < commands.length; i++) {
-	await dbClient.execute("INSERT INTO command_cnt(command) values(?)", [commands[i]]).catch(e => {
+	await dbClient.execute('INSERT INTO command_cnt(command) values(?)', [commands[i]]).catch((e) => {
 		console.log(`Failed to insert into database`, e);
 	});
 }
-console.log("Insertion done");
+console.log('Insertion done');
 
 await dbClient.close();
-console.log("Done!");
+console.log('Done!');
