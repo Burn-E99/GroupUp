@@ -11,10 +11,10 @@ export const determineTZ = (tz: string, userOverride = false): [string, boolean]
 		const jul = new Date(today.getFullYear(), 6, 1);
 		if (today.getTimezoneOffset() < Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset())) {
 			if (tz.includes('S')) overrode = true;
-			tz = `${tz.substr(0, 1)}DT`;
+			tz = `${tz.substring(0, 1)}DT`;
 		} else {
 			if (tz.includes('D')) overrode = true;
-			tz = `${tz.substr(0, 1)}ST`;
+			tz = `${tz.substring(0, 1)}ST`;
 		}
 	}
 

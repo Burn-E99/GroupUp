@@ -1,6 +1,7 @@
 export const LFGActivities = {
 	'Destiny 2': {
 		'Raids': {
+			'King\'s Fall': 6,
 			'Vow of the Disciple': 6,
 			'Vault of Glass': 6,
 			'Deep Stone Crypt': 6,
@@ -32,6 +33,8 @@ export const LFGActivities = {
 		}, */
 		'Nightfall': 3,
 		'Miscellaneous': {
+			'Ketchrash': 6,
+			'Expedition': 3,
 			'Weekly Witch Queen Campaign Mission': 3,
 			'Wellspring': 6,
 			'Dares of Eternity': 6,

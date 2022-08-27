@@ -19,8 +19,8 @@ const dbClient = await new Client().connect({
 
 console.log('Attempting to insert default commands into command_cnt');
 const commands = ['ping', 'help', 'info', 'version', 'report', 'privacy', 'lfg', 'prefix'];
-for (let i = 0; i < commands.length; i++) {
-	await dbClient.execute('INSERT INTO command_cnt(command) values(?)', [commands[i]]).catch((e) => {
+for (const command of commands) {
+	await dbClient.execute('INSERT INTO command_cnt(command) values(?)', [command]).catch((e) => {
 		console.log(`Failed to insert into database`, e);
 	});
 }
