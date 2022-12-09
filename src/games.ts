@@ -9,6 +9,7 @@ export const LFGActivities = {
 			'Last Wish': 6,
 		},
 		'Dungeons': {
+			'Spire of the Watcher': 3,
 			'Duality': 3,
 			'Grasp of Avarice': 3,
 			'Prophecy': 3,
@@ -27,12 +28,14 @@ export const LFGActivities = {
 			'Gambit (Classic)': 4,
 			'Gambit (Private Match)': 8,
 		},
-		/* "Exotic Missions": {
+		"Exotic Missions": {
+			'Operation: Seraph\'s Shield': 3,
 			// "Presage": 3,
 			// "Harbinger": 3
-		}, */
+		},
 		'Nightfall': 3,
 		'Miscellaneous': {
+			'Heist Battlegrounds': 3,
 			'Ketchrash': 6,
 			'Expedition': 3,
 			'Weekly Witch Queen Campaign Mission': 3,
