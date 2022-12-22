@@ -1045,6 +1045,27 @@ startBot({
 				message.send(constantCmds.help).catch((e) => {
 					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
 				});
+			} // announce
+			// Sends important announcement about rewrite of bot to all server owners
+			else if (command === 'announce' && message.authorId === config.owner) {
+				message.send('Sending Announcement to all Server Owners:');
+
+				const owners: Array<bigint> = [];
+				cache.guilds.forEach(x => {
+					if (!owners.includes(x.ownerId)) {
+						owners.push(x.ownerId);
+					}
+				});
+				message.send(`Sending DM to following user Ids: ${owners.join(', ')}`);
+				for (const ownerId of owners) {
+					if (args[0] === 'all') {
+						console.log(`Message sent to ${ownerId}`);
+						sendDirectMessage(ownerId, constantCmds.announcement)
+					} else if (args[0] === 'dry') {
+						console.log(`Fake Message sent to ${ownerId}`);
+					}
+				}
+				message.send(constantCmds.announcement);
 			}
 		},
 		interactionCreate: async (interact, member) => {

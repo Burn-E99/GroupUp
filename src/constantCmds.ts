@@ -146,6 +146,47 @@ export const constantCmds = {
 			],
 		}],
 	},
+	announcement: {
+		content: 'Hi!  You\'re receiving this message as you have me in one of your servers.  This is a very important announcement regarding how you and your community uses this bot in your guild.  Please read the following details carefully.\n\nThis announcement feature is reserved for important breaking changes only.  Group Up will be reaching version 1.0 with this major update and will not have any more breaking changes for a significant amount of time.',
+		embeds: [{
+			title: 'Version 1.0.0 is coming!',
+			description: 'Group Up is coming up on a major milestone, giving your community an even better and more user friendly experience.',
+			fields: [
+				{
+					name: 'When is this update coming out?',
+					value: 'This update will be pushed out ${discordRelativeTimestamp}, on ${discordTimestamp}.  Group Up will be brought offline one hour before the update goes out to handle a small migration and deploying the major update.',
+					inline: true,
+				},
+				{
+					name: 'What is changing?',
+					value: 'Group Up is moving to a fully Button Interaction and Slash Command based system.  This means less commands to memorize and gives Group Up users more friendly methods to interact with, such as Forms, and ephemeral messages.',
+					inline: true,
+				},
+				{
+					name: 'What do you need to do?',
+					value: `Once the update is live, there are a couple things you will need to do:
+
+1. The bot will now require the 'Manage Channels' permission.  Simply edit the role named 'Group Up' in your server to add this permission.  This increase in permission is needed for the initial setup that you will be running next.
+2. Go to or create the channel you want Group Up to use for event scheduling.  Group Up will be taking full control of this channel, so please make sure you are OK with that before continuing.
+3. Once in the desired channel, run \`/commandName\` and follow on screen prompts.  This will discover any pre-existing events, update them to the new design, and reconfigure the channel to work with the new system.
+
+Note: If there are any pre-existing events, they will end up above the new instructions message Group Up sends.  This is expected and unavoidable.  If you do not like how this looks, please have the user recreate their event.`,
+				},
+				{
+					name: 'What if I don\'t want to update?',
+					value: 'As hosting costs money and I am running this bot for free, only the new system will be available from the official Group Up Discord bot.\n\nIf you really want to keep the old text based system, you may do so by hosting the bot yourself.  This is **not recommended and not supported**, but as this project is open source, you may check out [my GitHub](https://github.com/Burn-E99/GroupUp) for details on how to host it privately.'
+				},
+				{
+					name: 'Have more questions?',
+					value: 'I have tried to anticipate every question possible, but if I have missed your question, please join [my support server](https://discord.gg/peHASXMZYv).',
+				},
+				{
+					name: 'Final Words',
+					value: 'As I want to avoid these unsolicited DMs in the future, please join [my support server](https://discord.gg/peHASXMZYv).  All future announcements will be sent via this server.\n\nThank you for using Group Up, and I hope you enjoy this major update.\n\n~Ean AKA Burn_E99',
+				},
+			],
+		}],
+	},
 };
 
 export const editBtns: ActionRow['components'] = [
