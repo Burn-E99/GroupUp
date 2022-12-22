@@ -170,7 +170,7 @@ export const constantCmds = {
 2. Go to or create the channel you want Group Up to use for event scheduling.  Group Up will be taking full control of this channel, so please make sure you are OK with that before continuing.
 3. Once in the desired channel, run \`/commandName\` and follow on screen prompts.  This will discover any pre-existing events, update them to the new design, and reconfigure the channel to work with the new system.
 
-Note: If there are any pre-existing events, they will end up above the new instructions message Group Up sends.  This is expected and unavoidable.  If you do not like how this looks, please have the user recreate their event.`,
+Note: If there are any pre-existing events, they will end up above the new instructions message Group Up sends.  This is expected and unavoidable.`,
 				},
 				{
 					name: 'What if I don\'t want to update?',
