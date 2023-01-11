@@ -2,3 +2,4 @@ config.ts
 logs
 
 db/update.ts
+deno.lock

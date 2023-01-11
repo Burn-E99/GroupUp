@@ -2,7 +2,7 @@ export const config = {
 	'name': 'Group Up', // Name of the bot
 	'version': '1.0.0', // Version of the bot
 	'token': 'the_bot_token', // Discord API Token for this bot
-	'localtoken': 'local_testing_token', // Discord API Token for a secondary OPTIONAL testing bot, THIS MUST BE DIFFERENT FROM "token"
+	'localToken': 'local_testing_token', // Discord API Token for a secondary OPTIONAL testing bot, THIS MUST BE DIFFERENT FROM "token"
 	'prefix': 'gu!', // Prefix for all commands
 	'db': { // Settings for the MySQL database, this is required for use with the API, if you do not want to set this up, you will need to rip all code relating to the DB out of the bot
 		'host': '', // IP address for the db, usually localhost
