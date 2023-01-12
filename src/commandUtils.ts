@@ -25,6 +25,6 @@ export const generateReport = (msg: string) => ({
 	embeds: [{
 		color: infoColor2,
 		title: 'USER REPORT:',
-		description: msg || 'No message',
+		description: msg,
 	}],
 });
