@@ -1,6 +1,7 @@
 import config from '../../config.ts';
 import { ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { infoColor2, isLFGChannel } from '../commandUtils.ts';
+import { dbClient, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 
@@ -11,6 +12,7 @@ const details: CommandDetails = {
 };
 
 const execute = (bot: Bot, interaction: Interaction) => {
+	dbClient.execute(queries.callIncCnt('report')).catch((e) => utils.commonLoggers.dbError('info.ts', 'call sproc INC_CNT on', e));
 	bot.helpers.sendInteractionResponse(
 		interaction.id,
 		interaction.token,
