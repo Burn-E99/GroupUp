@@ -2,6 +2,7 @@ import config from './config.ts';
 import { DEBUG, LOCALMODE } from './flags.ts';
 import { createBot, enableCachePlugin, enableCacheSweepers, initLog, Intents, startBot } from './deps.ts';
 import { events } from './src/events.ts';
+import { createSlashCommands } from './src/commands/_index.ts';
 
 // Initialize logging client with folder to use for logs, needs --allow-write set on Deno startup
 initLog('logs', DEBUG);
@@ -15,4 +16,6 @@ const bot = enableCachePlugin(createBot({
 enableCacheSweepers(bot);
 
 // Start the bot
-startBot(bot);
+await startBot(bot);
+
+await createSlashCommands(bot);

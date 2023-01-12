@@ -1,4 +1,6 @@
+import { ApplicationCommandFlags } from '../deps.ts';
 import config from '../config.ts';
+import { lfgChannels } from './db.ts';
 
 export const failColor = 0xe71212;
 export const warnColor = 0xe38f28;
@@ -7,24 +9,14 @@ export const infoColor1 = 0x313bf9;
 export const infoColor2 = 0x6805e9;
 
 export const getRandomStatus = (guildCount: number): string => {
-	let status = '';
-	switch (Math.floor((Math.random() * 5) + 1)) {
-		case 1:
-			status = `${config.prefix}help for commands`;
-			break;
-		case 2:
-			status = `Running V${config.version}`;
-			break;
-		case 3:
-			status = `${config.prefix}info to learn more`;
-			break;
-		case 4:
-			status = 'Mention me to check my prefix!';
-			break;
-		default:
-			status = `Running LFGs in ${guildCount} servers`;
-			break;
-	}
+	const statuses = [
+		`Running V${config.version}`,
+		`${config.prefix}info to learn more`,
+		`Running LFGs in ${guildCount} servers`,
+	];
+	return statuses[Math.floor((Math.random() * statuses.length) + 1)];
+};
 
-	return status;
+export const isLFGChannel = (channelId: bigint) => {
+	return (lfgChannels.includes(channelId) || channelId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
 };

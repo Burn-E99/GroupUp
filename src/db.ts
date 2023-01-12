@@ -13,3 +13,5 @@ export const dbClient = await new Client().connect({
 export const queries = {
 	callIncCnt: (cmdName: string) => `CALL INC_CNT("${cmdName}");`,
 };
+
+export const lfgChannels: Array<bigint> = [1055568692697649232n];

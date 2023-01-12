@@ -12,6 +12,10 @@ export const config = {
 		'password': '', // Password for the account, user account may need to be authenticated with the "Standard" Authentication Type if this does not work out of the box
 		'name': '', // Name of the database Schema to use for the bot
 	},
+	'link': { // Links to various sites
+		'sourceCode': 'https://github.com/Burn-E99/GroupUp', // Link to the repository
+		'supportServer': '', // Invite link to the Discord support server
+	},
 	'logChannel': 'the_log_channel', // Discord channel ID where the bot should put startup messages and other error messages needed
 	'reportChannel': 'the_report_channel', // Discord channel ID where reports will be sent when using the built-in report command
 	'devServer': 'the_dev_server', // Discord guild ID where testing of indev features/commands will be handled, used in conjuction with the DEVMODE bool in mod.ts

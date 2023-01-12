@@ -7,8 +7,36 @@ export const botId = getBotIdFromToken(LOCALMODE ? config.localToken : config.to
 export { enableCachePlugin, enableCacheSweepers } from 'https://deno.land/x/discordeno@17.0.1/plugins/cache/mod.ts';
 export type { BotWithCache } from 'https://deno.land/x/discordeno@17.0.1/plugins/cache/mod.ts';
 
-export { ActivityTypes, createBot, editBotMember, editBotStatus, getBotIdFromToken, Intents, sendInteractionResponse, sendMessage, startBot } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
-export type { ActionRow, Bot, ButtonComponent, CreateMessage, Embed, EventHandlers, Guild, Interaction, Message } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
+export {
+	ActivityTypes,
+	ApplicationCommandFlags,
+	ApplicationCommandTypes,
+	createBot,
+	editBotMember,
+	editBotStatus,
+	getBotIdFromToken,
+	Intents,
+	InteractionResponseTypes,
+	sendInteractionResponse,
+	sendMessage,
+	startBot,
+} from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
+export type {
+	ActionRow,
+	ApplicationCommand,
+	ApplicationCommandOption,
+	Bot,
+	ButtonComponent,
+	CreateApplicationCommand,
+	CreateMessage,
+	Embed,
+	EventHandlers,
+	Guild,
+	Interaction,
+	MakeRequired,
+	Message,
+	PermissionStrings,
+} from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 
 export { Client } from 'https://deno.land/x/mysql@v2.11.0/mod.ts';
 
