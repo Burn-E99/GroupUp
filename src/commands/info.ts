@@ -12,7 +12,7 @@ const details: CommandDetails = {
 };
 
 const execute = (bot: Bot, interaction: Interaction) => {
-	dbClient.execute(queries.callIncCnt('report')).catch((e) => utils.commonLoggers.dbError('info.ts', 'call sproc INC_CNT on', e));
+	dbClient.execute(queries.callIncCnt('info')).catch((e) => utils.commonLoggers.dbError('info.ts', 'call sproc INC_CNT on', e));
 	bot.helpers.sendInteractionResponse(
 		interaction.id,
 		interaction.token,

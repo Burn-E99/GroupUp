@@ -42,8 +42,8 @@ import { handleLFGStep, handleMemberJoin, handleMemberLeave, urlToIds } from './
 import { constantCmds, editBtns, lfgStepQuestions } from './src/constantCmds.ts';
 import { jsonParseBig, jsonStringifyBig } from './src/utils.ts';
 
-import { DEBUG, LOCALMODE } from './flags.ts';
-import config from './config.ts';
+import { DEBUG, LOCALMODE } from '../flags.ts';
+import config from '../config.ts';
 
 // Initialize DB client
 const dbClient = await new Client().connect({
@@ -94,7 +94,7 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // Start up the Discord Bot
 startBot({
-	token: LOCALMODE ? config.localtoken : config.token,
+	token: LOCALMODE ? config.localToken : config.token,
 	intents: [Intents.GuildMessages, Intents.DirectMessages, Intents.Guilds],
 	eventHandlers: {
 		ready: () => {
@@ -393,32 +393,7 @@ startBot({
 
 			// All commands below here
 
-			// ping
-			// Its a ping test, what else do you want.
-			if (command === 'ping') {
-				// Light telemetry to see how many times a command is being run
-				dbClient.execute(`CALL INC_CNT("ping");`).catch((e) => {
-					log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${jsonStringifyBig(e)}`);
-				});
-
-				// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-				try {
-					const m = await message.send({
-						embeds: [{
-							title: 'Ping?',
-						}],
-					});
-					m.edit({
-						embeds: [{
-							title: `Pong! Latency is ${m.timestamp - message.timestamp}ms.`,
-						}],
-					});
-				} catch (e) {
-					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
-				}
-			} // lfg
-			// Handles all LFG commands, creating, editing, deleting
-			else if (command === 'lfg') {
+			if (command === 'lfg') {
 				// Light telemetry to see how many times a command is being run
 				dbClient.execute(`CALL INC_CNT("lfg");`).catch((e) => {
 					log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${jsonStringifyBig(e)}`);
@@ -998,53 +973,6 @@ startBot({
 						});
 					}
 				}
-			} // report or r (command that failed)
-			// Manually report something that screwed up
-			else if (command === 'report' || command === 'r') {
-				// Light telemetry to see how many times a command is being run
-				dbClient.execute(`CALL INC_CNT("report");`).catch((e) => {
-					log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${jsonStringifyBig(e)}`);
-				});
-
-				sendMessage(config.reportChannel, 'USER REPORT:\n' + args.join(' ')).catch((e) => {
-					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
-				});
-				message.send(constantCmds.report).catch((e) => {
-					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
-				});
-			} // version or v
-			// Returns version of the bot
-			else if (command === 'version' || command === 'v') {
-				// Light telemetry to see how many times a command is being run
-				dbClient.execute(`CALL INC_CNT("version");`).catch((e) => {
-					log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${jsonStringifyBig(e)}`);
-				});
-
-				message.send(constantCmds.version).catch((e) => {
-					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
-				});
-			} // info or i
-			// Info command, prints short desc on bot and some links
-			else if (command === 'info' || command === 'i') {
-				// Light telemetry to see how many times a command is being run
-				dbClient.execute(`CALL INC_CNT("info");`).catch((e) => {
-					log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${jsonStringifyBig(e)}`);
-				});
-
-				message.send(constantCmds.info).catch((e) => {
-					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
-				});
-			} // help or h or ?
-			// Help command, prints available commands
-			else if (command === 'help' || command === 'h' || command === '?') {
-				// Light telemetry to see how many times a command is being run
-				dbClient.execute(`CALL INC_CNT("help");`).catch((e) => {
-					log(LT.ERROR, `Failed to call stored procedure INC_CNT: ${jsonStringifyBig(e)}`);
-				});
-
-				message.send(constantCmds.help).catch((e) => {
-					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
-				});
 			}
 		},
 		interactionCreate: async (interact, member) => {

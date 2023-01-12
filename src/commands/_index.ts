@@ -3,8 +3,9 @@ import { Commands } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 
 import info from './info.ts';
+import report from './report.ts';
 
-export const commands: Array<Commands> = [info];
+export const commands: Array<Commands> = [info, report];
 
 export const createSlashCommands = async (bot: Bot) => {
 	const globalCommands: MakeRequired<CreateApplicationCommand, 'name'>[] = [];

@@ -14,7 +14,7 @@ import {
 import { jsonStringifyBig } from './utils.ts';
 import { ActiveLFG, BuildingLFG } from './mod.d.ts';
 
-import config from '../config.ts';
+import config from '../../config.ts';
 
 // getRandomStatus() returns status as string
 // Gets a new random status for the bot

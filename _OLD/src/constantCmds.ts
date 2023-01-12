@@ -1,37 +1,8 @@
 import { ActionRow, DiscordButtonStyles } from '../deps.ts';
 
-import config from '../config.ts';
+import config from '../../config.ts';
 
 export const constantCmds = {
-	help: {
-		embeds: [{
-			title: `${config.name} Help`,
-			fields: [
-				{
-					name: 'All commands must have the bot\'s prefix before them.',
-					value: `Default is \`${config.prefix}\`, send <@847256159123013722> to change it.`,
-				},
-				{
-					name: 'LFG Commands',
-					value: `
-					\`lfg help\` - More detailed help for the LFG commands
-					\`lfg create\` - Create a new LFG post
-					\`lfg edit\` - Edit an existing LFG post
-					\`lfg delete\` - Delete an existing LFG post
-					`,
-				},
-				{
-					name: 'Utility Commands',
-					value: `
-					\`info\` - Information about the bot
-					\`ping\` - Pings the bot to check its connection
-					\`report [TEXT]\` - Report an issue to the developer
-					\`version\` - Prints the bot's current version 
-					`,
-				},
-			],
-		}],
-	},
 	lfgHelp: {
 		embeds: [{
 			title: `${config.name} LFG Help`,
@@ -70,33 +41,6 @@ export const constantCmds = {
 					If you have more than one LFG in this channel, the bot will ask you to specify the LFG post using a two character id.
 					`,
 					inline: true,
-				},
-			],
-		}],
-	},
-	info: {
-		embeds: [{
-			fields: [
-				{
-					name: 'Group Up, the LFG bot',
-					value: `Group Up is developed by Ean AKA Burn_E99.
-					Want to check out my source code?  Check it out [here](https://github.com/Burn-E99/GroupUp).
-					Need help with this bot?  Join my support server [here](https://discord.gg/peHASXMZYv).`,
-				},
-			],
-		}],
-	},
-	version: {
-		embeds: [{
-			title: `My current version is ${config.version}`,
-		}],
-	},
-	report: {
-		embeds: [{
-			fields: [
-				{
-					name: 'Failed command has been reported to my developer.',
-					value: 'For more in depth support, and information about planned maintenance, please join the support server [here](https://discord.gg/peHASXMZYv).',
 				},
 			],
 		}],

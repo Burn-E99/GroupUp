@@ -20,3 +20,11 @@ export const getRandomStatus = (guildCount: number): string => {
 export const isLFGChannel = (channelId: bigint) => {
 	return (lfgChannels.includes(channelId) || channelId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
 };
+
+export const generateReport = (msg: string) => ({
+	embeds: [{
+		color: infoColor2,
+		title: 'USER REPORT:',
+		description: msg || 'No message',
+	}],
+});

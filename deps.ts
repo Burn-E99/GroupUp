@@ -10,6 +10,7 @@ export type { BotWithCache } from 'https://deno.land/x/discordeno@17.0.1/plugins
 export {
 	ActivityTypes,
 	ApplicationCommandFlags,
+	ApplicationCommandOptionTypes,
 	ApplicationCommandTypes,
 	createBot,
 	editBotMember,
