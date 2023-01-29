@@ -5,8 +5,9 @@ import utils from '../utils.ts';
 import info from './info.ts';
 import report from './report.ts';
 import setup from './setup.ts';
+import deleteCmd from './delete.ts';
 
-export const commands: Array<Command> = [info, report, setup];
+export const commands: Array<Command> = [deleteCmd, info, report, setup];
 
 export const createSlashCommands = async (bot: Bot) => {
 	const globalCommands: MakeRequired<CreateApplicationCommand, 'name'>[] = [];
