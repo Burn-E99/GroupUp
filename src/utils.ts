@@ -19,8 +19,7 @@ const reactionAddError = (location: string, message: Message | string, err: Erro
 	genericLogger(LT.ERROR, `${location} | Failed to add emoji (${emoji}) to message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const reactionDeleteError = (location: string, message: Message | string, err: Error, emoji: string) =>
 	genericLogger(LT.ERROR, `${location} | Failed to delete emoji (${emoji}) from message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
-const channelUpdateError = (location: string, message: string, err: Error) =>
-	genericLogger(LT.ERROR, `${location} | Failed to update channel | ${message} | Error: ${err.name} - ${err.message}`);
+const channelUpdateError = (location: string, message: string, err: Error) => genericLogger(LT.ERROR, `${location} | Failed to update channel | ${message} | Error: ${err.name} - ${err.message}`);
 
 const dbError = (location: string, type: string, err: Error) => genericLogger(LT.ERROR, `${location} | Failed to ${type} database | Error: ${err.name} - ${err.message}`);
 

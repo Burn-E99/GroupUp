@@ -1,7 +1,7 @@
 import config from '../config.ts';
 import { Client } from '../deps.ts';
 import { LOCALMODE } from '../flags.ts';
-import { LfgChannelSetting, DBGuildSettings } from './types/commandTypes.ts';
+import { DBGuildSettings, LfgChannelSetting } from './types/commandTypes.ts';
 
 export const dbClient = await new Client().connect({
 	hostname: LOCALMODE ? config.db.localhost : config.db.host,

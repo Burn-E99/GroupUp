@@ -12,6 +12,8 @@ export {
 	ApplicationCommandFlags,
 	ApplicationCommandOptionTypes,
 	ApplicationCommandTypes,
+	BitwisePermissionFlags,
+	ButtonStyles,
 	ChannelTypes,
 	createBot,
 	editBotMember,
@@ -19,13 +21,11 @@ export {
 	getBotIdFromToken,
 	Intents,
 	InteractionResponseTypes,
+	MessageComponentTypes,
+	OverwriteTypes,
 	sendInteractionResponse,
 	sendMessage,
 	startBot,
-	OverwriteTypes,
-	BitwisePermissionFlags,
-	MessageComponentTypes,
-	ButtonStyles,
 } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 export type {
 	ActionRow,
@@ -35,6 +35,7 @@ export type {
 	ButtonComponent,
 	CreateApplicationCommand,
 	CreateMessage,
+	DiscordEmbedField,
 	Embed,
 	EventHandlers,
 	Guild,
@@ -42,7 +43,6 @@ export type {
 	MakeRequired,
 	Message,
 	PermissionStrings,
-	DiscordEmbedField,
 } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 
 export { Client } from 'https://deno.land/x/mysql@v2.11.0/mod.ts';

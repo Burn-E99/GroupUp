@@ -1,7 +1,21 @@
 import config from '../../config.ts';
-import { ApplicationCommandFlags, ApplicationCommandOptionTypes, ApplicationCommandTypes, ButtonStyles, Bot, ChannelTypes, Interaction, InteractionResponseTypes, sendMessage, OverwriteTypes, botId, MessageComponentTypes, DiscordEmbedField } from '../../deps.ts';
+import {
+	ApplicationCommandFlags,
+	ApplicationCommandOptionTypes,
+	ApplicationCommandTypes,
+	Bot,
+	botId,
+	ButtonStyles,
+	ChannelTypes,
+	DiscordEmbedField,
+	Interaction,
+	InteractionResponseTypes,
+	MessageComponentTypes,
+	OverwriteTypes,
+	sendMessage,
+} from '../../deps.ts';
 import { failColor, infoColor2, somethingWentWrong, successColor } from '../commandUtils.ts';
-import { dbClient, queries, lfgChannelSettings } from '../db.ts';
+import { dbClient, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 
@@ -59,7 +73,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					embeds: [{
 						color: failColor,
 						title: 'Unable to setup LFG channel.',
-						description: 'This channel is already set as an LFG channel.  If you need to edit the channel, please run `/delete lfg-channel` in this channel and then run `/setup` again.\n\nThis will not harm any active events in this channel and simply resets the settings for this channel.',
+						description:
+							'This channel is already set as an LFG channel.  If you need to edit the channel, please run `/delete lfg-channel` in this channel and then run `/setup` again.\n\nThis will not harm any active events in this channel and simply resets the settings for this channel.',
 					}],
 				},
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('setup.ts', interaction, e));
@@ -92,9 +107,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 \`/alternate\`
 
 The Discord Slash Command system will ensure you provide all the required details.`,
-				})
+				});
 				if (setupOpts.options?.length) {
-					setupOpts.options.forEach(opt => {
+					setupOpts.options.forEach((opt) => {
 						if (opt.name === managerRoleStr) {
 							managerRoleId = BigInt(opt.value as string || '0');
 						} else if (opt.name === logChannelStr) {
@@ -111,7 +126,8 @@ The Discord Slash Command system will ensure you provide all the required detail
 								embeds: [{
 									color: failColor,
 									title: 'Unable to setup log channel or manager role.',
-									description: `${config.name} attempted to set the log channel or manager role, but one or both were undefined.  Please try again and if the issue continues, \`/report\` this issue to the developers with the error code below.`,
+									description:
+										`${config.name} attempted to set the log channel or manager role, but one or both were undefined.  Please try again and if the issue continues, \`/report\` this issue to the developers with the error code below.`,
 									fields: [{
 										name: 'Error Code:',
 										value: `setupLog${logChannelId}Mgr${managerRoleId}`,
@@ -133,7 +149,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 						title: `This is the channel ${config.name} will be logging events to.`,
 						description: `${config.name} will only send messages here as frequently as your event managers update events.`,
 						color: infoColor2,
-					}]
+					}],
 				}).catch((e: Error) => {
 					utils.commonLoggers.messageSendError('setup.ts', 'log-test', e);
 					logChannelErrorOut = true;
@@ -200,8 +216,8 @@ The Discord Slash Command system will ensure you provide all the required detail
 
 			// Delete all messages that are not LFG posts
 			const msgsToDel: Array<bigint> = [];
-			const oldLfgMsgs: Array<bigint> = []
-			messages.forEach(msg => {
+			const oldLfgMsgs: Array<bigint> = [];
+			messages.forEach((msg) => {
 				if (msg.authorId === botId && msg.embeds.length && msg.embeds[0].footer && msg.embeds[0].footer.text.includes('Created by:')) {
 					oldLfgMsgs.push(msg.id);
 				} else {
@@ -219,10 +235,11 @@ The Discord Slash Command system will ensure you provide all the required detail
 
 			// Store the ids to the db
 			let dbErrorOut = false;
-			await dbClient.execute('INSERT INTO guild_settings(guildId,lfgChannelId,managerRoleId,logChannelId) values(?,?,?,?)', [interaction.guildId, interaction.channelId, managerRoleId, logChannelId]).catch((e) => {
-				utils.commonLoggers.dbError('setup.ts', 'insert into guild_settings', e);
-				dbErrorOut = true;
-			});
+			await dbClient.execute('INSERT INTO guild_settings(guildId,lfgChannelId,managerRoleId,logChannelId) values(?,?,?,?)', [interaction.guildId, interaction.channelId, managerRoleId, logChannelId])
+				.catch((e) => {
+					utils.commonLoggers.dbError('setup.ts', 'insert into guild_settings', e);
+					dbErrorOut = true;
+				});
 			if (dbErrorOut) {
 				// DB died?
 				somethingWentWrong(bot, interaction, 'setupDBInsertFailed');
