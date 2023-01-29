@@ -1,6 +1,6 @@
 import config from '../../config.ts';
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes, sendMessage } from '../../deps.ts';
-import { generateReport, isLFGChannel, somethingWentWrong, successColor } from '../commandUtils.ts';
+import { infoColor2, isLFGChannel, somethingWentWrong, successColor } from '../commandUtils.ts';
 import { dbClient, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
@@ -24,7 +24,13 @@ const details: CommandDetails = {
 const execute = (bot: Bot, interaction: Interaction) => {
 	dbClient.execute(queries.callIncCnt('cmd-report')).catch((e) => utils.commonLoggers.dbError('report.ts', 'call sproc INC_CNT on', e));
 	if (interaction.data?.options?.[0].value) {
-		sendMessage(bot, config.reportChannel, generateReport(interaction.data.options[0].value as string)).catch((e: Error) => utils.commonLoggers.interactionSendError('report.ts:28', interaction, e));
+		sendMessage(bot, config.reportChannel, {
+			embeds: [{
+				color: infoColor2,
+				title: 'USER REPORT:',
+				description: interaction.data.options[0].value as string,
+			}],
+		}).catch((e: Error) => utils.commonLoggers.interactionSendError('report.ts:28', interaction, e));
 		bot.helpers.sendInteractionResponse(
 			interaction.id,
 			interaction.token,

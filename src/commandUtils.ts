@@ -15,20 +15,12 @@ export const getRandomStatus = (guildCount: number): string => {
 		`${config.prefix}info to learn more`,
 		`Running LFGs in ${guildCount} servers`,
 	];
-	return statuses[Math.floor((Math.random() * statuses.length) + 1)];
+	return statuses[Math.floor(Math.random() * statuses.length)];
 };
 
 export const isLFGChannel = (guildId: bigint, channelId: bigint) => {
 	return (lfgChannelSettings.has(`${guildId}-${channelId}`) || channelId === 0n || guildId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
 };
-
-export const generateReport = (msg: string) => ({
-	embeds: [{
-		color: infoColor2,
-		title: 'USER REPORT:',
-		description: msg,
-	}],
-});
 
 export const somethingWentWrong = (bot: Bot, interaction: Interaction, errorCode: string) =>
 	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
