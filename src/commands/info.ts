@@ -12,14 +12,14 @@ const details: CommandDetails = {
 };
 
 const execute = (bot: Bot, interaction: Interaction) => {
-	dbClient.execute(queries.callIncCnt('info')).catch((e) => utils.commonLoggers.dbError('info.ts', 'call sproc INC_CNT on', e));
+	dbClient.execute(queries.callIncCnt('cmd-info')).catch((e) => utils.commonLoggers.dbError('info.ts', 'call sproc INC_CNT on', e));
 	bot.helpers.sendInteractionResponse(
 		interaction.id,
 		interaction.token,
 		{
 			type: InteractionResponseTypes.ChannelMessageWithSource,
 			data: {
-				flags: isLFGChannel(interaction.channelId || 0n),
+				flags: isLFGChannel(interaction.guildId || 0n, interaction.channelId || 0n),
 				embeds: [{
 					color: infoColor2,
 					title: `${config.name}, the LFG bot`,

@@ -9,7 +9,20 @@ export type CommandDetails = {
 	defaultMemberPermissions?: PermissionStrings[];
 };
 
-export type Commands = {
+export type Command = {
 	details: CommandDetails;
 	execute: Function;
+};
+
+export type LfgChannelSetting = {
+	managed: boolean;
+	managerRoleId: bigint;
+	logChannelId: bigint;
+};
+
+export type DBGuildSettings = {
+	guildId: bigint;
+	lfgChannelId: bigint;
+	managerRoleId: bigint;
+	logChannelId: bigint;
 };

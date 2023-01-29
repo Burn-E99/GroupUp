@@ -18,4 +18,5 @@ enableCacheSweepers(bot);
 // Start the bot
 await startBot(bot);
 
+// Announce the slash commands so users can use them
 await createSlashCommands(bot);

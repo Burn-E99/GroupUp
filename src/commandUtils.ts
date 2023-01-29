@@ -1,6 +1,7 @@
-import { ApplicationCommandFlags } from '../deps.ts';
+import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../deps.ts';
 import config from '../config.ts';
-import { lfgChannels } from './db.ts';
+import { lfgChannelSettings } from './db.ts';
+import utils from './utils.ts';
 
 export const failColor = 0xe71212;
 export const warnColor = 0xe38f28;
@@ -17,8 +18,8 @@ export const getRandomStatus = (guildCount: number): string => {
 	return statuses[Math.floor((Math.random() * statuses.length) + 1)];
 };
 
-export const isLFGChannel = (channelId: bigint) => {
-	return (lfgChannels.includes(channelId) || channelId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
+export const isLFGChannel = (guildId: bigint, channelId: bigint) => {
+	return (lfgChannelSettings.has(`${guildId}-${channelId}`) || channelId === 0n || guildId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
 };
 
 export const generateReport = (msg: string) => ({
@@ -28,3 +29,20 @@ export const generateReport = (msg: string) => ({
 		description: msg,
 	}],
 });
+
+export const somethingWentWrong = (bot: Bot, interaction: Interaction, errorCode: string) =>
+	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+		type: InteractionResponseTypes.ChannelMessageWithSource,
+		data: {
+			flags: ApplicationCommandFlags.Ephemeral,
+			embeds: [{
+				color: failColor,
+				title: 'Something went wrong...',
+				description: 'You should not be able to get here.  Please try again and if the issue continues, `/report` this issue to the developers with the error code below.',
+				fields: [{
+					name: 'Error Code:',
+					value: errorCode,
+				}],
+			}],
+		},
+	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts', interaction, e));
