@@ -1,10 +1,11 @@
-export type LFGActivity = {
+// Activity should either have maxMembers or options specified, NOT both
+export type Activity = {
 	name: string;
 	maxMembers?: number;
-	options?: Array<LFGActivity>;
+	options?: Array<Activity>;
 };
 
-export const LFGActivities: Array<LFGActivity> = [
+export const Activities: Array<Activity> = [
 	{
 		name: 'Destiny 2',
 		options: [
