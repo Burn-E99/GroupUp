@@ -1,5 +1,5 @@
 import { Activity } from './activities.ts';
-import { SelectOption, ActionRow, MessageComponentTypes } from '../../../deps.ts';
+import { ActionRow, MessageComponentTypes, SelectOption } from '../../../deps.ts';
 
 export const pathIdxSeparator = '|';
 export const pathIdxEnder = '&';
@@ -14,11 +14,12 @@ export const getNestedActivity = (idxPath: Array<number>, activities: Array<Acti
 	}
 };
 
-const getSelectOptions = (baseValue: string, activities: Array<Activity>, defaultIdx?: number): Array<SelectOption> => activities.map((act, idx) => ({
-	label: act.name,
-	value: `${baseValue}${idx}${act.maxMembers ? pathIdxEnder : pathIdxSeparator}`,
-	default: idx === defaultIdx,
-}));
+const getSelectOptions = (baseValue: string, activities: Array<Activity>, defaultIdx?: number): Array<SelectOption> =>
+	activities.map((act, idx) => ({
+		label: act.name,
+		value: `${baseValue}${idx}${act.maxMembers ? pathIdxEnder : pathIdxSeparator}`,
+		default: idx === defaultIdx,
+	}));
 
 export const generateActionRow = (baseValue: string, activities: Array<Activity>, customId: string, defaultIdx?: number): ActionRow => ({
 	type: MessageComponentTypes.ActionRow,

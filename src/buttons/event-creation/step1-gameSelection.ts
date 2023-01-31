@@ -1,8 +1,8 @@
-import { ApplicationCommandFlags, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes, MessageComponentTypes, ActionRow, ButtonStyles, TextStyles } from '../../../deps.ts';
+import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes, TextStyles } from '../../../deps.ts';
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { generateActionRow, getNestedActivity, generateMapId, pathIdxSeparator, pathIdxEnder } from './utils.ts';
+import { generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, pathIdxSeparator } from './utils.ts';
 import utils from '../../utils.ts';
 
 export const customId = 'gameSel';
@@ -17,8 +17,8 @@ const details: CommandDetails = {
 };
 
 const tokenMap: Map<string, {
-	token: string,
-	timeoutId: number,
+	token: string;
+	timeoutId: number;
 }> = new Map();
 
 const customEventRow: ActionRow = {
@@ -29,17 +29,19 @@ const customEventRow: ActionRow = {
 		customId,
 		style: ButtonStyles.Primary,
 	}],
-}
+};
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data && (interaction.data.name === slashCommandName || interaction.data.customId) && interaction.member && interaction.guildId && interaction.channelId) {
 		// Parse indexPath from the select value
 		const rawIdxPath: Array<string> = interaction.data.values ? interaction.data.values[0].split(pathIdxSeparator) : [''];
-		const idxPath: Array<number> = rawIdxPath.map(rawIdx => rawIdx ? parseInt(rawIdx) : -1);
+		const idxPath: Array<number> = rawIdxPath.map((rawIdx) => rawIdx ? parseInt(rawIdx) : -1);
 
 		if (interaction.data.values && interaction.data.values[0] && interaction.data.values[0].endsWith(pathIdxEnder)) {
 			// User selected activity, give them the details modal and delete the selectMenus
-			bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token || '').catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:cleanup', interaction, e));
+			bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token || '').catch((e: Error) =>
+				utils.commonLoggers.interactionSendError('step1-gameSelection.ts:nextStep', interaction, e)
+			);
 			tokenMap.delete(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id));
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.Modal,
@@ -53,34 +55,34 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							customId: 'eventTime',
 							label: 'Start Time:',
 							style: TextStyles.Short,
-						}]
-					},{
+						}],
+					}, {
 						type: MessageComponentTypes.ActionRow,
 						components: [{
 							type: MessageComponentTypes.InputText,
 							customId: 'eventTimeZone',
 							label: 'Time Zone:',
 							style: TextStyles.Short,
-						}]
-					},{
+						}],
+					}, {
 						type: MessageComponentTypes.ActionRow,
 						components: [{
 							type: MessageComponentTypes.InputText,
 							customId: 'eventDate',
 							label: 'Start Date:',
 							style: TextStyles.Short,
-						}]
-					},{
+						}],
+					}, {
 						type: MessageComponentTypes.ActionRow,
 						components: [{
 							type: MessageComponentTypes.InputText,
 							customId: 'eventDescription',
 							label: 'Description:',
 							style: TextStyles.Paragraph,
-						}]
-					}]
+						}],
+					}],
 				},
-			})
+			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:modal', interaction, e));
 			return;
 		}
 
@@ -112,17 +114,27 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		} else {
 			// Delete old token entry if it exists
 			if (tokenMap.has(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))) {
-				bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token || '').catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:cleanup', interaction, e));
+				bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token || '').catch((e: Error) =>
+					utils.commonLoggers.interactionSendError('step1-gameSelection.ts:cleanup', interaction, e)
+				);
 				tokenMap.delete(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id));
 			}
 
 			// Store token for later use
 			tokenMap.set(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id), {
 				token: interaction.token,
-				timeoutId: setTimeout((guildId, channelId, memberId) => {
-					bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(guildId, channelId, memberId))?.token || '').catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:delete', interaction, e));
-					tokenMap.delete(generateMapId(guildId, channelId, memberId));
-				}, tokenTimeoutMS, interaction.guildId, interaction.channelId, interaction.member.id),
+				timeoutId: setTimeout(
+					(guildId, channelId, memberId) => {
+						bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(guildId, channelId, memberId))?.token || '').catch((e: Error) =>
+							utils.commonLoggers.interactionSendError('step1-gameSelection.ts:delete', interaction, e)
+						);
+						tokenMap.delete(generateMapId(guildId, channelId, memberId));
+					},
+					tokenTimeoutMS,
+					interaction.guildId,
+					interaction.channelId,
+					interaction.member.id,
+				),
 			});
 
 			// Calculate destruction time

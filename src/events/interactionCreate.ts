@@ -18,13 +18,13 @@ export const interactionCreate = (rawBot: Bot, interaction: Interaction) => {
 			return;
 		}
 
-		const customId = interaction.data.customId ? interaction.data.customId.replace(/\$/g, '') : ''
+		const customId = interaction.data.customId ? interaction.data.customId.replace(/\$/g, '') : '';
 		if (customId && buttonNames.includes(customId)) {
 			const btnIdx = buttonNames.indexOf(customId);
 			buttons[btnIdx].execute(bot, interaction);
 			return;
 		}
 
-		console.log('interaction NOT HANDLED')
+		console.log('interaction NOT HANDLED');
 	}
 };
