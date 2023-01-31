@@ -18,6 +18,7 @@ import { failColor, infoColor2, somethingWentWrong, successColor } from '../comm
 import { dbClient, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
+import { customId as gameSelId } from '../buttons/event-creation/step1-gameSelection.ts';
 
 const withoutMgrRole = 'without-manager-role';
 const withMgrRole = 'with-manager-role';
@@ -266,7 +267,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 					components: [{
 						type: MessageComponentTypes.Button,
 						label: createNewEventBtn,
-						customId: 'temp', // TODO: set this
+						customId: gameSelId,
 						style: ButtonStyles.Success,
 					}],
 				}],

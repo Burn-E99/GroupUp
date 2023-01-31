@@ -26,6 +26,7 @@ export {
 	sendInteractionResponse,
 	sendMessage,
 	startBot,
+	TextStyles,
 } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 export type {
 	ActionRow,
@@ -43,6 +44,7 @@ export type {
 	MakeRequired,
 	Message,
 	PermissionStrings,
+	SelectOption,
 } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 
 export { Client } from 'https://deno.land/x/mysql@v2.11.0/mod.ts';

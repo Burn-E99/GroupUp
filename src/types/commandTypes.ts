@@ -14,6 +14,11 @@ export type Command = {
 	execute: Function;
 };
 
+export type Button = {
+	customId: string;
+	execute: Function;
+};
+
 export type LfgChannelSetting = {
 	managed: boolean;
 	managerRoleId: bigint;

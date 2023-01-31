@@ -5,6 +5,7 @@ export type Activity = {
 	options?: Array<Activity>;
 };
 
+// Max depth is limited to 4, 5th component row must be reserved for the custom button
 export const Activities: Array<Activity> = [
 	{
 		name: 'Destiny 2',
