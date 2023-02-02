@@ -1,8 +1,14 @@
 import { Activity } from './activities.ts';
-import { ActionRow, MessageComponentTypes, SelectOption } from '../../../deps.ts';
+import { ActionRow, Bot, Interaction, MessageComponentTypes, SelectOption } from '../../../deps.ts';
+import utils from '../../utils.ts';
 
 export const pathIdxSeparator = '|';
 export const pathIdxEnder = '&';
+
+export const tokenMap: Map<string, {
+	token: string;
+	timeoutId: number;
+}> = new Map();
 
 export const getNestedActivity = (idxPath: Array<number>, activities: Array<Activity>): Array<Activity> => {
 	const nextIdx = idxPath[0];
@@ -31,3 +37,14 @@ export const generateActionRow = (baseValue: string, activities: Array<Activity>
 });
 
 export const generateMapId = (guildId: bigint, channelId: bigint, userId: bigint) => `${guildId}-${channelId}-${userId}`;
+
+export const deleteTokenEarly = async (bot: Bot, interaction: Interaction, guildId: bigint, channelId: bigint, userId: bigint) => {
+	const tokenMapEntry = tokenMap.get(generateMapId(guildId, channelId, userId));
+	if (tokenMapEntry && tokenMapEntry.token) {
+		await bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(guildId, channelId, userId))?.token || '').catch((e: Error) =>
+			utils.commonLoggers.interactionSendError('utils.ts:deleteTokenEarly', interaction, e)
+		);
+		clearTimeout(tokenMapEntry.timeoutId);
+		tokenMap.delete(generateMapId(guildId, channelId, userId));
+	}
+};

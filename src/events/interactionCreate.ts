@@ -1,10 +1,6 @@
 import { Bot, BotWithCache, Interaction } from '../../deps.ts';
+import { buttons } from '../buttons/_index.ts';
 import { commands } from '../commands/_index.ts';
-
-import { Button } from '../types/commandTypes.ts';
-import { createEventButton } from '../buttons/event-creation/step1-gameSelection.ts';
-
-const buttons: Array<Button> = [createEventButton];
 
 const commandNames: Array<string> = commands.map((command) => command.details.name);
 const buttonNames: Array<string> = buttons.map((button) => button.customId);

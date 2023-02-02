@@ -2,8 +2,9 @@ import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, Butto
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, pathIdxSeparator } from './utils.ts';
+import { deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, pathIdxSeparator, tokenMap } from './utils.ts';
 import utils from '../../utils.ts';
+import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 
 export const customId = 'gameSel';
 const slashCommandName = 'create-event';
@@ -16,17 +17,12 @@ const details: CommandDetails = {
 	type: ApplicationCommandTypes.ChatInput,
 };
 
-const tokenMap: Map<string, {
-	token: string;
-	timeoutId: number;
-}> = new Map();
-
 const customEventRow: ActionRow = {
 	type: MessageComponentTypes.ActionRow,
 	components: [{
 		type: MessageComponentTypes.Button,
 		label: 'Create Custom Event',
-		customId,
+		customId: createCustomActivityBtnId,
 		style: ButtonStyles.Primary,
 	}],
 };
@@ -39,10 +35,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 		if (interaction.data.values && interaction.data.values[0] && interaction.data.values[0].endsWith(pathIdxEnder)) {
 			// User selected activity, give them the details modal and delete the selectMenus
-			bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token || '').catch((e: Error) =>
-				utils.commonLoggers.interactionSendError('step1-gameSelection.ts:nextStep', interaction, e)
-			);
-			tokenMap.delete(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id));
+			await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.Modal,
 				data: {
@@ -79,6 +72,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							customId: 'eventDescription',
 							label: 'Description:',
 							style: TextStyles.Paragraph,
+							required: false,
 						}],
 					}],
 				},
@@ -113,22 +107,14 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:edit', interaction, e));
 		} else {
 			// Delete old token entry if it exists
-			if (tokenMap.has(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))) {
-				bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token || '').catch((e: Error) =>
-					utils.commonLoggers.interactionSendError('step1-gameSelection.ts:cleanup', interaction, e)
-				);
-				tokenMap.delete(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id));
-			}
+			await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 
 			// Store token for later use
 			tokenMap.set(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id), {
 				token: interaction.token,
 				timeoutId: setTimeout(
-					(guildId, channelId, memberId) => {
-						bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(guildId, channelId, memberId))?.token || '').catch((e: Error) =>
-							utils.commonLoggers.interactionSendError('step1-gameSelection.ts:delete', interaction, e)
-						);
-						tokenMap.delete(generateMapId(guildId, channelId, memberId));
+					(guildId, channelId, userId) => {
+						deleteTokenEarly(bot, interaction, guildId, channelId, userId);
 					},
 					tokenTimeoutMS,
 					interaction.guildId,
