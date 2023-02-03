@@ -14,7 +14,7 @@ import {
 	OverwriteTypes,
 	sendMessage,
 } from '../../deps.ts';
-import { failColor, infoColor2, somethingWentWrong, successColor } from '../commandUtils.ts';
+import { failColor, infoColor2, somethingWentWrong, successColor, safelyDismissMsg } from '../commandUtils.ts';
 import { dbClient, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
@@ -64,7 +64,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 	const setupOpts = interaction.data?.options?.[0];
 
-	if (setupOpts && setupOpts.name && interaction.channelId && interaction.guildId) {
+	if (setupOpts?.name && interaction.channelId && interaction.guildId) {
 		if (lfgChannelSettings.has(`${interaction.guildId}-${interaction.channelId}`)) {
 			// Cannot setup a lfg channel that is already set up
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
@@ -283,7 +283,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 						embeds: [{
 							color: successColor,
 							title: 'LFG Channel setup complete!',
-							description: `${config.name} has finished setting up this channel.  You may safely dismiss this message.`,
+							description: `${config.name} has finished setting up this channel.  ${safelyDismissMsg}`,
 						}],
 					},
 				}).catch((e: Error) => utils.commonLoggers.interactionSendError('setup.ts', interaction, e));

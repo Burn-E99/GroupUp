@@ -2,15 +2,12 @@ import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, Butto
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, pathIdxSeparator, tokenMap } from './utils.ts';
+import { deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, idSeparator, pathIdxSeparator, tokenMap, addTokenToMap, tokenTimeoutMS, selfDestructMessage } from './utils.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 
 export const customId = 'gameSel';
 const slashCommandName = 'create-event';
-// Discord Interaction Tokens last 15 minutes, we will self kill after 14.5 minutes
-const tokenTimeoutS = (15 * 60) - 30;
-const tokenTimeoutMS = tokenTimeoutS * 1000;
 const details: CommandDetails = {
 	name: slashCommandName,
 	description: 'Creates a new event in this channel.',
@@ -21,26 +18,27 @@ const customEventRow: ActionRow = {
 	type: MessageComponentTypes.ActionRow,
 	components: [{
 		type: MessageComponentTypes.Button,
+		style: ButtonStyles.Primary,
 		label: 'Create Custom Event',
 		customId: createCustomActivityBtnId,
-		style: ButtonStyles.Primary,
 	}],
 };
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data && (interaction.data.name === slashCommandName || interaction.data.customId) && interaction.member && interaction.guildId && interaction.channelId) {
-		// Parse indexPath from the select value
-		const rawIdxPath: Array<string> = interaction.data.values ? interaction.data.values[0].split(pathIdxSeparator) : [''];
-		const idxPath: Array<number> = rawIdxPath.map((rawIdx) => rawIdx ? parseInt(rawIdx) : -1);
-
-		if (interaction.data.values && interaction.data.values[0] && interaction.data.values[0].endsWith(pathIdxEnder)) {
+		// Check if we are done
+		const customIdIdxPath = ((interaction.data.customId || '').substring((interaction.data.customId || '').indexOf(idSeparator) + 1) || '');
+		const valuesIdxPath = (interaction.data?.values?.[0] || '');
+		const strippedIdxPath = interaction.data.customId?.includes(idSeparator) ? customIdIdxPath : valuesIdxPath;
+		const finalizedIdxPath = strippedIdxPath.substring(0, strippedIdxPath.lastIndexOf(pathIdxEnder));
+		if ((interaction.data.customId?.includes(idSeparator) && interaction.data.customId.endsWith(pathIdxEnder)) || interaction.data?.values?.[0].endsWith(pathIdxEnder)) {
 			// User selected activity, give them the details modal and delete the selectMenus
 			await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.Modal,
 				data: {
 					title: 'Enter Event Details',
-					customId: 'temp', //TODO: fix
+					customId: `temp${idSeparator}${finalizedIdxPath}`, //TODO: finish
 					components: [{
 						type: MessageComponentTypes.ActionRow,
 						components: [{
@@ -48,6 +46,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							customId: 'eventTime',
 							label: 'Start Time:',
 							style: TextStyles.Short,
+							minLength: 1,
+							maxLength: 8,
 						}],
 					}, {
 						type: MessageComponentTypes.ActionRow,
@@ -56,6 +56,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							customId: 'eventTimeZone',
 							label: 'Time Zone:',
 							style: TextStyles.Short,
+							minLength: 2,
+							maxLength: 8,
 						}],
 					}, {
 						type: MessageComponentTypes.ActionRow,
@@ -64,6 +66,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							customId: 'eventDate',
 							label: 'Start Date:',
 							style: TextStyles.Short,
+							minLength: 1,
+							maxLength: 20,
 						}],
 					}, {
 						type: MessageComponentTypes.ActionRow,
@@ -73,6 +77,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							label: 'Description:',
 							style: TextStyles.Paragraph,
 							required: false,
+							placeholder: finalizedIdxPath,
+							minLength: 0,
+							maxLength: 1000,
 						}],
 					}],
 				},
@@ -80,6 +87,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			return;
 		}
 
+		// Parse indexPath from the select value
+		const rawIdxPath: Array<string> = interaction.data.values ? interaction.data.values[0].split(pathIdxSeparator) : [''];
+		const idxPath: Array<number> = rawIdxPath.map((rawIdx) => rawIdx ? parseInt(rawIdx) : -1);
 		const selectMenus: Array<ActionRow> = [];
 		let selectMenuCustomId = `${customId}$`;
 		let currentBaseValue = '';
@@ -110,21 +120,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 
 			// Store token for later use
-			tokenMap.set(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id), {
-				token: interaction.token,
-				timeoutId: setTimeout(
-					(guildId, channelId, userId) => {
-						deleteTokenEarly(bot, interaction, guildId, channelId, userId);
-					},
-					tokenTimeoutMS,
-					interaction.guildId,
-					interaction.channelId,
-					interaction.member.id,
-				),
-			});
-
-			// Calculate destruction time
-			const destructTime = Math.floor((new Date().getTime() + tokenTimeoutMS) / 1000);
+			addTokenToMap(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 
 			// Send initial interaction
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
@@ -132,7 +128,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				data: {
 					embeds: [{
 						title: 'Please select a Game and Activity, or create a Custom Event.',
-						description: `Please note: This message will self destruct <t:${destructTime}:R> due to limits imposed by the Discord API.`,
+						description: selfDestructMessage(new Date().getTime()),
 						color: infoColor1,
 					}],
 					flags: ApplicationCommandFlags.Ephemeral,
@@ -141,7 +137,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:init', interaction, e));
 		}
 	} else {
-		somethingWentWrong;
+		somethingWentWrong(bot, interaction, 'missingCoreValuesOnGameSel');
 	}
 };
 

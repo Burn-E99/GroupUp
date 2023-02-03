@@ -9,6 +9,8 @@ export const successColor = 0x0f8108;
 export const infoColor1 = 0x313bf9;
 export const infoColor2 = 0x6805e9;
 
+export const safelyDismissMsg = 'You may safely dismiss this message.'
+
 export const getRandomStatus = (guildCount: number): string => {
 	const statuses = [
 		`Running V${config.version}`,
