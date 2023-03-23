@@ -2,11 +2,16 @@ import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, Butto
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, idSeparator, pathIdxSeparator, tokenMap, addTokenToMap, tokenTimeoutMS, selfDestructMessage } from './utils.ts';
+import { deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, idSeparator, pathIdxSeparator, tokenMap, addTokenToMap, selfDestructMessage } from './utils.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
+import { customId as finalizeEventBtnId } from './step2-finalize.ts';
 
 export const customId = 'gameSel';
+export const eventTimeId = 'eventTime';
+export const eventTimeZoneId = 'eventTimeZone';
+export const eventDateId = 'eventDate';
+export const eventDescriptionId = 'eventDescription';
 const slashCommandName = 'create-event';
 const details: CommandDetails = {
 	name: slashCommandName,
@@ -38,13 +43,14 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				type: InteractionResponseTypes.Modal,
 				data: {
 					title: 'Enter Event Details',
-					customId: `temp${idSeparator}${finalizedIdxPath}`, //TODO: finish
+					customId: `${finalizeEventBtnId}${idSeparator}${finalizedIdxPath}`,
 					components: [{
 						type: MessageComponentTypes.ActionRow,
 						components: [{
 							type: MessageComponentTypes.InputText,
-							customId: 'eventTime',
+							customId: eventTimeId,
 							label: 'Start Time:',
+							placeholder: 'Enter the start time as "HH:MM AM/PM"',
 							style: TextStyles.Short,
 							minLength: 1,
 							maxLength: 8,
@@ -53,8 +59,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						type: MessageComponentTypes.ActionRow,
 						components: [{
 							type: MessageComponentTypes.InputText,
-							customId: 'eventTimeZone',
+							customId: eventTimeZoneId,
 							label: 'Time Zone:',
+							placeholder: 'Enter your time zone abbreviation (UTC±## also works)',
 							style: TextStyles.Short,
 							minLength: 2,
 							maxLength: 8,
@@ -63,8 +70,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						type: MessageComponentTypes.ActionRow,
 						components: [{
 							type: MessageComponentTypes.InputText,
-							customId: 'eventDate',
+							customId: eventDateId,
 							label: 'Start Date:',
+							placeholder: 'Enter date as "MONTH/DAY" or "Month, Day"',
 							style: TextStyles.Short,
 							minLength: 1,
 							maxLength: 20,
@@ -73,11 +81,11 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						type: MessageComponentTypes.ActionRow,
 						components: [{
 							type: MessageComponentTypes.InputText,
-							customId: 'eventDescription',
+							customId: eventDescriptionId,
 							label: 'Description:',
+							placeholder: 'Briefly describe the event',
 							style: TextStyles.Paragraph,
 							required: false,
-							placeholder: finalizedIdxPath,
 							minLength: 0,
 							maxLength: 1000,
 						}],

@@ -24,12 +24,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const activityTitle = (tempDataMap.get(activityTitleId) || '').replace(/\|/g, '');
 		const activitySubtitle = (tempDataMap.get(activitySubtitleId) || '').replace(/\|/g, '');
 		const activityMaxPlayers = parseInt(tempDataMap.get(activityMaxPlayersId) || '0');
-		if (!activityMaxPlayers || !activitySubtitle || !activityTitle) {
-			// Verify fields exist
-			somethingWentWrong(bot, interaction, `missingFieldFromCustomActivity@${activityTitle}|${activitySubtitle}|${activityMaxPlayers}$`);
-			return;
-		}
-		if (activityMaxPlayers < 1 || activityMaxPlayers > 99) {
+		if (isNaN(activityMaxPlayers) || activityMaxPlayers < 1 || activityMaxPlayers > 99) {
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.ChannelMessageWithSource,
 				data: {
@@ -37,10 +32,15 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					embeds: [{
 						color: failColor,
 						title: 'Invalid Max Member count!',
-						description: `${config.name} parsed the max members as ${activityMaxPlayers}, which is outside of the allowed range.  Please recreate this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`
+						description: `${config.name} parsed the max members as \`${isNaN(activityMaxPlayers) ? 'Not a Number' : activityMaxPlayers}\`, which is outside of the allowed range.  Please recreate this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`
 					}],
 				}
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1b-verifyCustomActivity.ts:invalidPlayer', interaction, e));
+			return;
+		}
+		if (!activityMaxPlayers || !activitySubtitle || !activityTitle) {
+			// Verify fields exist
+			somethingWentWrong(bot, interaction, `missingFieldFromCustomActivity@${activityTitle}|${activitySubtitle}|${activityMaxPlayers}$`);
 			return;
 		}
 
