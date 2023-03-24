@@ -9,6 +9,8 @@ export const idSeparator = '@';
 export const pathIdxSeparator = '|';
 export const pathIdxEnder = '&';
 export const selfDestructMessage = (currentTime: number) => `**Please note:** This message will self destruct <t:${Math.floor((currentTime + tokenTimeoutMS) / 1000)}:R> due to limits imposed by the Discord API.`;
+export const monthsLong: Array<string> = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+export const monthsShort: Array<string> = monthsLong.map(month => month.slice(0, 3));
 export const tzMap: Map<string, string> = new Map([
 	['CDT', '-05:00'],
 	['CST', '-06:00'],
@@ -76,6 +78,8 @@ export const getNestedActivity = (idxPath: Array<number>, activities: Array<Acti
 		return activities;
 	}
 };
+
+export const getFinalActivity =  (idxPath: Array<number>, activities: Array<Activity>): Activity => getNestedActivity(idxPath, activities)[idxPath[idxPath.length - 1]];
 
 const getSelectOptions = (baseValue: string, activities: Array<Activity>, defaultIdx?: number): Array<SelectOption> =>
 	activities.map((act, idx) => ({
