@@ -1,7 +1,7 @@
 import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes, TextStyles } from '../../../deps.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { eventTimeId, eventTimeZoneId, eventDateId, eventDescriptionId } from './step1-gameSelection.ts';
-import { getFinalActivity, getNestedActivity, idSeparator, pathIdxSeparator } from './utils.ts';
+import { getFinalActivity, tzMap, idSeparator, pathIdxSeparator } from './utils.ts';
 import { Activities, Activity } from './activities.ts';
 
 export const customId = 'finalize';
@@ -50,21 +50,21 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Verify/Set Time
-		let parsedEventTime = rawEventTime.replaceAll(':', '').toUpperCase();
+		let preParsedEventTime = rawEventTime.replaceAll(':', '').toUpperCase();
 		let parsedEventTimePeriod = '';
 		// Get AM or PM out of the rawTime
-		if (parsedEventTime.endsWith('AM') || parsedEventTime.endsWith('PM')) {
-			parsedEventTimePeriod = parsedEventTime.slice(-2);
-			parsedEventTime = parsedEventTime.slice(0, -2).trim();
+		if (preParsedEventTime.endsWith('AM') || preParsedEventTime.endsWith('PM')) {
+			parsedEventTimePeriod = preParsedEventTime.slice(-2);
+			preParsedEventTime = preParsedEventTime.slice(0, -2).trim();
 		}
 		let parsedEventTimeHours: string;
 		let parsedEventTimeMinutes: string;
 		// Get Hours and Minutes out of rawTime
-		if (parsedEventTime.length > 2) {
-			parsedEventTimeMinutes = parsedEventTime.slice(-2);
-			parsedEventTimeHours = parsedEventTime.slice(0, -2).trim();
+		if (preParsedEventTime.length > 2) {
+			parsedEventTimeMinutes = preParsedEventTime.slice(-2);
+			parsedEventTimeHours = preParsedEventTime.slice(0, -2).trim();
 		} else {
-			parsedEventTimeHours = parsedEventTime.trim();
+			parsedEventTimeHours = preParsedEventTime.trim();
 			parsedEventTimeMinutes = '00'
 		}
 		// Determine if we need to remove the time period
@@ -73,6 +73,22 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Verify/Set Time Zone
+		let preParsedEventTimeZone = rawEventTimeZone.replaceAll(' ', '').trim().toUpperCase();
+		let parsedEventTimeZone = '';
+		if (tzMap.has(preParsedEventTimeZone)) {
+			parsedEventTimeZone = tzMap.get(preParsedEventTimeZone) || 'UTC+0';
+		} else {
+			let addPlusSign = false;
+			if (!preParsedEventTimeZone.includes('+') || !preParsedEventTimeZone.includes('-')) {
+				addPlusSign = true;
+			}
+			if (!preParsedEventTimeZone.startsWith('UTC') || preParsedEventTimeZone.startsWith('GMT')) {
+				preParsedEventTimeZone = `UTC${addPlusSign && '+'}${preParsedEventTimeZone}`;
+			} else if (addPlusSign) {
+				preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, 3)}+${preParsedEventTimeZone.slice(3)}`;
+			}
+			parsedEventTimeZone = preParsedEventTimeZone;
+		}
 
 		// Verify/Set Date
 
