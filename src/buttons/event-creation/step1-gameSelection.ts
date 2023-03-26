@@ -72,7 +72,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							type: MessageComponentTypes.InputText,
 							customId: eventDateId,
 							label: 'Start Date:',
-							placeholder: 'Enter date as "MONTH/DAY" or "Month, Day"',
+							placeholder: 'Enter date as "MONTH/DAY/YEAR" or "Month, Day, Year"',
 							style: TextStyles.Short,
 							minLength: 1,
 							maxLength: 20,
