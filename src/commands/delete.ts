@@ -1,6 +1,6 @@
 import config from '../../config.ts';
 import { ApplicationCommandFlags, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes } from '../../deps.ts';
-import { failColor, somethingWentWrong, successColor, safelyDismissMsg } from '../commandUtils.ts';
+import { failColor, safelyDismissMsg, somethingWentWrong, successColor } from '../commandUtils.ts';
 import { dbClient, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';

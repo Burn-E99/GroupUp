@@ -8,7 +8,8 @@ export const tokenTimeoutMS = tokenTimeoutS * 1000;
 export const idSeparator = '@';
 export const pathIdxSeparator = '|';
 export const pathIdxEnder = '&';
-export const selfDestructMessage = (currentTime: number) => `**Please note:** This message will self destruct <t:${Math.floor((currentTime + tokenTimeoutMS) / 1000)}:R> due to limits imposed by the Discord API.`;
+export const selfDestructMessage = (currentTime: number) =>
+	`**Please note:** This message will self destruct <t:${Math.floor((currentTime + tokenTimeoutMS) / 1000)}:R> due to limits imposed by the Discord API.`;
 
 export const tokenMap: Map<string, {
 	token: string;
@@ -25,7 +26,7 @@ export const getNestedActivity = (idxPath: Array<number>, activities: Array<Acti
 	}
 };
 
-export const getFinalActivity =  (idxPath: Array<number>, activities: Array<Activity>): Activity => getNestedActivity(idxPath, activities)[idxPath[idxPath.length - 1]];
+export const getFinalActivity = (idxPath: Array<number>, activities: Array<Activity>): Activity => getNestedActivity(idxPath, activities)[idxPath[idxPath.length - 1]];
 
 const getSelectOptions = (baseValue: string, activities: Array<Activity>, defaultIdx?: number): Array<SelectOption> =>
 	activities.map((act, idx) => ({
@@ -45,18 +46,19 @@ export const generateActionRow = (baseValue: string, activities: Array<Activity>
 
 export const generateMapId = (guildId: bigint, channelId: bigint, userId: bigint) => `${guildId}-${channelId}-${userId}`;
 
-export const addTokenToMap = (bot: Bot, interaction: Interaction, guildId: bigint, channelId: bigint, userId: bigint) => tokenMap.set(generateMapId(guildId, channelId, userId), {
-	token: interaction.token,
-	timeoutId: setTimeout(
-		(guildId, channelId, userId) => {
-			deleteTokenEarly(bot, interaction, guildId, channelId, userId);
-		},
-		tokenTimeoutMS,
-		guildId,
-		channelId,
-		userId,
-	),
-});
+export const addTokenToMap = (bot: Bot, interaction: Interaction, guildId: bigint, channelId: bigint, userId: bigint) =>
+	tokenMap.set(generateMapId(guildId, channelId, userId), {
+		token: interaction.token,
+		timeoutId: setTimeout(
+			(guildId, channelId, userId) => {
+				deleteTokenEarly(bot, interaction, guildId, channelId, userId);
+			},
+			tokenTimeoutMS,
+			guildId,
+			channelId,
+			userId,
+		),
+	});
 
 export const deleteTokenEarly = async (bot: Bot, interaction: Interaction, guildId: bigint, channelId: bigint, userId: bigint) => {
 	const tokenMapEntry = tokenMap.get(generateMapId(guildId, channelId, userId));

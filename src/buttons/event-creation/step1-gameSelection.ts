@@ -2,7 +2,7 @@ import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, Butto
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, idSeparator, pathIdxSeparator, tokenMap, addTokenToMap, selfDestructMessage } from './utils.ts';
+import { addTokenToMap, deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, idSeparator, pathIdxEnder, pathIdxSeparator, selfDestructMessage, tokenMap } from './utils.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';
@@ -32,8 +32,8 @@ const customEventRow: ActionRow = {
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data && (interaction.data.name === slashCommandName || interaction.data.customId) && interaction.member && interaction.guildId && interaction.channelId) {
 		// Check if we are done
-		const customIdIdxPath = ((interaction.data.customId || '').substring((interaction.data.customId || '').indexOf(idSeparator) + 1) || '');
-		const valuesIdxPath = (interaction.data?.values?.[0] || '');
+		const customIdIdxPath = (interaction.data.customId || '').substring((interaction.data.customId || '').indexOf(idSeparator) + 1) || '';
+		const valuesIdxPath = interaction.data?.values?.[0] || '';
 		const strippedIdxPath = interaction.data.customId?.includes(idSeparator) ? customIdIdxPath : valuesIdxPath;
 		const finalizedIdxPath = strippedIdxPath.substring(0, strippedIdxPath.lastIndexOf(pathIdxEnder));
 		if ((interaction.data.customId?.includes(idSeparator) && interaction.data.customId.endsWith(pathIdxEnder)) || interaction.data?.values?.[0].endsWith(pathIdxEnder)) {

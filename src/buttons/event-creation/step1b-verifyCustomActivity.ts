@@ -1,8 +1,8 @@
 import config from '../../../config.ts';
-import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes, ButtonStyles, ApplicationCommandFlags } from '../../../deps.ts';
-import { infoColor1, somethingWentWrong, failColor, safelyDismissMsg } from '../../commandUtils.ts';
-import { addTokenToMap, idSeparator, pathIdxSeparator, pathIdxEnder, selfDestructMessage } from './utils.ts';
-import { activityTitleId, activitySubtitleId, activityMaxPlayersId } from './step1a-openCustomModal.ts';
+import { ApplicationCommandFlags, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
+import { failColor, infoColor1, safelyDismissMsg, somethingWentWrong } from '../../commandUtils.ts';
+import { addTokenToMap, idSeparator, pathIdxEnder, pathIdxSeparator, selfDestructMessage } from './utils.ts';
+import { activityMaxPlayersId, activitySubtitleId, activityTitleId } from './step1a-openCustomModal.ts';
 import { customId as gameSelectionId } from './step1-gameSelection.ts';
 import { customId as openCustomModalId } from './step1a-openCustomModal.ts';
 import utils from '../../utils.ts';
@@ -32,9 +32,11 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					embeds: [{
 						color: failColor,
 						title: 'Invalid Max Member count!',
-						description: `${config.name} parsed the max members as \`${isNaN(activityMaxPlayers) ? 'Not a Number' : activityMaxPlayers}\`, which is outside of the allowed range.  Please recreate this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`
+						description: `${config.name} parsed the max members as \`${
+							isNaN(activityMaxPlayers) ? 'Not a Number' : activityMaxPlayers
+						}\`, which is outside of the allowed range.  Please recreate this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`,
 					}],
-				}
+				},
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1b-verifyCustomActivity.ts:invalidPlayer', interaction, e));
 			return;
 		}
@@ -72,14 +74,14 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						style: ButtonStyles.Success,
 						label: 'Yup, looks great!',
 						customId: `${gameSelectionId}${idxPath}${pathIdxEnder}`,
-					},{
+					}, {
 						type: MessageComponentTypes.Button,
 						style: ButtonStyles.Danger,
 						label: 'Nope, let me change something.',
 						customId: `${openCustomModalId}${idxPath}`,
-					}]
-				}]
-			}
+					}],
+				}],
+			},
 		}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1b-verifyCustomActivity.ts:message', interaction, e));
 	} else {
 		somethingWentWrong(bot, interaction, 'noDataFromCustomActivityModal');

@@ -1,6 +1,6 @@
 import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes, TextStyles } from '../../../deps.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
-import { eventTimeId, eventTimeZoneId, eventDateId, eventDescriptionId } from './step1-gameSelection.ts';
+import { eventDateId, eventDescriptionId, eventTimeId, eventTimeZoneId } from './step1-gameSelection.ts';
 import { getFinalActivity, idSeparator, pathIdxSeparator } from './utils.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
@@ -17,12 +17,12 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			}
 		}
 
-		const customIdIdxPath = ((interaction.data.customId || '').substring((interaction.data.customId || '').indexOf(idSeparator) + 1) || '');
+		const customIdIdxPath = (interaction.data.customId || '').substring((interaction.data.customId || '').indexOf(idSeparator) + 1) || '';
 		const rawIdxPath: Array<string> = customIdIdxPath.split(pathIdxSeparator);
 		const idxPath: Array<number> = rawIdxPath.map((rawIdx) => rawIdx ? parseInt(rawIdx) : -1);
 		let category: string;
 		let activity: Activity;
-		if (idxPath.some(idx => isNaN(idx) || idx < 0)) {
+		if (idxPath.some((idx) => isNaN(idx) || idx < 0)) {
 			// Handle custom activity
 			category = rawIdxPath[0];
 			activity = {
@@ -32,7 +32,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		} else {
 			// Handle preset activity
 			category = Activities[idxPath[0]].name;
-			activity = getFinalActivity(idxPath, Activities)
+			activity = getFinalActivity(idxPath, Activities);
 		}
 
 		if (!category || !activity.name || !activity.maxMembers || isNaN(activity.maxMembers)) {

@@ -14,7 +14,7 @@ import {
 	OverwriteTypes,
 	sendMessage,
 } from '../../deps.ts';
-import { failColor, infoColor2, somethingWentWrong, successColor, safelyDismissMsg } from '../commandUtils.ts';
+import { failColor, infoColor2, safelyDismissMsg, somethingWentWrong, successColor } from '../commandUtils.ts';
 import { dbClient, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
