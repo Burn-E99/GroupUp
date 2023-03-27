@@ -1,6 +1,6 @@
-export const monthsLong: Array<string> = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-export const monthsShort: Array<string> = monthsLong.map(month => month.slice(0, 3));
-export const tzMap: Map<string, string> = new Map([
+const monthsLong: Array<string> = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+const monthsShort: Array<string> = monthsLong.map(month => month.slice(0, 3));
+const tzMap: Map<string, string> = new Map([
 	['CDT', '-05:00'],
 	['CST', '-06:00'],
 	['PST', '-08:00'],
@@ -52,7 +52,7 @@ export const tzMap: Map<string, string> = new Map([
 	['CHST', '+10:00'],
 	['SST', '-11:00'],
 ]);
-export const shorthandUSTZ: Array<string> = ['ET', 'CT', 'MT', 'PT'];
+const shorthandUSTZ: Array<string> = ['ET', 'CT', 'MT', 'PT'];
 
 // Takes user input Time and makes it actually usable
 const parseEventTime = (preParsedEventTime: string): [string, string, string] => {
@@ -114,7 +114,33 @@ const parseEventTimeZone = (preParsedEventTimeZone: string): string => {
 
 // Takes user input Date and makes it actually usable
 const parseEventDate = (preParsedEventDate: string): [string, string, string] => {
-	return ['','',''];
+	const today = new Date();
+	let [parsedEventMonth, parsedEventDay, parsedEventYear] = preParsedEventDate.split(/[\s,\\/-]+/g);
+
+	if (isNaN(parseInt(parsedEventDay))) {
+		// User only provided one word, we're assuming it was TOMORROW, and all others will be treated as today
+		if (parsedEventMonth.includes('TOMORROW')) {
+			const tomorrow = new Date(today);
+			tomorrow.setDate(tomorrow.getDate() + 1);
+
+			parsedEventYear = tomorrow.getFullYear().toString();
+			parsedEventMonth = monthsLong[tomorrow.getMonth()];
+			parsedEventDay = tomorrow.getDate().toString();
+		} else {
+			parsedEventYear = today.getFullYear().toString();
+			parsedEventMonth = monthsLong[today.getMonth()];
+			parsedEventDay = today.getDate().toString();
+		}
+	} else {
+		// Month and Day exist, so determine year and parse month/day
+		parsedEventYear = (isNaN(parseInt(parsedEventYear)) ? today.getFullYear() : parseInt(parsedEventYear)).toString();
+		parsedEventDay = parseInt(parsedEventDay).toString();
+		if (!monthsLong.includes(parsedEventMonth) || !monthsShort.includes(parsedEventMonth)) {
+			parsedEventMonth = parseInt(parsedEventMonth).toString();
+		}
+	}
+
+	return [parsedEventYear, parsedEventMonth, parsedEventDay];
 }
 
 // Take full raw Date/Time input and convert it to a proper Date
