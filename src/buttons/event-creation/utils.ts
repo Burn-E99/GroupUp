@@ -150,6 +150,7 @@ export const createLFGPost = (
 	eventDateTime: Date,
 	eventDateTimeStr: String,
 	eventDescription: string,
+	authorId: bigint,
 	author: string,
 	memberList: Array<LFGMember>,
 	alternateList: Array<LFGMember>,
@@ -191,6 +192,7 @@ export const createLFGPost = (
 				}],
 				footer: {
 					text: `Created by: ${author}`,
+					iconUrl: `${config.links.creatorIcon}#${authorId}`,
 				},
 				timestamp: eventDateTime.getTime(),
 			}],

@@ -8,12 +8,12 @@ import { getDateFromRawInput } from './dateTimeUtils.ts';
 export const customId = 'finalize';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction?.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member) {
+	if (interaction?.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member && interaction.member.user) {
 		const tempDataMap: Map<string, string> = new Map();
 		for (const row of interaction.data.components) {
 			if (row.components?.[0]) {
 				const textField = row.components[0];
-				tempDataMap.set(textField.customId || 'missingCustomId', textField.value || 'missingValue');
+				tempDataMap.set(textField.customId || 'missingCustomId', textField.value || '');
 			}
 		}
 
@@ -43,7 +43,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const rawEventTime = tempDataMap.get(eventTimeId) || '';
 		const rawEventTimeZone = tempDataMap.get(eventTimeZoneId) || '';
 		const rawEventDate = tempDataMap.get(eventDateId) || '';
-		const eventDescription = tempDataMap.get(eventDescriptionId) || 'No Description Provided.';
+		const eventDescription = tempDataMap.get(eventDescriptionId) || 'No description provided.';
 		if (!rawEventTime || !rawEventTimeZone || !rawEventDate) {
 			// Error out if user somehow failed to provide one of the fields (eventDescription is allowed to be null/empty)
 			somethingWentWrong(bot, interaction, `missingFieldFromEventDescription@${rawEventTime}_${rawEventTimeZone}_${rawEventDate}`);
@@ -56,7 +56,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		bot.helpers.sendInteractionResponse(
 			interaction.id,
 			interaction.token,
-			createLFGPost(category, activity, eventDateTime, eventDateTimeStr, eventDescription, interaction.member.nick || 'test', [], [], customIdIdxPath, true),
+			createLFGPost(category, activity, eventDateTime, eventDateTimeStr, eventDescription, interaction.member.id, interaction.member.user.username, [], [], customIdIdxPath, true),
 		);
 
 		// somethingWentWrong(bot, interaction, `TESTING@${rawEventTime}_${rawEventTimeZone}_${rawEventDate}`);
