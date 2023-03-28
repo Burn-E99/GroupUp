@@ -1,5 +1,5 @@
 const monthsLong: Array<string> = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-const monthsShort: Array<string> = monthsLong.map((month) => month.slice(0, 3));
+export const monthsShort: Array<string> = monthsLong.map((month) => month.slice(0, 3));
 const tzMap: Map<string, string> = new Map([
 	['CDT', '-05:00'],
 	['CST', '-06:00'],
@@ -77,11 +77,15 @@ const parseEventTime = (preParsedEventTime: string): [string, string, string] =>
 		parsedEventTimePeriod = '';
 	}
 
+	if (!parsedEventTimePeriod && parsedEventTimeHours.length < 2) {
+		parsedEventTimeHours = `0${parsedEventTimeHours}`;
+	}
+
 	return [parsedEventTimeHours, parsedEventTimeMinutes, parsedEventTimePeriod];
 };
 
 // Takes user input Time Zone and makes it actually usable
-const parseEventTimeZone = (preParsedEventTimeZone: string): string => {
+const parseEventTimeZone = (preParsedEventTimeZone: string): [string, string] => {
 	if (shorthandUSTZ.includes(preParsedEventTimeZone)) {
 		// Handle shorthand US timezones, adding S for standard time and D for Daylight Savings
 		const today = new Date();
@@ -95,20 +99,20 @@ const parseEventTimeZone = (preParsedEventTimeZone: string): string => {
 	}
 	if (tzMap.has(preParsedEventTimeZone)) {
 		// TZ is proper abbreviation, use our map to convert
-		return tzMap.get(preParsedEventTimeZone) || 'how did we get here?';
+		return [`UTC${tzMap.get(preParsedEventTimeZone)}`, preParsedEventTimeZone];
 	} else {
 		// Determine if user put in UTC4, which needs to be UTC+4
 		let addPlusSign = false;
-		if (!preParsedEventTimeZone.includes('+') || !preParsedEventTimeZone.includes('-')) {
+		if (!preParsedEventTimeZone.includes('+') && !preParsedEventTimeZone.includes('-')) {
 			addPlusSign = true;
 		}
 		// Determine if we need to prepend UTC/GMT, handle adding the + into the string
-		if (!preParsedEventTimeZone.startsWith('UTC') || preParsedEventTimeZone.startsWith('GMT')) {
+		if (!preParsedEventTimeZone.startsWith('UTC') && preParsedEventTimeZone.startsWith('GMT')) {
 			preParsedEventTimeZone = `UTC${addPlusSign && '+'}${preParsedEventTimeZone}`;
 		} else if (addPlusSign) {
 			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, 3)}+${preParsedEventTimeZone.slice(3)}`;
 		}
-		return preParsedEventTimeZone;
+		return [preParsedEventTimeZone, preParsedEventTimeZone];
 	}
 };
 
@@ -135,8 +139,8 @@ const parseEventDate = (preParsedEventDate: string): [string, string, string] =>
 		// Month and Day exist, so determine year and parse month/day
 		parsedEventYear = (isNaN(parseInt(parsedEventYear)) ? today.getFullYear() : parseInt(parsedEventYear)).toString();
 		parsedEventDay = parseInt(parsedEventDay).toString();
-		if (!monthsLong.includes(parsedEventMonth) || !monthsShort.includes(parsedEventMonth)) {
-			parsedEventMonth = parseInt(parsedEventMonth).toString();
+		if (!monthsLong.includes(parsedEventMonth) && !monthsShort.includes(parsedEventMonth)) {
+			parsedEventMonth = monthsShort[parseInt(parsedEventMonth) - 1];
 		}
 	}
 
@@ -144,15 +148,20 @@ const parseEventDate = (preParsedEventDate: string): [string, string, string] =>
 };
 
 // Take full raw Date/Time input and convert it to a proper Date
-export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string): Date => {
+export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string): [Date, string] => {
 	// Verify/Set Time
 	const [parsedEventTimeHours, parsedEventTimeMinutes, parsedEventTimePeriod] = parseEventTime(rawEventTime.replaceAll(':', '').toUpperCase());
 
 	// Verify/Set Time Zone
-	const parsedEventTimeZone = parseEventTimeZone(rawEventTimeZone.replaceAll(' ', '').trim().toUpperCase());
+	const [parsedEventTimeZone, userInputTimeZone] = parseEventTimeZone(rawEventTimeZone.replaceAll(' ', '').trim().toUpperCase());
 
 	// Verify/Set Date
 	const [parsedEventYear, parsedEventMonth, parsedEventDay] = parseEventDate(rawEventDate.trim().toUpperCase());
 
-	return new Date(`${parsedEventMonth} ${parsedEventDay}, ${parsedEventYear} ${parsedEventTimeHours}:${parsedEventTimeMinutes} ${parsedEventTimePeriod} ${parsedEventTimeZone}`);
+	return [
+		new Date(`${parsedEventMonth} ${parsedEventDay}, ${parsedEventYear} ${parsedEventTimeHours}:${parsedEventTimeMinutes} ${parsedEventTimePeriod} ${parsedEventTimeZone}`),
+		`${parsedEventTimeHours}${parsedEventTimePeriod ? ':' : ''}${parsedEventTimeMinutes} ${parsedEventTimePeriod} ${userInputTimeZone} ${parsedEventMonth.slice(0, 1)}${
+			parsedEventMonth.slice(1, 3).toLowerCase()
+		} ${parsedEventDay}, ${parsedEventYear}`,
+	];
 };

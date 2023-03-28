@@ -2,10 +2,23 @@ import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, Butto
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { addTokenToMap, deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, idSeparator, pathIdxEnder, pathIdxSeparator, selfDestructMessage, tokenMap } from './utils.ts';
+import {
+	addTokenToMap,
+	deleteTokenEarly,
+	generateActionRow,
+	generateMapId,
+	getNestedActivity,
+	idSeparator,
+	LfgEmbedIndexes,
+	pathIdxEnder,
+	pathIdxSeparator,
+	selfDestructMessage,
+	tokenMap,
+} from './utils.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';
+import { monthsShort } from './dateTimeUtils.ts';
 
 export const customId = 'gameSel';
 export const eventTimeId = 'eventTime';
@@ -39,6 +52,20 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		if ((interaction.data.customId?.includes(idSeparator) && interaction.data.customId.endsWith(pathIdxEnder)) || interaction.data?.values?.[0].endsWith(pathIdxEnder)) {
 			// User selected activity, give them the details modal and delete the selectMenus
 			await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
+
+			let prefillTime = '';
+			let prefillTimeZone = '';
+			let prefillDate = '';
+			let prefillDescription = '';
+			if (interaction.message && interaction.message.embeds[0].fields) {
+				let rawEventDateTime = interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('\n')[0].split(' ');
+				const monthIdx = rawEventDateTime.findIndex((item) => monthsShort.includes(item.toUpperCase()));
+				prefillTime = rawEventDateTime.slice(0, monthIdx - 2).join(' ').trim();
+				prefillTimeZone = rawEventDateTime[monthIdx - 1].trim();
+				prefillDate = rawEventDateTime.slice(monthIdx).join(' ').trim();
+				prefillDescription = interaction.message.embeds[0].fields[LfgEmbedIndexes.Description].value.trim();
+			}
+
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.Modal,
 				data: {
@@ -54,6 +81,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							style: TextStyles.Short,
 							minLength: 1,
 							maxLength: 8,
+							value: prefillTime || undefined,
 						}],
 					}, {
 						type: MessageComponentTypes.ActionRow,
@@ -65,6 +93,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							style: TextStyles.Short,
 							minLength: 2,
 							maxLength: 8,
+							value: prefillTimeZone || undefined,
 						}],
 					}, {
 						type: MessageComponentTypes.ActionRow,
@@ -76,6 +105,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							style: TextStyles.Short,
 							minLength: 1,
 							maxLength: 20,
+							value: prefillDate || undefined,
 						}],
 					}, {
 						type: MessageComponentTypes.ActionRow,
@@ -88,6 +118,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							required: false,
 							minLength: 0,
 							maxLength: 1000,
+							value: prefillDescription || undefined,
 						}],
 					}],
 				},

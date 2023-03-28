@@ -31,3 +31,9 @@ export type DBGuildSettings = {
 	managerRoleId: bigint;
 	logChannelId: bigint;
 };
+
+export type LFGMember = {
+	id: bigint;
+	name: string;
+	joined?: boolean;
+};

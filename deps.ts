@@ -41,6 +41,7 @@ export type {
 	EventHandlers,
 	Guild,
 	Interaction,
+	InteractionResponse,
 	MakeRequired,
 	Message,
 	PermissionStrings,

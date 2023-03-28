@@ -15,6 +15,7 @@ export const config = {
 	'link': { // Links to various sites
 		'sourceCode': 'https://github.com/Burn-E99/GroupUp', // Link to the repository
 		'supportServer': '', // Invite link to the Discord support server
+		'addToCalendar': '', // Link to where the icsGenerator is hosted
 	},
 	'logChannel': 'the_log_channel', // Discord channel ID where the bot should put startup messages and other error messages needed
 	'reportChannel': 'the_report_channel', // Discord channel ID where reports will be sent when using the built-in report command
