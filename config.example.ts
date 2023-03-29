@@ -18,10 +18,10 @@ export const config = {
 		'addToCalendar': '', // Link to where the icsGenerator is hosted
 		'creatorIcon': '', // Link to where the GroupUpSinglePerson.png (or similar image) is hosted
 	},
-	'logChannel': 'the_log_channel', // Discord channel ID where the bot should put startup messages and other error messages needed
-	'reportChannel': 'the_report_channel', // Discord channel ID where reports will be sent when using the built-in report command
-	'devServer': 'the_dev_server', // Discord guild ID where testing of indev features/commands will be handled, used in conjunction with the DEVMODE bool in mod.ts
-	'owner': 'the_bot_owner', // Discord user ID of the bot admin
+	'logChannel': 0n, // Discord channel ID where the bot should put startup messages and other error messages needed
+	'reportChannel': 0n, // Discord channel ID where reports will be sent when using the built-in report command
+	'devServer': 0n, // Discord guild ID where testing of indev features/commands will be handled, used in conjunction with the DEVMODE bool in mod.ts
+	'owner': 0n, // Discord user ID of the bot admin
 	'botLists': [ // Array of objects containing all bot lists that stats should be posted to
 		{ // Bot List object, duplicate for each bot list
 			'name': 'Bot List Name', // Name of bot list, not used
