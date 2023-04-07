@@ -87,19 +87,22 @@ export const deleteTokenEarly = async (bot: Bot, interaction: Interaction, guild
 	}
 };
 
+const createEventBtnName = 'Create Event';
+const createWhitelistedBtnName = 'Create Whitelisted Event';
+const editEventDetailsBtnName = 'Edit Event Details';
 const finalizeButtons = (idxPath: string): [ButtonComponent, ButtonComponent, ButtonComponent] => [{
 	type: MessageComponentTypes.Button,
-	label: 'Create Event',
+	label: createEventBtnName,
 	style: ButtonStyles.Success,
 	customId: createEventCustomId,
 }, {
 	type: MessageComponentTypes.Button,
-	label: 'Create Whitelisted Event',
+	label: createWhitelistedBtnName,
 	style: ButtonStyles.Primary,
 	customId: `${createEventCustomId}${idSeparator}`,
 }, {
 	type: MessageComponentTypes.Button,
-	label: 'Edit Event Details',
+	label: editEventDetailsBtnName,
 	style: ButtonStyles.Secondary,
 	customId: `${gameSelCustomId}${idSeparator}${idxPath}${pathIdxEnder}`,
 }];
@@ -170,7 +173,11 @@ export const createLFGPost = (
 		type: InteractionResponseTypes.ChannelMessageWithSource,
 		data: {
 			flags: editing ? ApplicationCommandFlags.Ephemeral : undefined,
-			content: editing ? `Please verify the information below, then click on the $name button below.\n\n${selfDestructMessage(new Date().getTime())}` : '',
+			content: editing
+				? `Please verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the ${editEventDetailsBtnName} button below. \n\n${
+					selfDestructMessage(new Date().getTime())
+				}`
+				: '',
 			embeds: [{
 				color: successColor,
 				fields: [{
