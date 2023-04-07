@@ -88,6 +88,18 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			let logChannelErrorOut = false;
 			let mgrRoleErrorOut = false;
 			const introFields: Array<DiscordEmbedField> = [{
+				name: 'Joining Events:',
+				value:
+					'To join an event, simply click on the `Join` or `Request to Join` button.  If you try to join a full event, you will be placed in the Alternates column with an `*` next to your name.  Members with an `*` next to their name will automatically get promoted to the Joined list if someone leaves the event.',
+			}, {
+				name: 'Leaving Events:',
+				value: 'To leave an event, simply click on the `Leave` button.',
+				inline: true,
+			}, {
+				name: 'Joining Events as an Alternate:',
+				value: 'To join as a backup or indicate you might be available, simply click on the `Join as Alternate` button.',
+				inline: true,
+			}, {
 				name: 'Editing/Deleting your event:',
 				value: 'To edit or delete your event, simply click on the ✏️ or 🗑️ buttons respectively.',
 			}];

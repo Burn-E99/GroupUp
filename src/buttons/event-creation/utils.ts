@@ -114,14 +114,14 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	customId: `joinEvent${whitelist ? idSeparator : ''}`, // TODO: replace with proper id
 }, {
 	type: MessageComponentTypes.Button,
-	label: `Join as Alternate`,
-	style: ButtonStyles.Primary,
-	customId: 'alternateEvent', // TODO: replace with proper id
-}, {
-	type: MessageComponentTypes.Button,
 	label: 'Leave',
 	style: ButtonStyles.Danger,
 	customId: 'leaveEvent', // TODO: replace with proper id
+}, {
+	type: MessageComponentTypes.Button,
+	label: `Join as Alternate`,
+	style: ButtonStyles.Primary,
+	customId: 'alternateEvent', // TODO: replace with proper id
 }, {
 	type: MessageComponentTypes.Button,
 	label: '',
