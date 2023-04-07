@@ -140,9 +140,29 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	},
 }];
 
-const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
-const generateMemberList = (memberList: Array<LFGMember>): string => memberList.length ? memberList.map((member) => `${member.name} - <@${member.id}>`).join('\n') : 'None';
-const generateAlternateList = (alternateList: Array<LFGMember>): string =>
+// Get Member Counts from the title
+export const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
+	const [rawCurrentCount, rawMaxCount] = rawMemberTitle.split('/');
+	const currentMemberCount = parseInt(rawCurrentCount.split(':')[1] || '0')
+	const maxMemberCount = parseInt(rawMaxCount || '0');
+	return [currentMemberCount, maxMemberCount]
+};
+
+// Get LFGMember objects from string list
+export const getLfgMembers = (rawMemberList: string): Array<LFGMember> => rawMemberList.split('\n').map((rawMember) => {
+	const [memberName, memberMention] = rawMember.split('-');
+	const lfgMember: LFGMember = {
+		id: BigInt(memberMention.split('<@')[1].split('>')[0].trim() || '0'),
+		name: memberName.trim(),
+		joined: rawMember.endsWith('*'),
+	}
+	return lfgMember;
+});
+
+// Member List generators
+export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
+export const generateMemberList = (memberList: Array<LFGMember>): string => memberList.length ? memberList.map((member) => `${member.name} - <@${member.id}>`).join('\n') : 'None';
+export const generateAlternateList = (alternateList: Array<LFGMember>): string =>
 	alternateList.length ? alternateList.map((member) => `${member.name} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : 'None';
 
 export enum LfgEmbedIndexes {
