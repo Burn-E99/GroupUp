@@ -20,6 +20,7 @@ import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';
 import { monthsShort } from './dateTimeUtils.ts';
+import { dbClient, queries } from '../../db.ts';
 
 export const customId = 'gameSel';
 export const eventTimeId = 'eventTime';
@@ -45,6 +46,14 @@ const customEventRow: ActionRow = {
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data && (interaction.data.name === slashCommandName || interaction.data.customId) && interaction.member && interaction.guildId && interaction.channelId) {
+		// Light Telemetry
+		if (interaction.data.name === slashCommandName) {
+			dbClient.execute(queries.callIncCnt('cmd-gameSel')).catch((e) => utils.commonLoggers.dbError('step1-gameSelection.ts@cmd', 'call sproc INC_CNT on', e));
+		}
+		if (interaction.data.customId === customId) {
+			dbClient.execute(queries.callIncCnt('btn-gameSel')).catch((e) => utils.commonLoggers.dbError('step1-gameSelection.ts@btn', 'call sproc INC_CNT on', e));
+		}
+
 		// Check if we are done
 		const customIdIdxPath = (interaction.data.customId || '').substring((interaction.data.customId || '').indexOf(idSeparator) + 1) || '';
 		const valuesIdxPath = interaction.data?.values?.[0] || '';

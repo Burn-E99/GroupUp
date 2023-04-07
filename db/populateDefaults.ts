@@ -8,6 +8,11 @@ const actions = [
 	'cmd-info',
 	'cmd-report',
 	'cmd-setup',
+	'cmd-gameSel',
+	'btn-gameSel',
+	'btn-customAct',
+	'btn-createEvt',
+	'btn-createWLEvt',
 ];
 for (const action of actions) {
 	await dbClient.execute('INSERT INTO command_cnt(command) values(?)', [action]).catch((e) => {

@@ -10,6 +10,11 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 	if (
 		interaction.data?.customId && interaction.member && interaction.guildId && interaction.channelId && interaction.message && interaction.message.embeds[0] && interaction.message.embeds[0].fields
 	) {
+		// Light Telemetry
+		dbClient.execute(queries.callIncCnt(interaction.data.customId.includes(idSeparator) ? 'btn-createWLEvt' : 'btn-createEvt')).catch((e) =>
+			utils.commonLoggers.dbError('step3-createEvent.ts', 'call sproc INC_CNT on', e)
+		);
+
 		deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 
 		// Get OwnerId and EventTime from embed for DB
