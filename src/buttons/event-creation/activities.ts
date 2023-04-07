@@ -179,6 +179,10 @@ export const Activities: Array<Activity> = [
 				maxMembers: 15,
 			},
 			{
+				name: 'Hide n Seek',
+				maxMembers: 15,
+			},
+			{
 				name: 'Modded',
 				maxMembers: 15,
 			},
