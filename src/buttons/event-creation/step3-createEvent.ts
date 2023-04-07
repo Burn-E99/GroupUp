@@ -1,5 +1,5 @@
 import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
-import { deleteTokenEarly, LfgEmbedIndexes, generateLFGButtons, idSeparator } from './utils.ts';
+import { deleteTokenEarly, generateLFGButtons, idSeparator, LfgEmbedIndexes } from './utils.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { dbClient, queries } from '../../db.ts';
 import utils from '../../utils.ts';
@@ -7,7 +7,9 @@ import utils from '../../utils.ts';
 export const customId = 'createEvent';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction.data?.customId && interaction.member && interaction.guildId && interaction.channelId && interaction.message && interaction.message.embeds[0] && interaction.message.embeds[0].fields) {
+	if (
+		interaction.data?.customId && interaction.member && interaction.guildId && interaction.channelId && interaction.message && interaction.message.embeds[0] && interaction.message.embeds[0].fields
+	) {
 		deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 
 		// Get OwnerId and EventTime from embed for DB
@@ -20,7 +22,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			components: [{
 				type: MessageComponentTypes.ActionRow,
 				components: generateLFGButtons(interaction.data.customId.includes(idSeparator)),
-			}]
+			}],
 		}).catch((e: Error) => utils.commonLoggers.messageSendError('step3-createEvent.ts', 'createEvent', e));
 		if (!eventMessage) {
 			somethingWentWrong(bot, interaction, 'creatingEventSendMessageFinalizeEventStep');
@@ -34,7 +36,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			dbErrorOut = true;
 		});
 		if (dbErrorOut) {
-			bot.helpers.deleteMessage(eventMessage.channelId, eventMessage.id, 'Failed to log event to DB').catch((e: Error) => utils.commonLoggers.messageDeleteError('step3-createEvent.ts', 'deleteEventFailedDB', e));
+			bot.helpers.deleteMessage(eventMessage.channelId, eventMessage.id, 'Failed to log event to DB').catch((e: Error) =>
+				utils.commonLoggers.messageDeleteError('step3-createEvent.ts', 'deleteEventFailedDB', e)
+			);
 			somethingWentWrong(bot, interaction, 'creatingEventDBStoreFinalizeEventStep');
 			return;
 		}
@@ -43,7 +47,6 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 			type: InteractionResponseTypes.DeferredUpdateMessage,
 		});
-		
 	} else {
 		somethingWentWrong(bot, interaction, 'noDataFromFinalizeEventStep');
 	}

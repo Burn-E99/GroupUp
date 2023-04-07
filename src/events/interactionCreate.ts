@@ -1,4 +1,4 @@
-import { Bot, BotWithCache, Interaction } from '../../deps.ts';
+import { Bot, BotWithCache, Interaction, log, LT } from '../../deps.ts';
 import { buttons } from '../buttons/_index.ts';
 import { commands } from '../commands/_index.ts';
 import { idSeparator } from '../buttons/event-creation/utils.ts';
@@ -23,6 +23,6 @@ export const interactionCreate = (rawBot: Bot, interaction: Interaction) => {
 			return;
 		}
 
-		console.log('interaction NOT HANDLED', interaction);
+		log(LT.WARN, `interaction NOT HANDLED!!! customId: ${interaction.data.customId} name: ${interaction.data.name}`);
 	}
 };

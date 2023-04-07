@@ -1,6 +1,6 @@
 import config from '../../config.ts';
 import { LOCALMODE } from '../../flags.ts';
-import { ActivityTypes, Bot, BotWithCache, editBotMember, editBotStatus, log, LT, sendMessage } from '../../deps.ts';
+import { ActivityTypes, Bot, BotWithCache, editBotMember, editBotStatus, log, LT } from '../../deps.ts';
 import { getRandomStatus, successColor } from '../commandUtils.ts';
 import utils from '../utils.ts';
 
@@ -45,7 +45,7 @@ export const ready = (rawBot: Bot) => {
 			}],
 			status: 'online',
 		});
-		sendMessage(bot, config.logChannel, {
+		bot.helpers.sendMessage(config.logChannel, {
 			embeds: [{
 				title: `${config.name} is now Online`,
 				color: successColor,

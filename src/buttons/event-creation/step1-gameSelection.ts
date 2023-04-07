@@ -10,11 +10,11 @@ import {
 	getNestedActivity,
 	idSeparator,
 	LfgEmbedIndexes,
+	lfgStartTimeName,
 	pathIdxEnder,
 	pathIdxSeparator,
 	selfDestructMessage,
 	tokenMap,
-	lfgStartTimeName,
 } from './utils.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';

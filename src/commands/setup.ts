@@ -12,7 +12,6 @@ import {
 	InteractionResponseTypes,
 	MessageComponentTypes,
 	OverwriteTypes,
-	sendMessage,
 } from '../../deps.ts';
 import { failColor, infoColor2, safelyDismissMsg, somethingWentWrong, successColor } from '../commandUtils.ts';
 import { dbClient, lfgChannelSettings, queries } from '../db.ts';
@@ -99,16 +98,6 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				},
 			];
 			if (setupOpts.name === withMgrRole) {
-				introFields.push({
-					name: `${config.name} Manager Details:`,
-					value: `${config.name} Managers with the <@&${managerRoleId}> role may edit or delete events in this guild, along with using the following commands to update the activity members:
-
-\`/join\`
-\`/leave\`
-\`/alternate\`
-
-The Discord Slash Command system will ensure you provide all the required details.`,
-				});
 				if (setupOpts.options?.length) {
 					setupOpts.options.forEach((opt) => {
 						if (opt.name === managerRoleStr) {
@@ -143,9 +132,17 @@ The Discord Slash Command system will ensure you provide all the required detail
 					somethingWentWrong(bot, interaction, 'setupMissingRoleMgrOptions');
 					return;
 				}
+				introFields.push({
+					name: `${config.name} Manager Details:`,
+					value: `${config.name} Managers with the <@&${managerRoleId}> role may edit or delete events in this guild, along with using the following commands to update the activity members:
+
+\`/join\` \`/leave\` \`/alternate\`
+
+The Discord Slash Command system will ensure you provide all the required details.`,
+				});
 
 				// Test sending a message to the logChannel
-				await sendMessage(bot, logChannelId, {
+				await bot.helpers.sendMessage(logChannelId, {
 					embeds: [{
 						title: `This is the channel ${config.name} will be logging events to.`,
 						description: `${config.name} will only send messages here as frequently as your event managers update events.`,
@@ -226,7 +223,11 @@ The Discord Slash Command system will ensure you provide all the required detail
 				}
 			});
 			if (msgsToDel.length) {
-				await bot.helpers.deleteMessages(interaction.channelId, msgsToDel, 'Cleaning LFG Channel').catch((e: Error) => utils.commonLoggers.messageDeleteError('setup.ts', 'bulk-msg-cleanup', e));
+				for (const msgToDel of msgsToDel) {
+					await bot.helpers.deleteMessage(interaction.channelId, msgToDel, 'Initial LFG Channel Cleanup').catch((e: Error) =>
+						utils.commonLoggers.messageDeleteError('setup.ts', 'bulk-msg-cleanup', e)
+					);
+				}
 			}
 
 			// Retrofit all old LFG posts that we found
@@ -255,7 +256,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 
 			// Send the initial introduction message
 			const createNewEventBtn = 'Create New Event';
-			const introMsg = await sendMessage(bot, interaction.channelId, {
+			const introMsg = await bot.helpers.sendMessage(interaction.channelId, {
 				content: `Welcome to <#${interaction.channelId}>, managed by <@${botId}>!`,
 				embeds: [{
 					title: `To get started, click on the '${createNewEventBtn}' button below!`,

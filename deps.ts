@@ -23,8 +23,6 @@ export {
 	InteractionResponseTypes,
 	MessageComponentTypes,
 	OverwriteTypes,
-	sendInteractionResponse,
-	sendMessage,
 	startBot,
 	TextStyles,
 } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';

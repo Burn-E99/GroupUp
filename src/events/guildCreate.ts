@@ -1,20 +1,11 @@
 import config from '../../config.ts';
-import {
-	// Discordeno deps
-	Bot,
-	Guild,
-	// Log4Deno deps
-	log,
-	LT,
-	// Discordeno deps
-	sendMessage,
-} from '../../deps.ts';
+import { Bot, Guild, log, LT } from '../../deps.ts';
 import { infoColor1 } from '../commandUtils.ts';
 import utils from '../utils.ts';
 
 export const guildCreate = (bot: Bot, guild: Guild) => {
 	log(LT.LOG, `Handling joining guild ${utils.jsonStringifyBig(guild)}`);
-	sendMessage(bot, config.logChannel, {
+	bot.helpers.sendMessage(config.logChannel, {
 		embeds: [{
 			title: 'Guild Joined!',
 			color: infoColor1,

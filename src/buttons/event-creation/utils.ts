@@ -139,7 +139,8 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 
 const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
 const generateMemberList = (memberList: Array<LFGMember>): string => memberList.length ? memberList.map((member) => `${member.name} - <@${member.id}>`).join('\n') : 'None';
-const generateAlternateList = (alternateList: Array<LFGMember>): string => alternateList.length ? alternateList.map((member) => `${member.name} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : 'None';
+const generateAlternateList = (alternateList: Array<LFGMember>): string =>
+	alternateList.length ? alternateList.map((member) => `${member.name} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : 'None';
 
 export enum LfgEmbedIndexes {
 	Activity,
@@ -148,7 +149,7 @@ export enum LfgEmbedIndexes {
 	Description,
 	JoinedMembers,
 	AlternateMembers,
-};
+}
 export const lfgStartTimeName = 'Start Time:';
 export const createLFGPost = (
 	category: string,

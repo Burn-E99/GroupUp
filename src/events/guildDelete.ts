@@ -1,13 +1,5 @@
 import config from '../../config.ts';
-import {
-	// Discordeno deps
-	Bot,
-	// Log4Deno deps
-	log,
-	LT,
-	// Discordeno deps
-	sendMessage,
-} from '../../deps.ts';
+import { Bot, log, LT } from '../../deps.ts';
 import { warnColor } from '../commandUtils.ts';
 import { dbClient } from '../db.ts';
 import utils from '../utils.ts';
@@ -23,7 +15,7 @@ export const guildDelete = async (bot: Bot, guildId: bigint) => {
 		log(LT.WARN, `Failed to remove guild from DB: ${utils.jsonStringifyBig(e)}`);
 	}
 
-	sendMessage(bot, config.logChannel, {
+	bot.helpers.sendMessage(config.logChannel, {
 		embeds: [{
 			title: 'Removed from Guild',
 			color: warnColor,

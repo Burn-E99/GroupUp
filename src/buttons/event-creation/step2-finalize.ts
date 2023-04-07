@@ -1,7 +1,7 @@
 import { Bot, Interaction } from '../../../deps.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { eventDateId, eventDescriptionId, eventTimeId, eventTimeZoneId } from './step1-gameSelection.ts';
-import { createLFGPost, getFinalActivity, idSeparator, pathIdxSeparator, addTokenToMap } from './utils.ts';
+import { addTokenToMap, createLFGPost, getFinalActivity, idSeparator, pathIdxSeparator } from './utils.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
 
