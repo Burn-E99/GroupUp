@@ -13,6 +13,7 @@ console.log('Attempt to drop all tables');
 await dbClient.execute(`DROP PROCEDURE IF EXISTS INC_CNT;`);
 await dbClient.execute(`DROP TABLE IF EXISTS command_cnt;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_settings;`);
+await dbClient.execute(`DROP TABLE IF EXISTS active_event;`);
 console.log('Tables dropped');
 
 console.log('Attempting to create table command_cnt');
@@ -47,6 +48,21 @@ await dbClient.execute(`
 		managerRoleId bigint unsigned NOT NULL,
 		logChannelId bigint unsigned NOT NULL,
 		PRIMARY KEY (guildId, lfgChannelId)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+`);
+console.log('Table created');
+
+console.log('Attempting to create table active_event');
+await dbClient.execute(`
+	CREATE TABLE active_event (
+		messageId bigint unsigned NOT NULL,
+		channelId bigint unsigned NOT NULL,
+		guildId bigint unsigned NOT NULL,
+		ownerId bigint unsigned NOT NULL,
+		eventTime timestamp NOT NULL,
+		notifiedFlag tinyint(1) NOT NULL DEFAULT 0,
+		lockedFlag tinyint(1) NOT NULL DEFAULT 0,
+		PRIMARY KEY (messageId, channelId)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 `);
 console.log('Table created');

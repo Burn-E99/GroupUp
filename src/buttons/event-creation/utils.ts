@@ -16,6 +16,7 @@ import utils from '../../utils.ts';
 import { successColor } from '../../commandUtils.ts';
 import { LFGMember } from '../../types/commandTypes.ts';
 import { customId as gameSelCustomId } from './step1-gameSelection.ts';
+import { customId as createEventCustomId } from './step3-createEvent.ts';
 
 // Discord Interaction Tokens last 15 minutes, we will self kill after 14.5 minutes
 const tokenTimeoutS = (15 * 60) - 30;
@@ -90,12 +91,12 @@ const finalizeButtons = (idxPath: string): [ButtonComponent, ButtonComponent, Bu
 	type: MessageComponentTypes.Button,
 	label: 'Create Event',
 	style: ButtonStyles.Success,
-	customId: 'createEvent', // TODO: replace with proper id
+	customId: createEventCustomId,
 }, {
 	type: MessageComponentTypes.Button,
 	label: 'Create Whitelisted Event',
 	style: ButtonStyles.Primary,
-	customId: `createEvent${idSeparator}`, // TODO: replace with proper id
+	customId: `${createEventCustomId}${idSeparator}`,
 }, {
 	type: MessageComponentTypes.Button,
 	label: 'Edit Event Details',
@@ -136,6 +137,10 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	},
 }];
 
+const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
+const generateMemberList = (memberList: Array<LFGMember>): string => memberList.length ? memberList.map((member) => `${member.name} - <@${member.id}>`).join('\n') : 'None';
+const generateAlternateList = (alternateList: Array<LFGMember>): string => alternateList.length ? alternateList.map((member) => `${member.name} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : 'None';
+
 export enum LfgEmbedIndexes {
 	Activity,
 	StartTime,
@@ -143,7 +148,8 @@ export enum LfgEmbedIndexes {
 	Description,
 	JoinedMembers,
 	AlternateMembers,
-}
+};
+export const lfgStartTimeName = 'Start Time:';
 export const createLFGPost = (
 	category: string,
 	activity: Activity,
@@ -162,8 +168,8 @@ export const createLFGPost = (
 	return {
 		type: InteractionResponseTypes.ChannelMessageWithSource,
 		data: {
-			flags: ApplicationCommandFlags.Ephemeral,
-			content: editing ? 'Please verify the information below, then click on the $name button below' : 'test',
+			flags: editing ? ApplicationCommandFlags.Ephemeral : undefined,
+			content: editing ? `Please verify the information below, then click on the $name button below.\n\n${selfDestructMessage(new Date().getTime())}` : '',
 			embeds: [{
 				color: successColor,
 				fields: [{
@@ -171,7 +177,7 @@ export const createLFGPost = (
 					value: activity.name,
 					inline: true,
 				}, {
-					name: 'Start Time:',
+					name: lfgStartTimeName,
 					value: `${eventDateTimeStr}\n<t:${Math.floor(eventDateTime.getTime() / 1000)}:R>`,
 					inline: true,
 				}, {
@@ -182,12 +188,12 @@ export const createLFGPost = (
 					name: 'Description:',
 					value: eventDescription,
 				}, {
-					name: `Members Joined: ${memberList.length}/${activity.maxMembers}`,
-					value: memberList.length ? memberList.map((member) => `${member.name} - <@${member.id}>`).join('\n') : 'None',
+					name: generateMemberTitle(memberList, activity.maxMembers || 0),
+					value: generateMemberList(memberList),
 					inline: true,
 				}, {
 					name: 'Alternates:',
-					value: alternateList.length ? alternateList.map((member) => `${member.name} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : 'None',
+					value: generateAlternateList(alternateList),
 					inline: true,
 				}],
 				footer: {

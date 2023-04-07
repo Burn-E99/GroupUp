@@ -14,6 +14,7 @@ import {
 	pathIdxSeparator,
 	selfDestructMessage,
 	tokenMap,
+	lfgStartTimeName,
 } from './utils.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
@@ -57,10 +58,10 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			let prefillTimeZone = '';
 			let prefillDate = '';
 			let prefillDescription = '';
-			if (interaction.message && interaction.message.embeds[0].fields) {
+			if (interaction.message && interaction.message.embeds[0].fields && interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].name === lfgStartTimeName) {
 				let rawEventDateTime = interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('\n')[0].split(' ');
 				const monthIdx = rawEventDateTime.findIndex((item) => monthsShort.includes(item.toUpperCase()));
-				prefillTime = rawEventDateTime.slice(0, monthIdx - 2).join(' ').trim();
+				prefillTime = rawEventDateTime.slice(0, monthIdx - 1).join(' ').trim();
 				prefillTimeZone = rawEventDateTime[monthIdx - 1].trim();
 				prefillDate = rawEventDateTime.slice(monthIdx).join(' ').trim();
 				prefillDescription = interaction.message.embeds[0].fields[LfgEmbedIndexes.Description].value.trim();
@@ -180,12 +181,12 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 	}
 };
 
-export const createEventCommand = {
+export const gameSelectionCommand = {
 	details,
 	execute,
 };
 
-export const createEventButton = {
+export const gameSelectionButton = {
 	customId,
 	execute,
 };

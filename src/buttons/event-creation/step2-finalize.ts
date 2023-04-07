@@ -1,7 +1,7 @@
-import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes, TextStyles } from '../../../deps.ts';
+import { Bot, Interaction } from '../../../deps.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { eventDateId, eventDescriptionId, eventTimeId, eventTimeZoneId } from './step1-gameSelection.ts';
-import { createLFGPost, getFinalActivity, idSeparator, pathIdxSeparator } from './utils.ts';
+import { createLFGPost, getFinalActivity, idSeparator, pathIdxSeparator, addTokenToMap } from './utils.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
 
@@ -53,13 +53,27 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		// Get Date Object from user input
 		const [eventDateTime, eventDateTimeStr] = getDateFromRawInput(rawEventTime, rawEventTimeZone, rawEventDate);
 
+		addTokenToMap(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 		bot.helpers.sendInteractionResponse(
 			interaction.id,
 			interaction.token,
-			createLFGPost(category, activity, eventDateTime, eventDateTimeStr, eventDescription, interaction.member.id, interaction.member.user.username, [], [], customIdIdxPath, true),
+			createLFGPost(
+				category,
+				activity,
+				eventDateTime,
+				eventDateTimeStr,
+				eventDescription,
+				interaction.member.id,
+				interaction.member.user.username,
+				[{
+					id: interaction.member.id,
+					name: interaction.member.user.username,
+				}],
+				[],
+				customIdIdxPath,
+				true,
+			),
 		);
-
-		// somethingWentWrong(bot, interaction, `TESTING@${rawEventTime}_${rawEventTimeZone}_${rawEventDate}`);
 	} else {
 		somethingWentWrong(bot, interaction, 'noDataFromEventDescriptionModal');
 	}
