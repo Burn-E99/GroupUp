@@ -4,6 +4,7 @@ import { eventDateId, eventDescriptionId, eventTimeId, eventTimeZoneId } from '.
 import { addTokenToMap, createLFGPost, getFinalActivity, idSeparator, pathIdxSeparator } from './utils.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
+import utils from '../../utils.ts';
 
 export const customId = 'finalize';
 
@@ -73,7 +74,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				customIdIdxPath,
 				true,
 			),
-		);
+		).catch((e: Error) => utils.commonLoggers.interactionSendError('step2-finalize.ts', interaction, e));
 	} else {
 		somethingWentWrong(bot, interaction, 'noDataFromEventDescriptionModal');
 	}

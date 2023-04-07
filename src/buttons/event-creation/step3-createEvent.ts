@@ -46,7 +46,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		// Let discord know we didn't ignore the user
 		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 			type: InteractionResponseTypes.DeferredUpdateMessage,
-		});
+		}).catch((e: Error) => utils.commonLoggers.interactionSendError('step3-createEvent.ts', interaction, e));
 	} else {
 		somethingWentWrong(bot, interaction, 'noDataFromFinalizeEventStep');
 	}
