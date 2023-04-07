@@ -17,6 +17,9 @@ import { successColor } from '../../commandUtils.ts';
 import { LFGMember } from '../../types/commandTypes.ts';
 import { customId as gameSelCustomId } from './step1-gameSelection.ts';
 import { customId as createEventCustomId } from './step3-createEvent.ts';
+import { customId as joinEventCustomId } from '../live-event/joinEvent.ts';
+import { customId as leaveEventCustomId } from '../live-event/leaveEvent.ts';
+import { customId as alternateEventCustomId } from '../live-event/alternateEvent.ts';
 
 // Discord Interaction Tokens last 15 minutes, we will self kill after 14.5 minutes
 const tokenTimeoutS = (15 * 60) - 30;
@@ -111,17 +114,17 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	type: MessageComponentTypes.Button,
 	label: `${whitelist ? 'Request to ' : ''}Join`,
 	style: ButtonStyles.Success,
-	customId: `joinEvent${whitelist ? idSeparator : ''}`, // TODO: replace with proper id
+	customId: `${joinEventCustomId}${whitelist ? idSeparator : ''}`,
 }, {
 	type: MessageComponentTypes.Button,
 	label: 'Leave',
 	style: ButtonStyles.Danger,
-	customId: 'leaveEvent', // TODO: replace with proper id
+	customId: leaveEventCustomId,
 }, {
 	type: MessageComponentTypes.Button,
 	label: `Join as Alternate`,
 	style: ButtonStyles.Primary,
-	customId: 'alternateEvent', // TODO: replace with proper id
+	customId: alternateEventCustomId,
 }, {
 	type: MessageComponentTypes.Button,
 	label: '',
@@ -143,21 +146,22 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 // Get Member Counts from the title
 export const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
 	const [rawCurrentCount, rawMaxCount] = rawMemberTitle.split('/');
-	const currentMemberCount = parseInt(rawCurrentCount.split(':')[1] || '0')
+	const currentMemberCount = parseInt(rawCurrentCount.split(':')[1] || '0');
 	const maxMemberCount = parseInt(rawMaxCount || '0');
-	return [currentMemberCount, maxMemberCount]
+	return [currentMemberCount, maxMemberCount];
 };
 
 // Get LFGMember objects from string list
-export const getLfgMembers = (rawMemberList: string): Array<LFGMember> => rawMemberList.split('\n').map((rawMember) => {
-	const [memberName, memberMention] = rawMember.split('-');
-	const lfgMember: LFGMember = {
-		id: BigInt(memberMention.split('<@')[1].split('>')[0].trim() || '0'),
-		name: memberName.trim(),
-		joined: rawMember.endsWith('*'),
-	}
-	return lfgMember;
-});
+export const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
+	rawMemberList.split('\n').map((rawMember) => {
+		const [memberName, memberMention] = rawMember.split('-');
+		const lfgMember: LFGMember = {
+			id: BigInt(memberMention.split('<@')[1].split('>')[0].trim() || '0'),
+			name: memberName.trim(),
+			joined: rawMember.endsWith('*'),
+		};
+		return lfgMember;
+	});
 
 // Member List generators
 export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
