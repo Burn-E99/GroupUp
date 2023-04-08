@@ -1,6 +1,6 @@
 import { Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { LFGMember, UrlIds } from '../../types/commandTypes.ts';
-import { sendDirectMessage, somethingWentWrong } from '../../commandUtils.ts';
+import { sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
 import { generateAlternateList, generateMemberList, generateMemberTitle, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
 import utils from '../../utils.ts';
 
