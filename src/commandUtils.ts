@@ -46,7 +46,4 @@ export const sendDirectMessage = async (bot: Bot, userId: bigint, message: Creat
 	bot.helpers.getDmChannel(userId).then((userDmChannel) => {
 		// Actually send the DM
 		bot.helpers.sendMessage(userDmChannel.id, message).catch((e: Error) => utils.commonLoggers.messageSendError('commandUtils.ts', message, e));
-	}).catch((e: Error) => {
-		// Edit failed, try to notify user
-		utils.commonLoggers.messageGetError('commandUtils.ts', 'get userDmChannel', e);
-	});
+	}).catch((e: Error) => utils.commonLoggers.messageGetError('commandUtils.ts', 'get userDmChannel', e));

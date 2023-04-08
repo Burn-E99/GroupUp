@@ -1,7 +1,7 @@
-import { Bot, Embed, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { LFGMember } from '../../types/commandTypes.ts';
-import { somethingWentWrong } from '../../commandUtils.ts';
-import { generateAlternateList, generateMemberList, generateMemberTitle, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
+import { Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
+import { LFGMember, UrlIds } from '../../types/commandTypes.ts';
+import { sendDirectMessage, somethingWentWrong } from '../../commandUtils.ts';
+import { generateAlternateList, generateMemberList, generateMemberTitle, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
 import utils from '../../utils.ts';
 
 // Get Member Counts from the title
@@ -65,7 +65,7 @@ const noEdit = async (bot: Bot, interaction: Interaction) =>
 	}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
 
 // Remove member from the event
-export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, userId: bigint) => {
+export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, userId: bigint, evtGuildId: bigint) => {
 	if (evtMessageEmbed.fields) {
 		// Get old counts
 		const [oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
@@ -84,8 +84,37 @@ export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, 
 				alternateList = removeLfgMember(alternateList, memberToPromote.id);
 				memberList.push(memberToPromote);
 
+				const urlIds: UrlIds = {
+					guildId: evtGuildId,
+					channelId: evtChannelId,
+					messageId: evtMessageId,
+				};
+
+				const guildDetails = await bot.helpers.getGuild(evtGuildId).catch((e: Error) => utils.commonLoggers.messageGetError('utils.ts', 'get guild', e));
+
 				// Notify member of promotion
-				// TODO: send notification
+				await sendDirectMessage(bot, memberToPromote.id, {
+					embeds: [{
+						title: 'Good news, you\'ve been promoted!',
+						description: `A member left [the full event](${utils.idsToMessageUrl(urlIds)}) in ${
+							guildDetails?.name || '`failed to get guild name`'
+						} you tried to join, leaving space for me to promote you from the alternate list to the joined list.\n\nPlease verify the event details below.  If you are no longer available for this event, please click on the '${leaveEventBtnStr}' button below`,
+						fields: [
+							evtMessageEmbed.fields[LfgEmbedIndexes.Activity],
+							evtMessageEmbed.fields[LfgEmbedIndexes.StartTime],
+							evtMessageEmbed.fields[LfgEmbedIndexes.ICSLink],
+						],
+					}],
+					components: [{
+						type: MessageComponentTypes.ActionRow,
+						components: [{
+							type: MessageComponentTypes.Button,
+							label: leaveEventBtnStr,
+							style: ButtonStyles.Danger,
+							customId: 'leaveEventCustomId', // TODO: fix
+						}],
+					}],
+				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'user promotion', e));
 			}
 
 			// Update the event
