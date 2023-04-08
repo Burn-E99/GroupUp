@@ -24,7 +24,7 @@ export const isLFGChannel = (guildId: bigint, channelId: bigint) => {
 	return (lfgChannelSettings.has(`${guildId}-${channelId}`) || channelId === 0n || guildId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
 };
 
-export const somethingWentWrong = (bot: Bot, interaction: Interaction, errorCode: string) =>
+export const somethingWentWrong = async (bot: Bot, interaction: Interaction, errorCode: string) =>
 	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 		type: InteractionResponseTypes.ChannelMessageWithSource,
 		data: {

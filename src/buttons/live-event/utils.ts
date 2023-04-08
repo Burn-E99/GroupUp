@@ -5,7 +5,7 @@ import { generateAlternateList, generateMemberList, generateMemberTitle, LfgEmbe
 import utils from '../../utils.ts';
 
 // Get Member Counts from the title
-export const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
+const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
 	const [rawCurrentCount, rawMaxCount] = rawMemberTitle.split('/');
 	const currentMemberCount = parseInt(rawCurrentCount.split(':')[1] || '0');
 	const maxMemberCount = parseInt(rawMaxCount || '0');
@@ -13,7 +13,7 @@ export const getEventMemberCount = (rawMemberTitle: string): [number, number] =>
 };
 
 // Get LFGMember objects from string list
-export const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
+const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
 	rawMemberList.trim() === noMembersStr ? [] : rawMemberList.split('\n').map((rawMember) => {
 		const [memberName, memberMention] = rawMember.split('-');
 		const lfgMember: LFGMember = {
@@ -25,80 +25,135 @@ export const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
 	});
 
 // Remove LFGMember from array filter
-export const removeLfgMember = (memberList: Array<LFGMember>, memberId: bigint): Array<LFGMember> => memberList.filter((member) => member.id !== memberId);
+const removeLfgMember = (memberList: Array<LFGMember>, memberId: bigint): Array<LFGMember> => memberList.filter((member) => member.id !== memberId);
 
-// Remove member from the event
-export const removeMemberFromEvent = (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, userId: bigint) => {
+const editEvent = async (
+	bot: Bot,
+	interaction: Interaction,
+	evtMessageEmbed: Embed,
+	evtMessageId: bigint,
+	evtChannelId: bigint,
+	memberList: Array<LFGMember>,
+	maxMemberCount: number,
+	alternateList: Array<LFGMember>,
+) => {
 	if (evtMessageEmbed.fields) {
-		// Remove user from event
-		const [oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
-		const memberList = removeLfgMember(getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].value), userId);
-		let alternateList = removeLfgMember(getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value), userId);
-
-		// Check if we need to auto-promote a member
-		const memberToPromote = alternateList.find((member) => member.joined);
-		if (oldMemberCount !== memberList.length && oldMemberCount === maxMemberCount && memberToPromote) {
-			// Promote member
-			alternateList = removeLfgMember(alternateList, memberToPromote.id);
-			memberList.push(memberToPromote);
-
-			// Notify member of promotion
-			// TODO: send notification
-		}
-
-		// Update the event
+		// Update the fields
 		evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name = generateMemberTitle(memberList, maxMemberCount);
 		evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].value = generateMemberList(memberList);
 		evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value = generateAlternateList(alternateList);
-		bot.helpers.editMessage(evtChannelId, evtMessageId, {
+
+		// Edit the event
+		await bot.helpers.editMessage(evtChannelId, evtMessageId, {
 			embeds: [evtMessageEmbed],
 		}).then(() => {
 			// Let discord know we didn't ignore the user
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.DeferredUpdateMessage,
-			}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts@removeEvent', interaction, e));
+			}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
 		}).catch((e: Error) => {
 			// Edit failed, try to notify user
-			utils.commonLoggers.messageEditError('utils.ts@removeEvent', 'remove edit fail', e);
-			somethingWentWrong(bot, interaction, 'editFailedInRemoveMember');
+			utils.commonLoggers.messageEditError('utils.ts', 'event edit fail', e);
+			somethingWentWrong(bot, interaction, 'editFailedInUpdateEvent');
 		});
+	}
+};
+
+const noEdit = async (bot: Bot, interaction: Interaction) =>
+	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+		type: InteractionResponseTypes.DeferredUpdateMessage,
+	}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
+
+// Remove member from the event
+export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, userId: bigint) => {
+	if (evtMessageEmbed.fields) {
+		// Get old counts
+		const [oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
+		// Remove user from event
+		const oldMemberList = getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].value);
+		const memberList = removeLfgMember(oldMemberList, userId);
+		const oldAlternateList = getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value);
+		let alternateList = removeLfgMember(oldAlternateList, userId);
+
+		// Check if user actually left event
+		if (oldMemberList.length !== memberList.length || oldAlternateList.length !== alternateList.length) {
+			// Check if we need to auto-promote a member
+			const memberToPromote = alternateList.find((member) => member.joined);
+			if (oldMemberCount !== memberList.length && oldMemberCount === maxMemberCount && memberToPromote) {
+				// Promote member
+				alternateList = removeLfgMember(alternateList, memberToPromote.id);
+				memberList.push(memberToPromote);
+
+				// Notify member of promotion
+				// TODO: send notification
+			}
+
+			// Update the event
+			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList);
+		} else {
+			// Send noEdit response because user did not actually leave
+			await noEdit(bot, interaction);
+		}
 	} else {
-		somethingWentWrong(bot, interaction, 'noFieldsInRemoveMember');
+		await somethingWentWrong(bot, interaction, 'noFieldsInRemoveMember');
 	}
 };
 
 // Alternate member to the event
 export const alternateMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember, userJoinOnFull = false) => {
 	if (evtMessageEmbed.fields) {
-		// Add user to the event
 		member.joined = userJoinOnFull;
-		const alternateList = getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value);
-		alternateList.push(member);
+		// Get current alternates
+		let alternateList = getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value);
 
-		// Update the event
-		evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value = generateAlternateList(alternateList);
-		bot.helpers.editMessage(evtChannelId, evtMessageId, {
-			embeds: [evtMessageEmbed],
-		}).then(() => {
-			// Let discord know we didn't ignore the user
-			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
-				type: InteractionResponseTypes.DeferredUpdateMessage,
-			}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts@alternateEvent', interaction, e));
-		}).catch((e: Error) => {
-			// Edit failed, try to notify user
-			utils.commonLoggers.messageEditError('utils.ts@alternateEvent', 'alternate edit fail', e);
-			somethingWentWrong(bot, interaction, 'editFailedInAlternateMember');
-		});
+		// Verify user is not already on the alternate list
+		if (!alternateList.find((alternateMember) => alternateMember.id === member.id && alternateMember.joined === member.joined)) {
+			// Add user to event, remove first to update joined status if necessary
+			alternateList = removeLfgMember(alternateList, member.id);
+			alternateList.push(member);
+
+			// Get member count and remove user from joined list (if they are there)
+			const [_oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
+			const memberList = removeLfgMember(getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].value), member.id);
+
+			// Update the event
+			evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value = generateAlternateList(alternateList);
+			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList);
+		} else {
+			// Send noEdit response because user was already an alternate and joined status did not change
+			await noEdit(bot, interaction);
+		}
 	} else {
 		// No fields, can't alternate
-		somethingWentWrong(bot, interaction, 'noFieldsInAlternateMember');
+		await somethingWentWrong(bot, interaction, 'noFieldsInAlternateMember');
 	}
 };
 
 // Join member to the event
-export const joinMemberToEvent = (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember) => {
+export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember) => {
 	if (evtMessageEmbed.fields) {
+		// Get current member list and count
+		const [oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
+		const memberList = getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].value);
+		// Verify user is not already on the joined list
+		if (memberList.find((joinedMember) => joinedMember.id === member.id)) {
+			// Send noEdit response because user was already joined
+			await noEdit(bot, interaction);
+		} else if (oldMemberCount === maxMemberCount) {
+			// Event full, add member to alternate list
+			await alternateMemberToEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, member, true);
+		} else {
+			// Join member to event
+			memberList.push(member);
+
+			// Remove user from alternate list (if they are there)
+			const alternateList = removeLfgMember(getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value), member.id);
+
+			// Update the event
+			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList);
+		}
 	} else {
-		somethingWentWrong(bot, interaction, 'noFieldsInJoinMember');
+		// No fields, can't join
+		await somethingWentWrong(bot, interaction, 'noFieldsInJoinMember');
 	}
 };
