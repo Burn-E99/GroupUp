@@ -13,7 +13,7 @@ import {
 import config from '../../../config.ts';
 import utils from '../../utils.ts';
 import { Activity } from './activities.ts';
-import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, lfgStartTimeName } from '../eventUtils.ts';
+import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, leaveEventBtnStr, lfgStartTimeName } from '../eventUtils.ts';
 import { successColor } from '../../commandUtils.ts';
 import { LFGMember } from '../../types/commandTypes.ts';
 import { customId as gameSelCustomId } from './step1-gameSelection.ts';
@@ -117,7 +117,7 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	customId: `${joinEventCustomId}${whitelist ? idSeparator : ''}`,
 }, {
 	type: MessageComponentTypes.Button,
-	label: 'Leave',
+	label: leaveEventBtnStr,
 	style: ButtonStyles.Danger,
 	customId: leaveEventCustomId,
 }, {

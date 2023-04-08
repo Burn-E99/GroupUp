@@ -14,6 +14,7 @@ export enum LfgEmbedIndexes {
 export const lfgStartTimeName = 'Start Time:';
 export const idSeparator = '@';
 export const noMembersStr = 'None';
+export const leaveEventBtnStr = 'Leave';
 
 // Member List generators
 export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
