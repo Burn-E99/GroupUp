@@ -1,5 +1,6 @@
 import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes, TextStyles } from '../../../deps.ts';
-import { deleteTokenEarly, idSeparator, pathIdxSeparator } from './utils.ts';
+import { deleteTokenEarly, pathIdxSeparator } from './utils.ts';
+import { idSeparator } from '../eventUtils.ts';
 import { customId as verifyCustomActivityId } from './step1b-verifyCustomActivity.ts';
 import utils from '../../utils.ts';
 import { dbClient, queries } from '../../db.ts';

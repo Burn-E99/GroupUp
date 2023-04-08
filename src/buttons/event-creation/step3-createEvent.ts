@@ -1,5 +1,6 @@
 import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
-import { deleteTokenEarly, generateLFGButtons, idSeparator, LfgEmbedIndexes } from './utils.ts';
+import { deleteTokenEarly, generateLFGButtons } from './utils.ts';
+import { idSeparator, LfgEmbedIndexes } from '../eventUtils.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { dbClient, queries } from '../../db.ts';
 import utils from '../../utils.ts';

@@ -1,5 +1,3 @@
-import config from '../../../config.ts';
-import { Activity } from './activities.ts';
 import {
 	ActionRow,
 	ApplicationCommandFlags,
@@ -12,7 +10,10 @@ import {
 	MessageComponentTypes,
 	SelectOption,
 } from '../../../deps.ts';
+import config from '../../../config.ts';
 import utils from '../../utils.ts';
+import { Activity } from './activities.ts';
+import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, lfgStartTimeName } from '../eventUtils.ts';
 import { successColor } from '../../commandUtils.ts';
 import { LFGMember } from '../../types/commandTypes.ts';
 import { customId as gameSelCustomId } from './step1-gameSelection.ts';
@@ -24,7 +25,6 @@ import { customId as alternateEventCustomId } from '../live-event/alternateEvent
 // Discord Interaction Tokens last 15 minutes, we will self kill after 14.5 minutes
 const tokenTimeoutS = (15 * 60) - 30;
 export const tokenTimeoutMS = tokenTimeoutS * 1000;
-export const idSeparator = '@';
 export const pathIdxSeparator = '|';
 export const pathIdxEnder = '&';
 export const selfDestructMessage = (currentTime: number) =>
@@ -143,41 +143,6 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	},
 }];
 
-// Get Member Counts from the title
-export const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
-	const [rawCurrentCount, rawMaxCount] = rawMemberTitle.split('/');
-	const currentMemberCount = parseInt(rawCurrentCount.split(':')[1] || '0');
-	const maxMemberCount = parseInt(rawMaxCount || '0');
-	return [currentMemberCount, maxMemberCount];
-};
-
-// Get LFGMember objects from string list
-export const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
-	rawMemberList.split('\n').map((rawMember) => {
-		const [memberName, memberMention] = rawMember.split('-');
-		const lfgMember: LFGMember = {
-			id: BigInt(memberMention.split('<@')[1].split('>')[0].trim() || '0'),
-			name: memberName.trim(),
-			joined: rawMember.endsWith('*'),
-		};
-		return lfgMember;
-	});
-
-// Member List generators
-export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
-export const generateMemberList = (memberList: Array<LFGMember>): string => memberList.length ? memberList.map((member) => `${member.name} - <@${member.id}>`).join('\n') : 'None';
-export const generateAlternateList = (alternateList: Array<LFGMember>): string =>
-	alternateList.length ? alternateList.map((member) => `${member.name} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : 'None';
-
-export enum LfgEmbedIndexes {
-	Activity,
-	StartTime,
-	ICSLink,
-	Description,
-	JoinedMembers,
-	AlternateMembers,
-}
-export const lfgStartTimeName = 'Start Time:';
 export const createLFGPost = (
 	category: string,
 	activity: Activity,
