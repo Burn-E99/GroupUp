@@ -95,6 +95,7 @@ export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, 
 				// Notify member of promotion
 				await sendDirectMessage(bot, memberToPromote.id, {
 					embeds: [{
+						color: successColor,
 						title: 'Good news, you\'ve been promoted!',
 						description: `A member left [the full event](${utils.idsToMessageUrl(urlIds)}) in ${
 							guildDetails?.name || '`failed to get guild name`'
