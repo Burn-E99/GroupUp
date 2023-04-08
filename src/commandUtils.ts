@@ -1,4 +1,4 @@
-import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../deps.ts';
+import { ApplicationCommandFlags, Bot, CreateMessage, Interaction, InteractionResponseTypes } from '../deps.ts';
 import config from '../config.ts';
 import { lfgChannelSettings } from './db.ts';
 import utils from './utils.ts';
@@ -40,3 +40,13 @@ export const somethingWentWrong = async (bot: Bot, interaction: Interaction, err
 			}],
 		},
 	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts', interaction, e));
+
+// Send DM to User
+export const sendDirectMessage = async (bot: Bot, userId: bigint, message: CreateMessage) =>
+	bot.helpers.getDmChannel(userId).then((userDmChannel) => {
+		// Actually send the DM
+		bot.helpers.sendMessage(userDmChannel.id, message).catch((e: Error) => utils.commonLoggers.messageSendError('commandUtils.ts', message, e));
+	}).catch((e: Error) => {
+		// Edit failed, try to notify user
+		utils.commonLoggers.messageGetError('commandUtils.ts', 'get userDmChannel', e);
+	});
