@@ -27,6 +27,7 @@ const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
 // Remove LFGMember from array filter
 const removeLfgMember = (memberList: Array<LFGMember>, memberId: bigint): Array<LFGMember> => memberList.filter((member) => member.id !== memberId);
 
+// Handles updating the fields and editing the event
 const editEvent = async (
 	bot: Bot,
 	interaction: Interaction,
@@ -59,6 +60,7 @@ const editEvent = async (
 	}
 };
 
+// Generic no response response
 const noEdit = async (bot: Bot, interaction: Interaction) =>
 	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 		type: InteractionResponseTypes.DeferredUpdateMessage,
