@@ -64,6 +64,10 @@ const noEdit = async (bot: Bot, interaction: Interaction) =>
 		type: InteractionResponseTypes.DeferredUpdateMessage,
 	}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
 
+// Get Guild Name
+const getGuildName = async (bot: Bot, guildId: bigint): Promise<string> =>
+	(await bot.helpers.getGuild(guildId).catch((e: Error) => utils.commonLoggers.messageGetError('utils.ts', 'get guild', e)) || { name: 'failed to get guild name' }).name;
+
 // Remove member from the event
 export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, userId: bigint, evtGuildId: bigint) => {
 	if (evtMessageEmbed.fields) {
@@ -90,16 +94,15 @@ export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, 
 					messageId: evtMessageId,
 				};
 
-				const guildDetails = await bot.helpers.getGuild(evtGuildId).catch((e: Error) => utils.commonLoggers.messageGetError('utils.ts', 'get guild', e));
-
 				// Notify member of promotion
 				await sendDirectMessage(bot, memberToPromote.id, {
 					embeds: [{
 						color: successColor,
 						title: 'Good news, you\'ve been promoted!',
-						description: `A member left [the full event](${utils.idsToMessageUrl(urlIds)}) in ${
-							guildDetails?.name || '`failed to get guild name`'
-						} you tried to join, leaving space for me to promote you from the alternate list to the joined list.\n\nPlease verify the event details below.  If you are no longer available for this event, please click on the '${leaveEventBtnStr}' button below`,
+						description: `A member left [the full event](${utils.idsToMessageUrl(urlIds)}) in \`${await getGuildName(
+							bot,
+							evtGuildId,
+						)}\` you tried to join, leaving space for me to promote you from the alternate list to the joined list.\n\nPlease verify the event details below.  If you are no longer available for this event, please click on the '${leaveEventBtnStr}' button below`,
 						fields: [
 							evtMessageEmbed.fields[LfgEmbedIndexes.Activity],
 							evtMessageEmbed.fields[LfgEmbedIndexes.StartTime],
@@ -160,7 +163,7 @@ export const alternateMemberToEvent = async (bot: Bot, interaction: Interaction,
 };
 
 // Join member to the event
-export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember) => {
+export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember, evtGuildId: bigint) => {
 	if (evtMessageEmbed.fields) {
 		// Get current member list and count
 		const [oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
@@ -181,6 +184,25 @@ export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtM
 
 			// Update the event
 			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList);
+
+			// Check if we need to notify the owner that their event has filled
+			if (memberList.length === maxMemberCount) {
+				const urlIds: UrlIds = {
+					guildId: evtGuildId,
+					channelId: evtChannelId,
+					messageId: evtMessageId,
+				};
+				const guildName = await getGuildName(bot, evtGuildId);
+				// Notify member of promotion
+				await sendDirectMessage(bot, BigInt(evtMessageEmbed.footer?.iconUrl?.split('#')[1] || '0'), {
+					embeds: [{
+						color: successColor,
+						title: `Good news, your event in ${guildName} has filled!`,
+						description: `[Click here to view the event in ${guildName}.](${utils.idsToMessageUrl(urlIds)})`,
+						fields: evtMessageEmbed.fields,
+					}],
+				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'event filled', e));
+			}
 		}
 	} else {
 		// No fields, can't join
