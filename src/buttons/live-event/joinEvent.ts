@@ -14,7 +14,7 @@ export const execute = async (bot: Bot, interaction: Interaction) => {
 			utils.commonLoggers.dbError('joinEvent.ts', 'call sproc INC_CNT on', e)
 		);
 
-		// Remove user from event
+		// Join user to event
 		joinMemberToEvent(bot, interaction, interaction.message.embeds[0], interaction.message.id, interaction.channelId, {
 			id: interaction.member.id,
 			name: interaction.member.user.username,

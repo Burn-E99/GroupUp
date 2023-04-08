@@ -11,7 +11,7 @@ export const execute = async (bot: Bot, interaction: Interaction) => {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-altEvent')).catch((e) => utils.commonLoggers.dbError('alternateEvent.ts', 'call sproc INC_CNT on', e));
 
-		// Add user to event
+		// Alternate user to event
 		alternateMemberToEvent(bot, interaction, interaction.message.embeds[0], interaction.message.id, interaction.channelId, {
 			id: interaction.member.id,
 			name: interaction.member.user.username,
