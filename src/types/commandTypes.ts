@@ -37,3 +37,9 @@ export type LFGMember = {
 	name: string;
 	joined?: boolean;
 };
+
+export type UrlIds = {
+	guildId: bigint;
+	channelId: bigint;
+	messageId: bigint;
+};

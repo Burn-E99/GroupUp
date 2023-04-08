@@ -1,7 +1,21 @@
-import { Interaction, log, LT, Message } from '../deps.ts';
+import { CreateMessage, Interaction, log, LT, Message } from '../deps.ts';
+import { UrlIds } from './types/commandTypes.ts';
 
 const jsonStringifyBig = (input: any) => {
 	return JSON.stringify(input, (_key, value) => typeof value === 'bigint' ? value.toString() + 'n' : value);
+};
+
+// Get/Generate Discord Message URL
+const idsToMessageUrl = (ids: UrlIds) => `https://discord.com/channels/${ids.guildId}/${ids.channelId}/${ids.messageId}`;
+const messageUrlToIds = (url: string): UrlIds => {
+	url = url.toLowerCase();
+	const [guildId, channelId, messageId] = (url.split('channels')[1] || '').split('/');
+
+	return {
+		guildId: BigInt(guildId || '0'),
+		channelId: BigInt(channelId || '0'),
+		messageId: BigInt(messageId || '0'),
+	};
 };
 
 const genericLogger = (level: LT, message: string) => log(level, message);
@@ -11,7 +25,7 @@ const messageEditError = (location: string, message: Message | string, err: Erro
 	genericLogger(LT.ERROR, `${location} | Failed to edit message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const messageGetError = (location: string, message: Message | string, err: Error) =>
 	genericLogger(LT.ERROR, `${location} | Failed to get message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
-const messageSendError = (location: string, message: Message | string, err: Error) =>
+const messageSendError = (location: string, message: Message | CreateMessage | string, err: Error) =>
 	genericLogger(LT.ERROR, `${location} | Failed to send message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const messageDeleteError = (location: string, message: Message | string, err: Error) =>
 	genericLogger(LT.ERROR, `${location} | Failed to delete message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
@@ -36,4 +50,6 @@ export default {
 		reactionDeleteError,
 	},
 	jsonStringifyBig,
+	messageUrlToIds,
+	idsToMessageUrl,
 };
