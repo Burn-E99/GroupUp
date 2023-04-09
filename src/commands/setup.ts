@@ -14,7 +14,7 @@ import {
 	OverwriteTypes,
 } from '../../deps.ts';
 import { failColor, infoColor2, safelyDismissMsg, somethingWentWrong, successColor } from '../commandUtils.ts';
-import { dbClient, lfgChannelSettings, queries } from '../db.ts';
+import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { customId as gameSelId } from '../buttons/event-creation/step1-gameSelection.ts';
@@ -64,7 +64,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 	const setupOpts = interaction.data?.options?.[0];
 
 	if (setupOpts?.name && interaction.channelId && interaction.guildId) {
-		if (lfgChannelSettings.has(`${interaction.guildId}-${interaction.channelId}`)) {
+		const lfgChannelSettingKey = generateGuildSettingKey(interaction.guildId, interaction.channelId);
+		if (lfgChannelSettings.has(lfgChannelSettingKey)) {
 			// Cannot setup a lfg channel that is already set up
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.ChannelMessageWithSource,
@@ -260,7 +261,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 				return;
 			}
 			// Store the ids to the active map
-			lfgChannelSettings.set(`${interaction.guildId}-${interaction.channelId}`, {
+			lfgChannelSettings.set(lfgChannelSettingKey, {
 				managed: setupOpts.name === withMgrRole,
 				managerRoleId,
 				logChannelId,

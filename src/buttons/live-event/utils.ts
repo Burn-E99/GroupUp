@@ -1,8 +1,51 @@
-import { Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
+import { ActionRow, Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { LFGMember, UrlIds } from '../../types/commandTypes.ts';
 import { sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
 import { generateAlternateList, generateMemberList, generateMemberTitle, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
 import utils from '../../utils.ts';
+
+// Join status map to prevent spamming the system
+export enum JoinRequestStatus {
+	Pending = 'Pending',
+	Approved = 'Approved',
+	Denied = 'Denied',
+}
+export const generateMapId = (messageId: bigint, channelId: bigint, userId: bigint) => `${messageId}-${channelId}-${userId}`;
+export const joinRequestMap: Map<string, {
+	status: JoinRequestStatus;
+	timestamp: number;
+}> = new Map();
+
+// Join request map cleaner
+const oneHour = 1000 * 60 * 60;
+const oneDay = oneHour * 24;
+const oneWeek = oneDay * 7;
+setInterval(() => {
+	const now = new Date().getTime();
+	joinRequestMap.forEach((joinRequest, key) => {
+		switch (joinRequest.status) {
+			case JoinRequestStatus.Approved:
+				// Delete Approved when over 1 hour old
+				if (joinRequest.timestamp > now - oneHour) {
+					joinRequestMap.delete(key);
+				}
+				break;
+			case JoinRequestStatus.Pending:
+				// Delete Pending when over 1 day old
+				if (joinRequest.timestamp > now - oneDay) {
+					joinRequestMap.delete(key);
+				}
+				break;
+			case JoinRequestStatus.Denied:
+				// Delete Rejected when over 1 week old
+				if (joinRequest.timestamp > now - oneWeek) {
+					joinRequestMap.delete(key);
+				}
+				break;
+		}
+	});
+	// Run cleaner every hour
+}, oneHour);
 
 // Get Member Counts from the title
 const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
@@ -13,7 +56,7 @@ const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
 };
 
 // Get LFGMember objects from string list
-const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
+export const getLfgMembers = (rawMemberList: string): Array<LFGMember> =>
 	rawMemberList.trim() === noMembersStr ? [] : rawMemberList.split('\n').map((rawMember) => {
 		const [memberName, memberMention] = rawMember.split('-');
 		const lfgMember: LFGMember = {
@@ -67,7 +110,7 @@ const noEdit = async (bot: Bot, interaction: Interaction) =>
 	}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
 
 // Get Guild Name
-const getGuildName = async (bot: Bot, guildId: bigint): Promise<string> =>
+export const getGuildName = async (bot: Bot, guildId: bigint): Promise<string> =>
 	(await bot.helpers.getGuild(guildId).catch((e: Error) => utils.commonLoggers.messageGetError('utils.ts', 'get guild', e)) || { name: 'failed to get guild name' }).name;
 
 // Remove member from the event
@@ -120,7 +163,7 @@ export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, 
 							customId: 'leaveEventCustomId', // TODO: fix
 						}],
 					}],
-				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'user promotion', e));
+				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'user promotion dm', e));
 			}
 
 			// Update the event
@@ -203,7 +246,7 @@ export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtM
 						description: `[Click here to view the event in ${guildName}.](${utils.idsToMessageUrl(urlIds)})`,
 						fields: evtMessageEmbed.fields,
 					}],
-				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'event filled', e));
+				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'event filled dm', e));
 			}
 		}
 	} else {
@@ -211,3 +254,21 @@ export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtM
 		await somethingWentWrong(bot, interaction, 'noFieldsInJoinMember');
 	}
 };
+
+// Join Request Approve/Deny Buttons
+export const joinRequestResponseButtons = (disabled: boolean): ActionRow[] => [{
+	type: MessageComponentTypes.ActionRow,
+	components: [{
+		type: MessageComponentTypes.Button,
+		label: 'Approve Request',
+		style: ButtonStyles.Success,
+		customId: 'approveJoinRequestCustomId', // TODO: fix
+		disabled,
+	}, {
+		type: MessageComponentTypes.Button,
+		label: 'Deny Request',
+		style: ButtonStyles.Danger,
+		customId: 'denyJoinRequestCustomId', // TODO: fix
+		disabled,
+	}],
+}];

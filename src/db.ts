@@ -17,10 +17,11 @@ export const queries = {
 };
 
 export const lfgChannelSettings: Map<string, LfgChannelSetting> = new Map();
+export const generateGuildSettingKey = (guildId: bigint, channelId: bigint) => `${guildId}-${channelId}`;
 const getGuildSettings = await dbClient.query('SELECT * FROM guild_settings');
 getGuildSettings.forEach((g: DBGuildSettings) => {
-	lfgChannelSettings.set(`${g.guildId}-${g.lfgChannelId}`, {
-		managed: g.managerRoleId === 0n && g.logChannelId === 0n,
+	lfgChannelSettings.set(generateGuildSettingKey(g.guildId, g.lfgChannelId), {
+		managed: g.managerRoleId !== 0n && g.logChannelId !== 0n,
 		managerRoleId: g.managerRoleId,
 		logChannelId: g.logChannelId,
 	});

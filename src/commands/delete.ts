@@ -1,7 +1,7 @@
 import config from '../../config.ts';
 import { ApplicationCommandFlags, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { failColor, safelyDismissMsg, somethingWentWrong, successColor } from '../commandUtils.ts';
-import { dbClient, lfgChannelSettings, queries } from '../db.ts';
+import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 
@@ -16,7 +16,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 	dbClient.execute(queries.callIncCnt('cmd-delete')).catch((e) => utils.commonLoggers.dbError('delete.ts', 'call sproc INC_CNT on', e));
 
 	if (interaction.guildId && interaction.channelId) {
-		if (!lfgChannelSettings.has(`${interaction.guildId}-${interaction.channelId}`)) {
+		const lfgChannelSettingKey = generateGuildSettingKey(interaction.guildId, interaction.channelId);
+		if (!lfgChannelSettings.has(lfgChannelSettingKey)) {
 			// Cannot delete a lfg channel that has not been set up
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.ChannelMessageWithSource,
@@ -43,7 +44,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			somethingWentWrong(bot, interaction, 'deleteDBDeleteFail');
 			return;
 		}
-		lfgChannelSettings.delete(`${interaction.guildId}-${interaction.channelId}`);
+		lfgChannelSettings.delete(lfgChannelSettingKey);
 
 		// Complete the interaction
 		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {

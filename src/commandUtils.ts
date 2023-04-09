@@ -1,6 +1,6 @@
 import { ApplicationCommandFlags, Bot, CreateMessage, Interaction, InteractionResponseTypes } from '../deps.ts';
 import config from '../config.ts';
-import { lfgChannelSettings } from './db.ts';
+import { generateGuildSettingKey, lfgChannelSettings } from './db.ts';
 import utils from './utils.ts';
 
 export const failColor = 0xe71212;
@@ -21,7 +21,7 @@ export const getRandomStatus = (guildCount: number): string => {
 };
 
 export const isLFGChannel = (guildId: bigint, channelId: bigint) => {
-	return (lfgChannelSettings.has(`${guildId}-${channelId}`) || channelId === 0n || guildId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
+	return (lfgChannelSettings.has(generateGuildSettingKey(guildId, channelId)) || channelId === 0n || guildId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
 };
 
 export const somethingWentWrong = async (bot: Bot, interaction: Interaction, errorCode: string) =>
@@ -42,8 +42,8 @@ export const somethingWentWrong = async (bot: Bot, interaction: Interaction, err
 	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts', interaction, e));
 
 // Send DM to User
-export const sendDirectMessage = async (bot: Bot, userId: bigint, message: CreateMessage) =>
-	bot.helpers.getDmChannel(userId).then((userDmChannel) => {
-		// Actually send the DM
-		bot.helpers.sendMessage(userDmChannel.id, message).catch((e: Error) => utils.commonLoggers.messageSendError('commandUtils.ts', message, e));
-	}).catch((e: Error) => utils.commonLoggers.messageGetError('commandUtils.ts', 'get userDmChannel', e));
+export const sendDirectMessage = async (bot: Bot, userId: bigint, message: CreateMessage) => {
+	const userDmChannel = await bot.helpers.getDmChannel(userId).catch((e: Error) => utils.commonLoggers.messageGetError('commandUtils.ts', 'get userDmChannel', e));
+	// Actually send the DM
+	return bot.helpers.sendMessage(userDmChannel?.id || 0n, message);
+};
