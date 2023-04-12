@@ -84,14 +84,20 @@ const parseEventTime = (preParsedEventTime: string): [string, string, string] =>
 	return [parsedEventTimeHours, parsedEventTimeMinutes, parsedEventTimePeriod];
 };
 
+// Check if DST is currently active
+export const isDSTActive = (): boolean => {
+	const today = new Date();
+	const jan = new Date(today.getFullYear(), 0, 1);
+	const jul = new Date(today.getFullYear(), 6, 1);
+
+	return today.getTimezoneOffset() < Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+};
+
 // Takes user input Time Zone and makes it actually usable
 const parseEventTimeZone = (preParsedEventTimeZone: string): [string, string] => {
 	if (shorthandUSTZ.includes(preParsedEventTimeZone)) {
 		// Handle shorthand US timezones, adding S for standard time and D for Daylight Savings
-		const today = new Date();
-		const jan = new Date(today.getFullYear(), 0, 1);
-		const jul = new Date(today.getFullYear(), 6, 1);
-		if (today.getTimezoneOffset() < Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset())) {
+		if (isDSTActive()) {
 			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, 1)}DT`;
 		} else {
 			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, 1)}ST`;

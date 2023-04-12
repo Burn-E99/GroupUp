@@ -7,7 +7,7 @@ import { idSeparator, LfgEmbedIndexes, lfgStartTimeName } from '../eventUtils.ts
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';
-import { monthsShort } from './dateTimeUtils.ts';
+import { isDSTActive, monthsShort } from './dateTimeUtils.ts';
 import { dbClient, queries } from '../../db.ts';
 
 export const customId = 'gameSel';
@@ -64,6 +64,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				prefillDescription = interaction.message.embeds[0].fields[LfgEmbedIndexes.Description].value.trim();
 			}
 
+			// DST notice to try to get people to use the right TZ
+			const dstNotice = isDSTActive() ? '(Note: DST is in effect in NA)' : '';
+
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.Modal,
 				data: {
@@ -86,7 +89,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						components: [{
 							type: MessageComponentTypes.InputText,
 							customId: eventTimeZoneId,
-							label: 'Time Zone:',
+							label: `Time Zone: ${dstNotice}`,
 							placeholder: 'Enter your time zone abbreviation (UTC±## also works)',
 							style: TextStyles.Short,
 							minLength: 2,
