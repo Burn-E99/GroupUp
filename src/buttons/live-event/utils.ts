@@ -104,7 +104,7 @@ const editEvent = async (
 							title: 'Event Updated',
 							description: `The action requested was completed successfully.
 
-${safelyDismissMsg}`
+${safelyDismissMsg}`,
 						}],
 					},
 				}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
@@ -133,7 +133,7 @@ const noEdit = async (bot: Bot, interaction: Interaction, loudAcknowledge = fals
 					title: 'No Changes Made',
 					description: `The action requested was not performed as it was not necessary.
 
-${safelyDismissMsg}`
+${safelyDismissMsg}`,
 				}],
 			},
 		}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
@@ -213,7 +213,16 @@ export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, 
 };
 
 // Alternate member to the event
-export const alternateMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember, userJoinOnFull = false, loudAcknowledge = false) => {
+export const alternateMemberToEvent = async (
+	bot: Bot,
+	interaction: Interaction,
+	evtMessageEmbed: Embed,
+	evtMessageId: bigint,
+	evtChannelId: bigint,
+	member: LFGMember,
+	userJoinOnFull = false,
+	loudAcknowledge = false,
+) => {
 	if (evtMessageEmbed.fields) {
 		member.joined = userJoinOnFull;
 		// Get current alternates
