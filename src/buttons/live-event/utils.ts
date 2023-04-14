@@ -1,7 +1,8 @@
 import { ActionRow, Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { LFGMember, UrlIds } from '../../types/commandTypes.ts';
 import { sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
-import { generateAlternateList, generateMemberList, generateMemberTitle, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
+import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
+import { approveStr, customId as joinRequestCustomId, denyStr } from './joinRequest.ts';
 import utils from '../../utils.ts';
 
 // Join status map to prevent spamming the system
@@ -262,13 +263,13 @@ export const joinRequestResponseButtons = (disabled: boolean): ActionRow[] => [{
 		type: MessageComponentTypes.Button,
 		label: 'Approve Request',
 		style: ButtonStyles.Success,
-		customId: 'approveJoinRequestCustomId', // TODO: fix
+		customId: `${joinRequestCustomId}${idSeparator}${approveStr}`,
 		disabled,
 	}, {
 		type: MessageComponentTypes.Button,
 		label: 'Deny Request',
 		style: ButtonStyles.Danger,
-		customId: 'denyJoinRequestCustomId', // TODO: fix
+		customId: `${joinRequestCustomId}${idSeparator}${denyStr}`,
 		disabled,
 	}],
 }];

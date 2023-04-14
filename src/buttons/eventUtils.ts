@@ -15,6 +15,9 @@ export const lfgStartTimeName = 'Start Time:';
 export const idSeparator = '@';
 export const noMembersStr = 'None';
 export const leaveEventBtnStr = 'Leave';
+export const joinEventBtnStr = 'Join';
+export const requestToJoinEventBtnStr = 'Request to Join';
+export const alternateEventBtnStr = 'Join as Alternate';
 
 // Member List generators
 export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;

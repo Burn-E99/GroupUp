@@ -9,7 +9,7 @@ const jsonStringifyBig = (input: any) => {
 const idsToMessageUrl = (ids: UrlIds) => `https://discord.com/channels/${ids.guildId}/${ids.channelId}/${ids.messageId}`;
 const messageUrlToIds = (url: string): UrlIds => {
 	url = url.toLowerCase();
-	const [guildId, channelId, messageId] = (url.split('channels')[1] || '').split('/');
+	const [guildId, channelId, messageId] = (url.split('channels/')[1] || '').split('/');
 
 	return {
 		guildId: BigInt(guildId || '0'),
