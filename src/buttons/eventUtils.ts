@@ -11,12 +11,12 @@ export enum LfgEmbedIndexes {
 }
 
 // Common strings
-export const lfgStartTimeName = 'Start Time:';
 export const idSeparator = '@';
+export const lfgStartTimeName = 'Start Time:';
 export const noMembersStr = 'None';
-export const leaveEventBtnStr = 'Leave';
 export const joinEventBtnStr = 'Join';
 export const requestToJoinEventBtnStr = 'Request to Join';
+export const leaveEventBtnStr = 'Leave';
 export const alternateEventBtnStr = 'Join as Alternate';
 
 // Member List generators
