@@ -16,6 +16,9 @@ const actions = [
 	'btn-joinWLEvent',
 	'btn-leaveEvent',
 	'btn-altEvent',
+	'btn-joinReqApprove',
+	'btn-joinReqDeny',
+	'btn-joinReqAlt',
 ];
 for (const action of actions) {
 	await dbClient.execute('INSERT INTO command_cnt(command) values(?)', [action]).catch((e) => {

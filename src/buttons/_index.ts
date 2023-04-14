@@ -8,6 +8,7 @@ import { joinEventButton } from './live-event/joinEvent.ts';
 import { leaveEventButton } from './live-event/leaveEvent.ts';
 import { alternateEventButton } from './live-event/alternateEvent.ts';
 import { joinRequestButton } from './live-event/joinRequest.ts';
+import { alternateRequestButton } from './live-event/alternateRequest.ts';
 
 export const buttons: Array<Button> = [
 	gameSelectionButton,
@@ -19,4 +20,5 @@ export const buttons: Array<Button> = [
 	leaveEventButton,
 	alternateEventButton,
 	joinRequestButton,
+	alternateRequestButton,
 ];

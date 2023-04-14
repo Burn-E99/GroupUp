@@ -1,6 +1,6 @@
-import { ActionRow, Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
+import { ActionRow, ApplicationCommandFlags, Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { LFGMember, UrlIds } from '../../types/commandTypes.ts';
-import { sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
+import { infoColor1, safelyDismissMsg, sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
 import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
 import { approveStr, customId as joinRequestCustomId, denyStr } from './joinRequest.ts';
 import utils from '../../utils.ts';
@@ -81,6 +81,7 @@ const editEvent = async (
 	memberList: Array<LFGMember>,
 	maxMemberCount: number,
 	alternateList: Array<LFGMember>,
+	loudAcknowledge = false,
 ) => {
 	if (evtMessageEmbed.fields) {
 		// Update the fields
@@ -93,9 +94,25 @@ const editEvent = async (
 			embeds: [evtMessageEmbed],
 		}).then(() => {
 			// Let discord know we didn't ignore the user
-			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
-				type: InteractionResponseTypes.DeferredUpdateMessage,
-			}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
+			if (loudAcknowledge) {
+				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+					type: InteractionResponseTypes.ChannelMessageWithSource,
+					data: {
+						flags: ApplicationCommandFlags.Ephemeral,
+						embeds: [{
+							color: successColor,
+							title: 'Event Updated',
+							description: `The action requested was completed successfully.
+
+${safelyDismissMsg}`
+						}],
+					},
+				}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
+			} else {
+				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+					type: InteractionResponseTypes.DeferredUpdateMessage,
+				}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
+			}
 		}).catch((e: Error) => {
 			// Edit failed, try to notify user
 			utils.commonLoggers.messageEditError('utils.ts', 'event edit fail', e);
@@ -105,10 +122,27 @@ const editEvent = async (
 };
 
 // Generic no response response
-const noEdit = async (bot: Bot, interaction: Interaction) =>
-	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
-		type: InteractionResponseTypes.DeferredUpdateMessage,
-	}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
+const noEdit = async (bot: Bot, interaction: Interaction, loudAcknowledge = false) => {
+	if (loudAcknowledge) {
+		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+			type: InteractionResponseTypes.ChannelMessageWithSource,
+			data: {
+				flags: ApplicationCommandFlags.Ephemeral,
+				embeds: [{
+					color: infoColor1,
+					title: 'No Changes Made',
+					description: `The action requested was not performed as it was not necessary.
+
+${safelyDismissMsg}`
+				}],
+			},
+		}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
+	} else {
+		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+			type: InteractionResponseTypes.DeferredUpdateMessage,
+		}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
+	}
+};
 
 // Get Guild Name
 export const getGuildName = async (bot: Bot, guildId: bigint): Promise<string> =>
@@ -179,7 +213,7 @@ export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, 
 };
 
 // Alternate member to the event
-export const alternateMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember, userJoinOnFull = false) => {
+export const alternateMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember, userJoinOnFull = false, loudAcknowledge = false) => {
 	if (evtMessageEmbed.fields) {
 		member.joined = userJoinOnFull;
 		// Get current alternates
@@ -197,10 +231,10 @@ export const alternateMemberToEvent = async (bot: Bot, interaction: Interaction,
 
 			// Update the event
 			evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value = generateAlternateList(alternateList);
-			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList);
+			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList, loudAcknowledge);
 		} else {
 			// Send noEdit response because user was already an alternate and joined status did not change
-			await noEdit(bot, interaction);
+			await noEdit(bot, interaction, loudAcknowledge);
 		}
 	} else {
 		// No fields, can't alternate

@@ -2,13 +2,15 @@ import { Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageCompon
 import { sendDirectMessage, somethingWentWrong, successColor, warnColor } from '../../commandUtils.ts';
 import { generateMapId, getLfgMembers, joinMemberToEvent, joinRequestMap, joinRequestResponseButtons, JoinRequestStatus } from './utils.ts';
 import { alternateEventBtnStr, idSeparator } from '../eventUtils.ts';
+import { dbClient, queries } from '../../db.ts';
+import { customId as alternateRequestCustomId } from './alternateRequest.ts';
 import utils from '../../utils.ts';
 
 export const customId = 'joinRequest';
 export const approveStr = 'approved';
 export const denyStr = 'denied';
 
-export const execute = async (bot: Bot, interaction: Interaction) => {
+const execute = async (bot: Bot, interaction: Interaction) => {
 	if (
 		interaction.data?.customId && interaction.user && interaction.channelId && interaction.message && interaction.message.embeds[0] && interaction.message.embeds[0].fields &&
 		interaction.message.embeds[0].description
@@ -20,6 +22,9 @@ export const execute = async (bot: Bot, interaction: Interaction) => {
 		const eventIds = utils.messageUrlToIds(interaction.message.embeds[0].description.split(')')[0] || '');
 		const eventUrl = utils.idsToMessageUrl(eventIds);
 		const joinRequestMapId = generateMapId(eventIds.messageId, eventIds.channelId, memberRequesting.id);
+
+		// Light Telemetry
+		dbClient.execute(queries.callIncCnt(approved ? 'btn-joinReqApprove' : 'btn-joinReqDeny')).catch((e) => utils.commonLoggers.dbError('joinRequest.ts', 'call sproc INC_CNT on', e));
 
 		if (approved) {
 			// If member was approved, get the event and add them to it
@@ -58,7 +63,7 @@ export const execute = async (bot: Bot, interaction: Interaction) => {
 					type: MessageComponentTypes.Button,
 					label: alternateEventBtnStr,
 					style: ButtonStyles.Primary,
-					customId: `tempId`, // TODO: fix
+					customId: alternateRequestCustomId,
 				}],
 			}],
 		}).catch((e: Error) => utils.commonLoggers.messageSendError('joinRequest.ts', 'send DM fail', e));
