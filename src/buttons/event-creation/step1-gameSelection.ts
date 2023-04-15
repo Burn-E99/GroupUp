@@ -2,8 +2,8 @@ import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, Butto
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { addTokenToMap, deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, pathIdxEnder, pathIdxSeparator, selfDestructMessage, tokenMap } from './utils.ts';
-import { idSeparator, LfgEmbedIndexes, lfgStartTimeName } from '../eventUtils.ts';
+import { addTokenToMap, deleteTokenEarly, generateActionRow, generateMapId, getNestedActivity, selfDestructMessage, tokenMap } from './utils.ts';
+import { idSeparator, LfgEmbedIndexes, lfgStartTimeName, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';

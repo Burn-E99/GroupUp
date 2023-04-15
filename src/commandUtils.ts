@@ -24,6 +24,7 @@ export const isLFGChannel = (guildId: bigint, channelId: bigint) => {
 	return (lfgChannelSettings.has(generateGuildSettingKey(guildId, channelId)) || channelId === 0n || guildId === 0n) ? ApplicationCommandFlags.Ephemeral : undefined;
 };
 
+// Tell user to try again or report issue
 export const somethingWentWrong = async (bot: Bot, interaction: Interaction, errorCode: string) =>
 	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 		type: InteractionResponseTypes.ChannelMessageWithSource,
@@ -39,7 +40,23 @@ export const somethingWentWrong = async (bot: Bot, interaction: Interaction, err
 				}],
 			}],
 		},
-	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts', interaction, e));
+	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts@somethingWentWrong', interaction, e));
+
+// Smack the user for trying to modify an event that isn't theirs
+export const stopThat = async (bot: Bot, interaction: Interaction, stopWhat: string) =>
+	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+		type: InteractionResponseTypes.ChannelMessageWithSource,
+		data: {
+			flags: ApplicationCommandFlags.Ephemeral,
+			embeds: [{
+				color: warnColor,
+				title: 'Hey!  Stop that!',
+				description: `You are neither the owner of this event nor a ${config.name} manager in this guild, meaning you are not allowed to ${stopWhat} this event.
+
+${safelyDismissMsg}`,
+			}],
+		},
+	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts@stopThat', interaction, e));
 
 // Send DM to User
 export const sendDirectMessage = async (bot: Bot, userId: bigint, message: CreateMessage) => {

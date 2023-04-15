@@ -12,6 +12,8 @@ export enum LfgEmbedIndexes {
 
 // Common strings
 export const idSeparator = '@';
+export const pathIdxSeparator = '|';
+export const pathIdxEnder = '&';
 export const lfgStartTimeName = 'Start Time:';
 export const noMembersStr = 'None';
 export const joinEventBtnStr = 'Join';

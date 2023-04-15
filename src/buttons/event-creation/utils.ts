@@ -22,6 +22,8 @@ import {
 	joinEventBtnStr,
 	leaveEventBtnStr,
 	lfgStartTimeName,
+	pathIdxEnder,
+	pathIdxSeparator,
 	requestToJoinEventBtnStr,
 } from '../eventUtils.ts';
 import { successColor } from '../../commandUtils.ts';
@@ -31,12 +33,11 @@ import { customId as createEventCustomId } from './step3-createEvent.ts';
 import { customId as joinEventCustomId } from '../live-event/joinEvent.ts';
 import { customId as leaveEventCustomId } from '../live-event/leaveEvent.ts';
 import { customId as alternateEventCustomId } from '../live-event/alternateEvent.ts';
+import { customId as deleteEventCustomId } from '../live-event/deleteEvent.ts';
 
 // Discord Interaction Tokens last 15 minutes, we will self kill after 14.5 minutes
 const tokenTimeoutS = (15 * 60) - 30;
 export const tokenTimeoutMS = tokenTimeoutS * 1000;
-export const pathIdxSeparator = '|';
-export const pathIdxEnder = '&';
 export const selfDestructMessage = (currentTime: number) =>
 	`**Please note:** This message will self destruct <t:${Math.floor((currentTime + tokenTimeoutMS) / 1000)}:R> due to limits imposed by the Discord API.`;
 
@@ -147,7 +148,7 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	type: MessageComponentTypes.Button,
 	label: '',
 	style: ButtonStyles.Secondary,
-	customId: 'deleteEvent', // TODO: replace with proper id
+	customId: deleteEventCustomId,
 	emoji: {
 		name: '🗑️',
 	},
