@@ -6,9 +6,10 @@ import info from './info.ts';
 import report from './report.ts';
 import setup from './setup.ts';
 import deleteCmd from './delete.ts';
+import managerJLA from './managerJLA.ts';
 import { gameSelectionCommand } from '../buttons/event-creation/step1-gameSelection.ts';
 
-export const commands: Array<Command> = [deleteCmd, info, report, setup, gameSelectionCommand];
+export const commands: Array<Command> = [deleteCmd, info, report, setup, gameSelectionCommand, managerJLA];
 
 export const createSlashCommands = async (bot: Bot) => {
 	const globalCommands: MakeRequired<CreateApplicationCommand, 'name'>[] = [];

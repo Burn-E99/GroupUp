@@ -10,7 +10,7 @@ export const confirmedCustomId = 'confirmedCustomId';
 export const confirmStr = 'yes';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction?.data?.customId && interaction?.data?.components?.length && interaction.channelId && interaction.guildId && interaction.member) {
+	if (interaction?.data?.customId && interaction?.data?.components?.length && interaction.channelId && interaction.guildId && interaction.member && interaction.member.user) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-confirmDelEvent')).catch((e) => utils.commonLoggers.dbError('deleteConfirmed.ts@incCnt', 'call sproc INC_CNT on', e));
 
@@ -33,6 +33,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		if (tempDataMap.get(confirmedCustomId)?.toLowerCase() === confirmStr) {
 			const eventMessage = await bot.helpers.getMessage(evtChannelId, evtMessageId).catch((e: Error) => utils.commonLoggers.messageGetError('deleteConfirmed.ts', 'get eventMessage', e));
 			const userId = interaction.member.id;
+			const userName = interaction.member.user.username;
 			// Delete event
 			bot.helpers.deleteMessage(evtChannelId, evtMessageId, 'User deleted event').then(() => {
 				dbClient.execute(queries.deleteEvent, [evtChannelId, evtMessageId]).catch((e) => utils.commonLoggers.dbError('deleteConfirmed.ts@deleteEvent', 'delete event from', e));
@@ -56,7 +57,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						embeds: [{
 							color: infoColor2,
 							title: `Event deleted by a ${config.name} Manager`,
-							description: `The following event was deleted by <@${userId}>.`,
+							description: `The following event was deleted by ${userName} - <@${userId}>.`,
 							timestamp: new Date().getTime(),
 						}, eventEmbed],
 					}).catch((e: Error) => utils.commonLoggers.messageSendError('deleteConfirmed.ts', 'send log message', e));

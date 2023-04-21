@@ -19,6 +19,7 @@ import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { customId as gameSelId } from '../buttons/event-creation/step1-gameSelection.ts';
 import { alternateEventBtnStr, joinEventBtnStr, leaveEventBtnStr, requestToJoinEventBtnStr } from '../buttons/eventUtils.ts';
+import { alternateName, eventLinkName, eventName, joinName, leaveName, userName } from './managerJLA.ts';
 
 const withoutMgrRole = 'without-manager-role';
 const withMgrRole = 'with-manager-role';
@@ -150,7 +151,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					name: `${config.name} Manager Details:`,
 					value: `${config.name} Managers with the <@&${managerRoleId}> role may edit or delete events in this guild, along with using the following commands to update the activity members:
 
-\`/join\` \`/leave\` \`/alternate\`
+\`/${eventName} [${joinName} | ${leaveName} | ${alternateName}] [${eventLinkName}] [${userName}]\`
 
 The Discord Slash Command system will ensure you provide all the required details.`,
 				});

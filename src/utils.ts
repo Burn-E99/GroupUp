@@ -18,6 +18,8 @@ const messageUrlToIds = (url: string): UrlIds => {
 	};
 };
 
+const capitalizeFirstChar = (input: string) => `${input.charAt(0).toUpperCase()}${input.slice(1)}`;
+
 const genericLogger = (level: LT, message: string) => log(level, message);
 const interactionSendError = (location: string, interaction: Interaction | string, err: Error) =>
 	genericLogger(LT.ERROR, `${location} | Failed to respond to interaction: ${jsonStringifyBig(interaction)} | Error: ${err.name} - ${err.message}`);
@@ -38,6 +40,7 @@ const channelUpdateError = (location: string, message: string, err: Error) => ge
 const dbError = (location: string, type: string, err: Error) => genericLogger(LT.ERROR, `${location} | Failed to ${type} database | Error: ${err.name} - ${err.message}`);
 
 export default {
+	capitalizeFirstChar,
 	commonLoggers: {
 		channelUpdateError,
 		dbError,

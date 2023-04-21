@@ -18,7 +18,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const memberRequesting = getLfgMembers(interaction.message.embeds[0].fields[0].value || '')[0];
 		const approved = interaction.data.customId.includes(approveStr);
 		const responseStr = interaction.data.customId.split(idSeparator)[1] || '';
-		const capResponseStr = `${responseStr.charAt(0).toUpperCase()}${responseStr.slice(1)}`;
+		const capResponseStr = utils.capitalizeFirstChar(responseStr);
 		const eventIds = utils.messageUrlToIds(interaction.message.embeds[0].description.split(')')[0] || '');
 		const eventUrl = utils.idsToMessageUrl(eventIds);
 		const joinRequestMapId = generateMapId(eventIds.messageId, eventIds.channelId, memberRequesting.id);

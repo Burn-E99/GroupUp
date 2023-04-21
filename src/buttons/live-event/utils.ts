@@ -81,7 +81,7 @@ const editEvent = async (
 	memberList: Array<LFGMember>,
 	maxMemberCount: number,
 	alternateList: Array<LFGMember>,
-	loudAcknowledge = false,
+	loudAcknowledge: boolean,
 ) => {
 	if (evtMessageEmbed.fields) {
 		// Update the fields
@@ -122,7 +122,7 @@ ${safelyDismissMsg}`,
 };
 
 // Generic no response response
-const noEdit = async (bot: Bot, interaction: Interaction, loudAcknowledge = false) => {
+const noEdit = async (bot: Bot, interaction: Interaction, loudAcknowledge: boolean) => {
 	if (loudAcknowledge) {
 		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 			type: InteractionResponseTypes.ChannelMessageWithSource,
@@ -149,7 +149,16 @@ export const getGuildName = async (bot: Bot, guildId: bigint): Promise<string> =
 	(await bot.helpers.getGuild(guildId).catch((e: Error) => utils.commonLoggers.messageGetError('utils.ts', 'get guild', e)) || { name: 'failed to get guild name' }).name;
 
 // Remove member from the event
-export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, userId: bigint, evtGuildId: bigint) => {
+export const removeMemberFromEvent = async (
+	bot: Bot,
+	interaction: Interaction,
+	evtMessageEmbed: Embed,
+	evtMessageId: bigint,
+	evtChannelId: bigint,
+	userId: bigint,
+	evtGuildId: bigint,
+	loudAcknowledge = false,
+): Promise<boolean> => {
 	if (evtMessageEmbed.fields) {
 		// Get old counts
 		const [oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
@@ -202,13 +211,16 @@ export const removeMemberFromEvent = async (bot: Bot, interaction: Interaction, 
 			}
 
 			// Update the event
-			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList);
+			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList, loudAcknowledge);
+			return true;
 		} else {
 			// Send noEdit response because user did not actually leave
-			await noEdit(bot, interaction);
+			await noEdit(bot, interaction, loudAcknowledge);
+			return false;
 		}
 	} else {
 		await somethingWentWrong(bot, interaction, 'noFieldsInRemoveMember');
+		return false;
 	}
 };
 
@@ -222,7 +234,7 @@ export const alternateMemberToEvent = async (
 	member: LFGMember,
 	userJoinOnFull = false,
 	loudAcknowledge = false,
-) => {
+): Promise<boolean> => {
 	if (evtMessageEmbed.fields) {
 		member.joined = userJoinOnFull;
 		// Get current alternates
@@ -241,18 +253,30 @@ export const alternateMemberToEvent = async (
 			// Update the event
 			evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value = generateAlternateList(alternateList);
 			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList, loudAcknowledge);
+			return true;
 		} else {
 			// Send noEdit response because user was already an alternate and joined status did not change
 			await noEdit(bot, interaction, loudAcknowledge);
+			return false;
 		}
 	} else {
 		// No fields, can't alternate
 		await somethingWentWrong(bot, interaction, 'noFieldsInAlternateMember');
+		return false;
 	}
 };
 
 // Join member to the event
-export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtMessageEmbed: Embed, evtMessageId: bigint, evtChannelId: bigint, member: LFGMember, evtGuildId: bigint) => {
+export const joinMemberToEvent = async (
+	bot: Bot,
+	interaction: Interaction,
+	evtMessageEmbed: Embed,
+	evtMessageId: bigint,
+	evtChannelId: bigint,
+	member: LFGMember,
+	evtGuildId: bigint,
+	loudAcknowledge = false,
+): Promise<boolean> => {
 	if (evtMessageEmbed.fields) {
 		// Get current member list and count
 		const [oldMemberCount, maxMemberCount] = getEventMemberCount(evtMessageEmbed.fields[LfgEmbedIndexes.JoinedMembers].name);
@@ -260,10 +284,11 @@ export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtM
 		// Verify user is not already on the joined list
 		if (memberList.find((joinedMember) => joinedMember.id === member.id)) {
 			// Send noEdit response because user was already joined
-			await noEdit(bot, interaction);
+			await noEdit(bot, interaction, loudAcknowledge);
+			return false;
 		} else if (oldMemberCount === maxMemberCount) {
 			// Event full, add member to alternate list
-			await alternateMemberToEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, member, true);
+			return await alternateMemberToEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, member, true, loudAcknowledge);
 		} else {
 			// Join member to event
 			memberList.push(member);
@@ -272,7 +297,7 @@ export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtM
 			const alternateList = removeLfgMember(getLfgMembers(evtMessageEmbed.fields[LfgEmbedIndexes.AlternateMembers].value), member.id);
 
 			// Update the event
-			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList);
+			await editEvent(bot, interaction, evtMessageEmbed, evtMessageId, evtChannelId, memberList, maxMemberCount, alternateList, loudAcknowledge);
 
 			// Check if we need to notify the owner that their event has filled
 			if (memberList.length === maxMemberCount) {
@@ -292,10 +317,12 @@ export const joinMemberToEvent = async (bot: Bot, interaction: Interaction, evtM
 					}],
 				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'event filled dm', e));
 			}
+			return true;
 		}
 	} else {
 		// No fields, can't join
 		await somethingWentWrong(bot, interaction, 'noFieldsInJoinMember');
+		return false;
 	}
 };
 
