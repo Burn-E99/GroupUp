@@ -1,4 +1,4 @@
-import { ApplicationCommandFlags, Bot, CreateMessage, Interaction, InteractionResponseTypes } from '../deps.ts';
+import { ApplicationCommandFlags, Bot, CreateMessage, Embed, Interaction, InteractionResponseTypes } from '../deps.ts';
 import config from '../config.ts';
 import { generateGuildSettingKey, lfgChannelSettings } from './db.ts';
 import utils from './utils.ts';
@@ -63,4 +63,18 @@ export const sendDirectMessage = async (bot: Bot, userId: bigint, message: Creat
 	const userDmChannel = await bot.helpers.getDmChannel(userId).catch((e: Error) => utils.commonLoggers.messageGetError('commandUtils.ts', 'get userDmChannel', e));
 	// Actually send the DM
 	return bot.helpers.sendMessage(userDmChannel?.id || 0n, message);
+};
+
+// Info Embed Object (for info command and @mention command)
+export const infoEmbed: Embed = {
+	color: infoColor2,
+	title: `${config.name}, the LFG bot`,
+	description: `${config.name} is developed by Ean AKA Burn_E99.
+Want to check out my source code?  Check it out [here](${config.links.sourceCode}).
+Need help with this bot?  Join my support server [here](${config.links.supportServer}).
+
+Ran into a bug?  Report it to my developers using \`/report [issue description]\`.`,
+	footer: {
+		text: `Current Version: ${config.version}`,
+	},
 };
