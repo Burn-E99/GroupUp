@@ -1,4 +1,4 @@
-// This file will create all tables for the artificer schema
+// This file will create all tables for the groupup schema
 // DATA WILL BE LOST IF DB ALREADY EXISTS, RUN AT OWN RISK
 
 import config from '../config.ts';
