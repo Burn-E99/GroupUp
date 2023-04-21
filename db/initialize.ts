@@ -13,7 +13,7 @@ console.log('Attempt to drop all tables');
 await dbClient.execute(`DROP PROCEDURE IF EXISTS INC_CNT;`);
 await dbClient.execute(`DROP TABLE IF EXISTS command_cnt;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_settings;`);
-await dbClient.execute(`DROP TABLE IF EXISTS active_event;`);
+await dbClient.execute(`DROP TABLE IF EXISTS active_events;`);
 console.log('Tables dropped');
 
 console.log('Attempting to create table command_cnt');
@@ -52,9 +52,9 @@ await dbClient.execute(`
 `);
 console.log('Table created');
 
-console.log('Attempting to create table active_event');
+console.log('Attempting to create table active_events');
 await dbClient.execute(`
-	CREATE TABLE active_event (
+	CREATE TABLE active_events (
 		messageId bigint unsigned NOT NULL,
 		channelId bigint unsigned NOT NULL,
 		guildId bigint unsigned NOT NULL,

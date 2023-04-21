@@ -13,8 +13,8 @@ export const dbClient = await new Client().connect({
 
 export const queries = {
 	callIncCnt: (cmdName: string) => `CALL INC_CNT("${cmdName}");`,
-	insertEvent: 'INSERT INTO active_event(messageId,channelId,guildId,ownerId,eventTime) values(?,?,?,?,?)',
-	deleteEvent: 'DELETE FROM active_event WHERE channelId = ? AND messageId = ?',
+	insertEvent: 'INSERT INTO active_events(messageId,channelId,guildId,ownerId,eventTime) values(?,?,?,?,?)',
+	deleteEvent: 'DELETE FROM active_events WHERE channelId = ? AND messageId = ?',
 };
 
 export const lfgChannelSettings: Map<string, LfgChannelSetting> = new Map();
