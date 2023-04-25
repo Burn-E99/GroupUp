@@ -1,8 +1,8 @@
 import config from '../../../config.ts';
 import { ApplicationCommandFlags, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { failColor, infoColor1, safelyDismissMsg, somethingWentWrong } from '../../commandUtils.ts';
-import { addTokenToMap, selfDestructMessage } from './utils.ts';
 import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
+import { addTokenToMap, selfDestructMessage } from '../tokenCleanup.ts';
 import { activityMaxPlayersId, activitySubtitleId, activityTitleId } from './step1a-openCustomModal.ts';
 import { customId as gameSelectionId } from './step1-gameSelection.ts';
 import { customId as openCustomModalId } from './step1a-openCustomModal.ts';

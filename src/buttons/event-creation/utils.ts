@@ -1,17 +1,5 @@
-import {
-	ActionRow,
-	ApplicationCommandFlags,
-	Bot,
-	ButtonComponent,
-	ButtonStyles,
-	Interaction,
-	InteractionResponse,
-	InteractionResponseTypes,
-	MessageComponentTypes,
-	SelectOption,
-} from '../../../deps.ts';
+import { ActionRow, ApplicationCommandFlags, ButtonComponent, ButtonStyles, InteractionResponse, InteractionResponseTypes, MessageComponentTypes, SelectOption } from '../../../deps.ts';
 import config from '../../../config.ts';
-import utils from '../../utils.ts';
 import { Activity } from './activities.ts';
 import {
 	alternateEventBtnStr,
@@ -26,6 +14,7 @@ import {
 	pathIdxSeparator,
 	requestToJoinEventBtnStr,
 } from '../eventUtils.ts';
+import { selfDestructMessage } from '../tokenCleanup.ts';
 import { successColor } from '../../commandUtils.ts';
 import { LFGMember } from '../../types/commandTypes.ts';
 import { customId as gameSelCustomId } from './step1-gameSelection.ts';
@@ -35,16 +24,6 @@ import { customId as leaveEventCustomId } from '../live-event/leaveEvent.ts';
 import { customId as alternateEventCustomId } from '../live-event/alternateEvent.ts';
 import { customId as deleteEventCustomId } from '../live-event/deleteEvent.ts';
 
-// Discord Interaction Tokens last 15 minutes, we will self kill after 14.5 minutes
-const tokenTimeoutS = (15 * 60) - 30;
-export const tokenTimeoutMS = tokenTimeoutS * 1000;
-export const selfDestructMessage = (currentTime: number) =>
-	`**Please note:** This message will self destruct <t:${Math.floor((currentTime + tokenTimeoutMS) / 1000)}:R> due to limits imposed by the Discord API.`;
-
-export const tokenMap: Map<string, {
-	token: string;
-	timeoutId: number;
-}> = new Map();
 
 export const getNestedActivity = (idxPath: Array<number>, activities: Array<Activity>): Array<Activity> => {
 	const nextIdx = idxPath[0];
@@ -73,33 +52,6 @@ export const generateActionRow = (baseValue: string, activities: Array<Activity>
 		options: getSelectOptions(baseValue, activities, defaultIdx),
 	}],
 });
-
-export const generateMapId = (guildId: bigint, channelId: bigint, userId: bigint) => `${guildId}-${channelId}-${userId}`;
-
-export const addTokenToMap = (bot: Bot, interaction: Interaction, guildId: bigint, channelId: bigint, userId: bigint) =>
-	tokenMap.set(generateMapId(guildId, channelId, userId), {
-		token: interaction.token,
-		timeoutId: setTimeout(
-			(guildId, channelId, userId) => {
-				deleteTokenEarly(bot, interaction, guildId, channelId, userId);
-			},
-			tokenTimeoutMS,
-			guildId,
-			channelId,
-			userId,
-		),
-	});
-
-export const deleteTokenEarly = async (bot: Bot, interaction: Interaction, guildId: bigint, channelId: bigint, userId: bigint) => {
-	const tokenMapEntry = tokenMap.get(generateMapId(guildId, channelId, userId));
-	if (tokenMapEntry && tokenMapEntry.token) {
-		await bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(guildId, channelId, userId))?.token || '').catch((e: Error) =>
-			utils.commonLoggers.interactionSendError('utils.ts:deleteTokenEarly', interaction, e)
-		);
-		clearTimeout(tokenMapEntry.timeoutId);
-		tokenMap.delete(generateMapId(guildId, channelId, userId));
-	}
-};
 
 const createEventBtnName = 'Create Event';
 const createWhitelistedBtnName = 'Create Whitelisted Event';

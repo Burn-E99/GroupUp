@@ -19,6 +19,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			logChannelId: 0n,
 		};
 
+		// Make sure this is being done by the owner or a Group Up Manager
 		if (interaction.member.user.id === ownerId || (lfgChannelSetting.managed && interaction.member.roles.includes(lfgChannelSetting.managerRoleId))) {
 			const actionByManager = interaction.member.user.id !== ownerId;
 			// Open Delete Confirmation
