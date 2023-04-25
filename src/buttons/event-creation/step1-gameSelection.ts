@@ -3,19 +3,15 @@ import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
 import { generateActionRow, getNestedActivity } from './utils.ts';
-import { idSeparator, LfgEmbedIndexes, lfgStartTimeName, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
+import { dateTimeFields, descriptionTextField, idSeparator, LfgEmbedIndexes, lfgStartTimeName, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap, deleteTokenEarly, generateMapId, selfDestructMessage, tokenMap } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';
-import { isDSTActive, monthsShort } from './dateTimeUtils.ts';
+import { monthsShort } from './dateTimeUtils.ts';
 import { dbClient, queries } from '../../db.ts';
 
 export const customId = 'gameSel';
-export const eventTimeId = 'eventTime';
-export const eventTimeZoneId = 'eventTimeZone';
-export const eventDateId = 'eventDate';
-export const eventDescriptionId = 'eventDescription';
 const slashCommandName = 'create-event';
 const details: CommandDetails = {
 	name: slashCommandName,
@@ -65,64 +61,12 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				prefillDescription = interaction.message.embeds[0].fields[LfgEmbedIndexes.Description].value.trim();
 			}
 
-			// DST notice to try to get people to use the right TZ
-			const dstNotice = isDSTActive() ? '(Note: DST is in effect in NA)' : '';
-
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.Modal,
 				data: {
 					title: 'Enter Event Details',
 					customId: `${finalizeEventBtnId}${idSeparator}${finalizedIdxPath}`,
-					components: [{
-						type: MessageComponentTypes.ActionRow,
-						components: [{
-							type: MessageComponentTypes.InputText,
-							customId: eventTimeId,
-							label: 'Start Time:',
-							placeholder: 'Enter the start time as "HH:MM AM/PM"',
-							style: TextStyles.Short,
-							minLength: 1,
-							maxLength: 8,
-							value: prefillTime || undefined,
-						}],
-					}, {
-						type: MessageComponentTypes.ActionRow,
-						components: [{
-							type: MessageComponentTypes.InputText,
-							customId: eventTimeZoneId,
-							label: `Time Zone: ${dstNotice}`,
-							placeholder: 'Enter your time zone abbreviation (UTC±## also works)',
-							style: TextStyles.Short,
-							minLength: 2,
-							maxLength: 8,
-							value: prefillTimeZone || undefined,
-						}],
-					}, {
-						type: MessageComponentTypes.ActionRow,
-						components: [{
-							type: MessageComponentTypes.InputText,
-							customId: eventDateId,
-							label: 'Start Date:',
-							placeholder: 'Enter date as "MONTH/DAY/YEAR" or "Month Day, Year"',
-							style: TextStyles.Short,
-							minLength: 1,
-							maxLength: 20,
-							value: prefillDate || undefined,
-						}],
-					}, {
-						type: MessageComponentTypes.ActionRow,
-						components: [{
-							type: MessageComponentTypes.InputText,
-							customId: eventDescriptionId,
-							label: 'Description:',
-							placeholder: 'Briefly describe the event',
-							style: TextStyles.Paragraph,
-							required: false,
-							minLength: 0,
-							maxLength: 1000,
-							value: prefillDescription || undefined,
-						}],
-					}],
+					components: [...dateTimeFields(prefillTime, prefillTimeZone, prefillDate), descriptionTextField(prefillDescription)],
 				},
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:modal', interaction, e));
 			return;

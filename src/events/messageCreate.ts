@@ -5,6 +5,9 @@ import { infoEmbed } from '../commandUtils.ts';
 import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
 
 export const messageCreate = async (bot: Bot, message: Message) => {
+	// Ignore self
+	if (botId === message.authorId) return;
+
 	// Delete all messages sent to a LFG Channel
 	if (lfgChannelSettings.has(generateGuildSettingKey(message.guildId || 0n, message.channelId))) {
 		bot.helpers.deleteMessage(message.channelId, message.id, 'Cleaning LFG Channel').catch((e: Error) => utils.commonLoggers.messageDeleteError('messageCreate.ts', 'Clean LFG Channel', e));
