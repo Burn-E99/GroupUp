@@ -11,6 +11,7 @@ import { joinRequestButton } from './live-event/joinRequest.ts';
 import { alternateRequestButton } from './live-event/alternateRequest.ts';
 import { deleteEventButton } from './live-event/deleteEvent.ts';
 import { deleteConfirmedButton } from './live-event/deleteConfirmed.ts';
+import { editEventButton } from './live-event/editEvent.ts';
 
 export const buttons: Array<Button> = [
 	gameSelectionButton,
@@ -25,4 +26,5 @@ export const buttons: Array<Button> = [
 	alternateRequestButton,
 	deleteEventButton,
 	deleteConfirmedButton,
+	editEventButton,
 ];

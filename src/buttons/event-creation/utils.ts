@@ -23,7 +23,7 @@ import { customId as joinEventCustomId } from '../live-event/joinEvent.ts';
 import { customId as leaveEventCustomId } from '../live-event/leaveEvent.ts';
 import { customId as alternateEventCustomId } from '../live-event/alternateEvent.ts';
 import { customId as deleteEventCustomId } from '../live-event/deleteEvent.ts';
-
+import { customId as editEventCustomId } from '../live-event/editEvent.ts';
 
 export const getNestedActivity = (idxPath: Array<number>, activities: Array<Activity>): Array<Activity> => {
 	const nextIdx = idxPath[0];
@@ -92,7 +92,7 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	type: MessageComponentTypes.Button,
 	label: '',
 	style: ButtonStyles.Secondary,
-	customId: 'editEvent', // TODO: replace with proper id
+	customId: editEventCustomId,
 	emoji: {
 		name: '✏️',
 	},
