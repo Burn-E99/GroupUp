@@ -23,6 +23,6 @@ export const interactionCreate = (rawBot: Bot, interaction: Interaction) => {
 			return;
 		}
 
-		log(LT.WARN, `interaction NOT HANDLED!!! customId: ${interaction.data.customId} name: ${interaction.data.name}`);
+		log(LT.WARN, `UNHANDLED INTERACTION!!! customId: ${interaction.data.customId} name: ${interaction.data.name}`);
 	}
 };

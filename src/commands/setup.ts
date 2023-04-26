@@ -275,7 +275,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 				content: `Welcome to <#${interaction.channelId}>, managed by <@${botId}>!`,
 				embeds: [{
 					title: `To get started, click on the '${createNewEventBtn}' button below!`,
-					color: successColor,
+					color: infoColor2,
 					fields: introFields,
 				}],
 				components: [{

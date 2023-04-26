@@ -1,4 +1,4 @@
-import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes, TextStyles } from '../../../deps.ts';
+import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';

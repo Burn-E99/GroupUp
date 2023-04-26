@@ -10,7 +10,7 @@ export const confirmedCustomId = 'confirmedCustomId';
 export const confirmStr = 'yes';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction?.data?.customId && interaction?.data?.components?.length && interaction.channelId && interaction.guildId && interaction.member && interaction.member.user) {
+	if (interaction.data?.customId && interaction.data?.components?.length && interaction.channelId && interaction.guildId && interaction.member && interaction.member.user) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-confirmDelEvent')).catch((e) => utils.commonLoggers.dbError('deleteConfirmed.ts@incCnt', 'call sproc INC_CNT on', e));
 

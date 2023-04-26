@@ -106,11 +106,13 @@ export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, Button
 	},
 }];
 
+export const generateTimeFieldStr = (eventDateTimeStr: string, eventDateTime: Date) => `${eventDateTimeStr}\n<t:${Math.floor(eventDateTime.getTime() / 1000)}:R>`;
+
 export const createLFGPost = (
 	category: string,
 	activity: Activity,
 	eventDateTime: Date,
-	eventDateTimeStr: String,
+	eventDateTimeStr: string,
 	eventDescription: string,
 	authorId: bigint,
 	author: string,
@@ -138,7 +140,7 @@ export const createLFGPost = (
 					inline: true,
 				}, {
 					name: lfgStartTimeName,
-					value: `${eventDateTimeStr}\n<t:${Math.floor(eventDateTime.getTime() / 1000)}:R>`,
+					value: generateTimeFieldStr(eventDateTimeStr, eventDateTime),
 					inline: true,
 				}, {
 					name: 'Add to Calendar:',

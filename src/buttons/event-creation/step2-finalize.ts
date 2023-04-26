@@ -1,7 +1,7 @@
 import { Bot, Interaction } from '../../../deps.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { createLFGPost, getFinalActivity } from './utils.ts';
-import { eventDateId, eventDescriptionId, eventTimeId, eventTimeZoneId, idSeparator, pathIdxSeparator } from '../eventUtils.ts';
+import { eventDateId, eventDescriptionId, eventTimeId, eventTimeZoneId, idSeparator, noDescProvided, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap } from '../tokenCleanup.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
@@ -10,7 +10,7 @@ import utils from '../../utils.ts';
 export const customId = 'finalize';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction?.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member && interaction.member.user) {
+	if (interaction.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member && interaction.member.user) {
 		const tempDataMap: Map<string, string> = new Map();
 		for (const row of interaction.data.components) {
 			if (row.components?.[0]) {
@@ -45,7 +45,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const rawEventTime = tempDataMap.get(eventTimeId) || '';
 		const rawEventTimeZone = tempDataMap.get(eventTimeZoneId) || '';
 		const rawEventDate = tempDataMap.get(eventDateId) || '';
-		const eventDescription = tempDataMap.get(eventDescriptionId) || 'No description provided.';
+		const eventDescription = tempDataMap.get(eventDescriptionId) || noDescProvided;
 		if (!rawEventTime || !rawEventTimeZone || !rawEventDate) {
 			// Error out if user somehow failed to provide one of the fields (eventDescription is allowed to be null/empty)
 			somethingWentWrong(bot, interaction, `missingFieldFromEventDescription@${rawEventTime}_${rawEventTimeZone}_${rawEventDate}`);

@@ -11,7 +11,7 @@ import utils from '../../utils.ts';
 export const customId = 'verifyCustomActivity';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction?.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member) {
+	if (interaction.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member) {
 		// Parse out our data
 		const tempDataMap: Map<string, string> = new Map();
 		for (const row of interaction.data.components) {

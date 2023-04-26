@@ -22,6 +22,7 @@ export const joinEventBtnStr = 'Join';
 export const requestToJoinEventBtnStr = 'Request to Join';
 export const leaveEventBtnStr = 'Leave';
 export const alternateEventBtnStr = 'Join as Alternate';
+export const noDescProvided = 'No description provided.';
 
 // Member List generators
 export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
