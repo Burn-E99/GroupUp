@@ -26,6 +26,11 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const newEventEmbed = interaction.message.embeds[0];
 		const userId = interaction.member.id;
 		const userName = interaction.member.user.username;
+		const eventLink = utils.idsToMessageUrl({
+			guildId: interaction.guildId,
+			channelId: evtChannelId,
+			messageId: evtMessageId,
+		});
 
 		bot.helpers.editMessage(evtChannelId, evtMessageId, { embeds: [interaction.message.embeds[0]] }).then(() => {
 			dbClient.execute(queries.updateEvent, [eventTime, evtChannelId, evtMessageId]).then(() => {
@@ -53,7 +58,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							{
 								color: infoColor2,
 								title: `Event edited by a ${config.name} Manager`,
-								description: `The following event was edited by ${userName} - <@${userId}>.  The old event is listed first and marked with a blue bar.`,
+								description: `[This event](${eventLink}) was edited by ${userName} - <@${userId}>.  The old event is listed first and marked with a blue bar.`,
 								timestamp: new Date().getTime(),
 							},
 							oldEventEmbed || missingOldEmbed,
@@ -66,7 +71,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							{
 								color: infoColor2,
 								title: `Notice: A ${config.name} Manager has edited one of your events in ${guildName}`,
-								description: 'The edited event is listed below.  The old event is listed first and marked with a blue bar.',
+								description: `[This event](${eventLink}) was edited.  The old event is listed first and marked with a blue bar.`,
 								fields: [
 									{
 										name: `${config.name} Manager:`,
