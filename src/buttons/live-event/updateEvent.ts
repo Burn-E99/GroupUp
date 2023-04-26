@@ -1,10 +1,10 @@
 import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { failColor, safelyDismissMsg, somethingWentWrong, successColor, infoColor2, infoColor1 } from '../../commandUtils.ts';
-import { idSeparator, pathIdxEnder, pathIdxSeparator, LfgEmbedIndexes } from '../eventUtils.ts';
+import { failColor, infoColor1, infoColor2, safelyDismissMsg, somethingWentWrong, successColor } from '../../commandUtils.ts';
+import { idSeparator, LfgEmbedIndexes, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { deleteTokenEarly } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
 import config from '../../../config.ts';
-import { dbClient, queries, generateGuildSettingKey, lfgChannelSettings } from '../../db.ts';
+import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../../db.ts';
 
 export const customId = 'updateEvent';
 
@@ -46,18 +46,22 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						oldEventEmbed.color = infoColor1;
 					}
 					bot.helpers.sendMessage(lfgChannelSetting.logChannelId, {
-						embeds: [{
-							color: infoColor2,
-							title: `Event edited by a ${config.name} Manager`,
-							description: `The following event was edited by ${userName} - <@${userId}>.  The old event is listed first and marked with a blue bar.`,
-							timestamp: new Date().getTime(),
-						}, oldEventEmbed || missingOldEmbed, newEventEmbed],
+						embeds: [
+							{
+								color: infoColor2,
+								title: `Event edited by a ${config.name} Manager`,
+								description: `The following event was edited by ${userName} - <@${userId}>.  The old event is listed first and marked with a blue bar.`,
+								timestamp: new Date().getTime(),
+							},
+							oldEventEmbed || missingOldEmbed,
+							newEventEmbed,
+						],
 					}).catch((e: Error) => utils.commonLoggers.messageSendError('updateEvent.ts', 'send log message', e));
 				}
 			}).catch((e) => {
 				utils.commonLoggers.dbError('updateEvent.ts', 'update event in', e);
 				if (oldEventEmbed) {
-					bot.helpers.editMessage(evtChannelId, evtMessageId, { embeds: [oldEventEmbed] }).catch((e) => utils.commonLoggers.messageEditError('updateEvent.ts', 'resetEventFailed', e))
+					bot.helpers.editMessage(evtChannelId, evtMessageId, { embeds: [oldEventEmbed] }).catch((e) => utils.commonLoggers.messageEditError('updateEvent.ts', 'resetEventFailed', e));
 				}
 				somethingWentWrong(bot, interaction, 'updateDBInUpdateEventButton');
 			});
