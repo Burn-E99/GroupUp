@@ -12,6 +12,11 @@ import { alternateRequestButton } from './live-event/alternateRequest.ts';
 import { deleteEventButton } from './live-event/deleteEvent.ts';
 import { deleteConfirmedButton } from './live-event/deleteConfirmed.ts';
 import { editEventButton } from './live-event/editEvent.ts';
+import { editDescriptionButton } from './live-event/editDescription.ts';
+import { editDateTimeButton } from './live-event/editDateTime.ts';
+import { applyDescriptionButton } from './live-event/applyDescription.ts';
+import { applyDateTimeButton } from './live-event/applyDateTime.ts';
+import { updateEventButton } from './live-event/updateEvent.ts';
 
 export const buttons: Array<Button> = [
 	gameSelectionButton,
@@ -27,4 +32,9 @@ export const buttons: Array<Button> = [
 	deleteEventButton,
 	deleteConfirmedButton,
 	editEventButton,
+	editDescriptionButton,
+	editDateTimeButton,
+	applyDescriptionButton,
+	applyDateTimeButton,
+	updateEventButton,
 ];

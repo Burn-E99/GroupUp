@@ -4,6 +4,8 @@ import { infoColor1, somethingWentWrong, stopThat } from '../../commandUtils.ts'
 import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap, selfDestructMessage } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
+import { customId as editDescriptionCustomId } from './editDescription.ts';
+import { customId as editDateTimeCustomId } from './editDateTime.ts';
 
 export const customId = 'editEvent';
 
@@ -59,12 +61,12 @@ ${selfDestructMessage(new Date().getTime())}`,
 								type: MessageComponentTypes.Button,
 								label: 'Change Date/Time',
 								style: ButtonStyles.Primary,
-								customId: `b${editIdxPath}`, // TODO: add customId
+								customId: `${editDateTimeCustomId}${editIdxPath}`,
 							}, {
 								type: MessageComponentTypes.Button,
 								label: 'Edit Description',
 								style: ButtonStyles.Primary,
-								customId: `c${editIdxPath}`, // TODO: add customId
+								customId: `${editDescriptionCustomId}${editIdxPath}`,
 							}],
 						}],
 					},

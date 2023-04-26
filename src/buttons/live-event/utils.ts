@@ -2,7 +2,9 @@ import { ActionRow, ApplicationCommandFlags, Bot, ButtonStyles, Embed, Interacti
 import { LFGMember, UrlIds } from '../../types/commandTypes.ts';
 import { infoColor1, safelyDismissMsg, sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
 import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
+import { selfDestructMessage } from '../tokenCleanup.ts';
 import { approveStr, customId as joinRequestCustomId, denyStr } from './joinRequest.ts';
+import { customId as updateEventCustomId } from './updateEvent.ts';
 import utils from '../../utils.ts';
 
 // Join status map to prevent spamming the system
@@ -341,5 +343,20 @@ export const joinRequestResponseButtons = (disabled: boolean): ActionRow[] => [{
 		style: ButtonStyles.Danger,
 		customId: `${joinRequestCustomId}${idSeparator}${denyStr}`,
 		disabled,
+	}],
+}];
+
+export const applyEditButtonName = 'Apply Edit';
+export const applyEditMessage = (currentTime: number) =>
+	`Please verify the updated event below, then click on the \`${applyEditButtonName}\` button.  If this does not look right, please dismiss this message and start over.\n\n${
+		selfDestructMessage(currentTime)
+	}`;
+export const applyEditButtons = (idxPath: string): ActionRow[] => [{
+	type: MessageComponentTypes.ActionRow,
+	components: [{
+		type: MessageComponentTypes.Button,
+		label: applyEditButtonName,
+		style: ButtonStyles.Success,
+		customId: `${updateEventCustomId}${idSeparator}${idxPath}`,
 	}],
 }];

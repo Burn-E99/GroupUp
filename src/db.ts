@@ -14,6 +14,7 @@ export const dbClient = await new Client().connect({
 export const queries = {
 	callIncCnt: (cmdName: string) => `CALL INC_CNT("${cmdName}");`,
 	insertEvent: 'INSERT INTO active_events(messageId,channelId,guildId,ownerId,eventTime) values(?,?,?,?,?)',
+	updateEvent: 'UPDATE active_events SET eventTime = ? WHERE channelId = ? AND messageId = ?',
 	deleteEvent: 'DELETE FROM active_events WHERE channelId = ? AND messageId = ?',
 };
 
