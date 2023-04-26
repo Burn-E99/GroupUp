@@ -61,13 +61,13 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							type: MessageComponentTypes.Button,
 							label: 'Make Event Public',
 							style: ButtonStyles.Primary,
-							customId: `${toggleWLStatusCustomId}${baseEditIdxPath}`, // TODO: add customId
+							customId: `${toggleWLStatusCustomId}${baseEditIdxPath}`,
 						}
 						: {
 							type: MessageComponentTypes.Button,
 							label: 'Make Event Whitelisted',
 							style: ButtonStyles.Primary,
-							customId: `${toggleWLStatusCustomId}${baseEditIdxPath}${pathIdxEnder}`, // TODO: add customId
+							customId: `${toggleWLStatusCustomId}${baseEditIdxPath}${pathIdxEnder}`,
 						},
 				);
 			}
