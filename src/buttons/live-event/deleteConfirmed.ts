@@ -1,9 +1,10 @@
 import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
 import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../../db.ts';
-import { failColor, infoColor1, infoColor2, safelyDismissMsg, somethingWentWrong, successColor } from '../../commandUtils.ts';
-import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
+import { failColor, infoColor1, infoColor2, safelyDismissMsg, somethingWentWrong, successColor, sendDirectMessage } from '../../commandUtils.ts';
+import { generateMemberList, idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import utils from '../../utils.ts';
 import config from '../../../config.ts';
+import { getGuildName } from './utils.ts';
 
 export const customId = 'deleteConfirmed';
 export const confirmedCustomId = 'confirmedCustomId';
@@ -31,6 +32,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		};
 
 		if (tempDataMap.get(confirmedCustomId)?.toLowerCase() === confirmStr) {
+			const guildName = await getGuildName(bot, interaction.guildId);
 			const eventMessage = await bot.helpers.getMessage(evtChannelId, evtMessageId).catch((e: Error) => utils.commonLoggers.messageGetError('deleteConfirmed.ts', 'get eventMessage', e));
 			const userId = interaction.member.id;
 			const userName = interaction.member.user.username;
@@ -52,6 +54,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				}).catch((e: Error) => utils.commonLoggers.interactionSendError('deleteConfirmed.ts', interaction, e));
 
 				if (actionByManager) {
+					const ownerId = BigInt(eventMessage?.embeds[0].footer?.iconUrl?.split('#')[1] || '0');
 					const eventEmbed = eventMessage?.embeds[0] || { title: 'Event not found', color: failColor };
 					bot.helpers.sendMessage(lfgChannelSetting.logChannelId, {
 						embeds: [{
@@ -61,6 +64,27 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							timestamp: new Date().getTime(),
 						}, eventEmbed],
 					}).catch((e: Error) => utils.commonLoggers.messageSendError('deleteConfirmed.ts', 'send log message', e));
+
+					sendDirectMessage(bot, ownerId, {
+						embeds: [{
+							color: infoColor2,
+							title: `Notice: A ${config.name} Manager has deleted one of your events in ${guildName}`,
+							description: 'The deleted event is listed below.',
+							fields: [
+								{
+									name: `${config.name} Manager:`,
+									value: generateMemberList([{
+										id: userId,
+										name: userName,
+									}]),
+									inline: true,
+								}, {
+									name: 'Are you unhappy with this action?',
+									value: `Please reach out to the ${config.name} Manager that performed this action, or the moderators/administrators of ${guildName}.`,
+								},
+							],
+						}, eventEmbed],
+					}).catch((e: Error) => utils.commonLoggers.messageSendError('deleteConfirmed.ts', 'send DM fail', e));
 				}
 			}).catch((e) => {
 				utils.commonLoggers.messageDeleteError('deleteConfirmed.ts', 'deleteEventFailedDB', e);
