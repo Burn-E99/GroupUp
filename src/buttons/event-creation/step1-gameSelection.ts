@@ -3,7 +3,7 @@ import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
 import { generateActionRow, getNestedActivity } from './utils.ts';
-import { dateTimeFields, descriptionTextField, idSeparator, LfgEmbedIndexes, lfgStartTimeName, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
+import { dateTimeFields, descriptionTextField, fillerChar, idSeparator, LfgEmbedIndexes, lfgStartTimeName, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap, deleteTokenEarly, generateMapId, selfDestructMessage, tokenMap } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
@@ -76,7 +76,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const rawIdxPath: Array<string> = interaction.data.values ? interaction.data.values[0].split(pathIdxSeparator) : [''];
 		const idxPath: Array<number> = rawIdxPath.map((rawIdx) => rawIdx ? parseInt(rawIdx) : -1);
 		const selectMenus: Array<ActionRow> = [];
-		let selectMenuCustomId = `${customId}$`;
+		// Use fillerChar to create unique customIds for dropdowns
+		// We also leverage this to determine if its the first time the user has entered gameSel
+		let selectMenuCustomId = `${customId}${fillerChar}`;
 		let currentBaseValue = '';
 
 		for (let i = 0; i < idxPath.length; i++) {
@@ -84,13 +86,13 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			const idxPathCopy = [...idxPath].slice(0, i);
 			selectMenus.push(generateActionRow(currentBaseValue, getNestedActivity(idxPathCopy, Activities), selectMenuCustomId, idx));
 
-			selectMenuCustomId = `${selectMenuCustomId}$`;
+			selectMenuCustomId = `${selectMenuCustomId}${fillerChar}`;
 			currentBaseValue = `${currentBaseValue}${idx}${pathIdxSeparator}`;
 		}
 
 		selectMenus.push(customEventRow);
 
-		if (interaction.data.customId && interaction.data.customId.includes('$')) {
+		if (interaction.data.customId && interaction.data.customId.includes(fillerChar)) {
 			// Let discord know we didn't ignore the user
 			await bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.DeferredUpdateMessage,

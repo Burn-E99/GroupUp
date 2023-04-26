@@ -1,7 +1,7 @@
 import { Bot, BotWithCache, Interaction, log, LT } from '../../deps.ts';
 import { buttons } from '../buttons/_index.ts';
 import { commands } from '../commands/_index.ts';
-import { idSeparator } from '../buttons/eventUtils.ts';
+import { idSeparator, fillerChar } from '../buttons/eventUtils.ts';
 
 const commandNames: Array<string> = commands.map((command) => command.details.name);
 const buttonNames: Array<string> = buttons.map((button) => button.customId);
@@ -15,7 +15,7 @@ export const interactionCreate = (rawBot: Bot, interaction: Interaction) => {
 			return;
 		}
 
-		const tempCustomId = interaction.data.customId ? interaction.data.customId.replace(/\$/g, '') : '';
+		const tempCustomId = interaction.data.customId ? interaction.data.customId.replaceAll(fillerChar, '') : '';
 		const customId = tempCustomId.split(idSeparator)[0] || '';
 		if (customId && buttonNames.includes(customId)) {
 			const btnIdx = buttonNames.indexOf(customId);
