@@ -29,6 +29,8 @@ const actions = [
 	'btn-eeChangeAct',
 	'btn-eeChangeTime',
 	'btn-eeChangeDesc',
+	'btn-eeMakePublic',
+	'btn-eeMakeWL',
 ];
 for (const action of actions) {
 	await dbClient.execute('INSERT INTO command_cnt(command) values(?)', [action]).catch((e) => {
