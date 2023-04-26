@@ -1,5 +1,5 @@
 import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { failColor, infoColor1, infoColor2, safelyDismissMsg, somethingWentWrong, successColor, sendDirectMessage } from '../../commandUtils.ts';
+import { failColor, infoColor1, infoColor2, safelyDismissMsg, sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
 import { generateMemberList, idSeparator, LfgEmbedIndexes, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { deleteTokenEarly } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
@@ -62,26 +62,29 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					}).catch((e: Error) => utils.commonLoggers.messageSendError('updateEvent.ts', 'send log message', e));
 
 					sendDirectMessage(bot, ownerId, {
-						embeds: [{
-							color: infoColor2,
-							title: `Notice: A ${config.name} Manager has edited one of your events in ${guildName}`,
-							description: 'The edited event is listed below.  The old event is listed first and marked with a blue bar.',
-							fields: [
-								{
-									name: `${config.name} Manager:`,
-									value: generateMemberList([{
-										id: userId,
-										name: userName,
-									}]),
-									inline: true,
-								}, {
-									name: 'Are you unhappy with this action?',
-									value: `Please reach out to the ${config.name} Manager that performed this action, or the moderators/administrators of ${guildName}.`,
-								},
-							],
-						},
-						oldEventEmbed || missingOldEmbed,
-							newEventEmbed,],
+						embeds: [
+							{
+								color: infoColor2,
+								title: `Notice: A ${config.name} Manager has edited one of your events in ${guildName}`,
+								description: 'The edited event is listed below.  The old event is listed first and marked with a blue bar.',
+								fields: [
+									{
+										name: `${config.name} Manager:`,
+										value: generateMemberList([{
+											id: userId,
+											name: userName,
+										}]),
+										inline: true,
+									},
+									{
+										name: 'Are you unhappy with this action?',
+										value: `Please reach out to the ${config.name} Manager that performed this action, or the moderators/administrators of ${guildName}.`,
+									},
+								],
+							},
+							oldEventEmbed || missingOldEmbed,
+							newEventEmbed,
+						],
 					}).catch((e: Error) => utils.commonLoggers.messageSendError('managerJLA.ts', 'send DM fail', e));
 				}
 			}).catch((e) => {
