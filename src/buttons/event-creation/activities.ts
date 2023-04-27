@@ -14,6 +14,10 @@ export const Activities: Array<Activity> = [
 				name: 'Raids',
 				options: [
 					{
+						name: 'Root of Nightmares',
+						maxMembers: 6,
+					},
+					{
 						name: 'King\'s Fall',
 						maxMembers: 6,
 					},
@@ -72,11 +76,19 @@ export const Activities: Array<Activity> = [
 				name: 'Crucible',
 				options: [
 					{
-						name: 'Team Quickplay',
+						name: 'Crucible Labs',
 						maxMembers: 6,
 					},
 					{
 						name: 'Competitive',
+						maxMembers: 3,
+					},
+					{
+						name: 'Clash',
+						maxMembers: 6,
+					},
+					{
+						name: 'Weekly Mode',
 						maxMembers: 3,
 					},
 					{
@@ -127,7 +139,7 @@ export const Activities: Array<Activity> = [
 				name: 'Exotic Missions',
 				options: [
 					{
-						name: 'Operation: Seraph\'s Shield',
+						name: '//node.ovrd.AVALON//',
 						maxMembers: 3,
 					},
 				],
@@ -136,15 +148,23 @@ export const Activities: Array<Activity> = [
 				name: 'Miscellaneous',
 				options: [
 					{
-						name: 'Heist Battlegrounds',
+						name: 'Defiant Battlegrounds',
 						maxMembers: 3,
 					},
 					{
-						name: 'Ketchrash',
-						maxMembers: 6,
+						name: 'Terminal Overload',
+						maxMembers: 12,
 					},
 					{
-						name: 'Expedition',
+						name: 'Vex Incursion Zone',
+						maxMembers: 12,
+					},
+					{
+						name: 'Partition: Ordnance',
+						maxMembers: 3,
+					},
+					{
+						name: 'Lightfall Campaign Mission',
 						maxMembers: 3,
 					},
 					{
