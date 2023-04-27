@@ -2,7 +2,19 @@ import { ActionRow, ApplicationCommandFlags, Bot, ButtonStyles, Interaction, Int
 import { failColor, infoColor1, safelyDismissMsg, somethingWentWrong } from '../../commandUtils.ts';
 import { Activities, Activity } from '../event-creation/activities.ts';
 import { generateActionRow, getFinalActivity, getNestedActivity } from '../event-creation/utils.ts';
-import { activityMaxPlayersId, activitySubtitleId, activityTitleId, fillerChar, generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, LfgEmbedIndexes, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
+import {
+	activityMaxPlayersId,
+	activitySubtitleId,
+	activityTitleId,
+	fillerChar,
+	generateAlternateList,
+	generateMemberList,
+	generateMemberTitle,
+	idSeparator,
+	LfgEmbedIndexes,
+	pathIdxEnder,
+	pathIdxSeparator,
+} from '../eventUtils.ts';
 import { addTokenToMap, deleteTokenEarly, generateMapId, selfDestructMessage, tokenMap } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
 import config from '../../../config.ts';
@@ -25,7 +37,9 @@ const makeCustomEventRow = (customIdIdxPath: string): ActionRow => ({
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data?.customId && interaction.member && interaction.guildId && interaction.channelId) {
-		const [evtChannelId, evtMessageId] = (interaction.data.customId.replaceAll(pathIdxEnder, '').replaceAll(fillerChar, '').split(idSeparator)[1] || '').split(pathIdxSeparator).map((id) => BigInt(id || '0'));
+		const [evtChannelId, evtMessageId] = (interaction.data.customId.replaceAll(pathIdxEnder, '').replaceAll(fillerChar, '').split(idSeparator)[1] || '').split(pathIdxSeparator).map((id) =>
+			BigInt(id || '0')
+		);
 
 		// Check if we are done
 		const valuesIdxPath = interaction.data?.values?.[0] || '';
@@ -62,8 +76,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							embeds: [{
 								color: failColor,
 								title: 'Invalid Max Member count!',
-								description: `${config.name} parsed the max members as \`${isNaN(activityMaxPlayers) ? 'Not a Number' : activityMaxPlayers
-									}\`, which is outside of the allowed range.  Please re-edit this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`,
+								description: `${config.name} parsed the max members as \`${
+									isNaN(activityMaxPlayers) ? 'Not a Number' : activityMaxPlayers
+								}\`, which is outside of the allowed range.  Please re-edit this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`,
 							}],
 						},
 					}).catch((e: Error) => utils.commonLoggers.interactionSendError('editActivity.ts@invalidPlayer', interaction, e));
@@ -178,12 +193,13 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				data: {
 					embeds: [{
 						title: 'Please select a Game and Activity, or create a Custom Event.',
-						description: `Changing activity for [this event](${utils.idsToMessageUrl({
-							guildId: interaction.guildId,
-							channelId: evtChannelId,
-							messageId: evtMessageId,
-						})
-							}).\n\n${selfDestructMessage(new Date().getTime())}`,
+						description: `Changing activity for [this event](${
+							utils.idsToMessageUrl({
+								guildId: interaction.guildId,
+								channelId: evtChannelId,
+								messageId: evtMessageId,
+							})
+						}).\n\n${selfDestructMessage(new Date().getTime())}`,
 						color: infoColor1,
 					}],
 					flags: ApplicationCommandFlags.Ephemeral,
