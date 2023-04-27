@@ -1,10 +1,11 @@
 import { ActionRow, ApplicationCommandFlags, Bot, ButtonStyles, Embed, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { LFGMember, UrlIds } from '../../types/commandTypes.ts';
 import { infoColor1, safelyDismissMsg, sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
-import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr } from '../eventUtils.ts';
+import { generateAlternateList, generateMemberList, generateMemberTitle, idSeparator, leaveEventBtnStr, LfgEmbedIndexes, noMembersStr, pathIdxSeparator } from '../eventUtils.ts';
 import { selfDestructMessage } from '../tokenCleanup.ts';
 import { approveStr, customId as joinRequestCustomId, denyStr } from './joinRequest.ts';
 import { customId as updateEventCustomId } from './updateEvent.ts';
+import { customId as leaveViaDMCustomId } from './leaveViaDM.ts';
 import utils from '../../utils.ts';
 
 // Join status map to prevent spamming the system
@@ -206,7 +207,7 @@ export const removeMemberFromEvent = async (
 							type: MessageComponentTypes.Button,
 							label: leaveEventBtnStr,
 							style: ButtonStyles.Danger,
-							customId: 'leaveEventCustomId', // TODO: fix
+							customId: `${leaveViaDMCustomId}${idSeparator}${evtGuildId}${pathIdxSeparator}${evtChannelId}${pathIdxSeparator}${evtMessageId}`,
 						}],
 					}],
 				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'user promotion dm', e));

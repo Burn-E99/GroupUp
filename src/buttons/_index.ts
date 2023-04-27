@@ -20,6 +20,7 @@ import { updateEventButton } from './live-event/updateEvent.ts';
 import { toggleWLStatusButton } from './live-event/toggleWLStatus.ts';
 import { editActivityButton } from './live-event/editActivity.ts';
 import { editActivityCustomButton } from './live-event/editActivity-custom.ts';
+import { leaveEventViaDMButton } from './live-event/leaveViaDM.ts';
 
 export const buttons: Array<Button> = [
 	gameSelectionButton,
@@ -43,4 +44,5 @@ export const buttons: Array<Button> = [
 	toggleWLStatusButton,
 	editActivityButton,
 	editActivityCustomButton,
+	leaveEventViaDMButton,
 ];

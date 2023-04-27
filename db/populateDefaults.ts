@@ -19,6 +19,7 @@ const actions = [
 	'btn-joinEvent',
 	'btn-joinWLEvent',
 	'btn-leaveEvent',
+	'btn-leaveEventViaDM',
 	'btn-altEvent',
 	'btn-joinReqApprove',
 	'btn-joinReqDeny',
