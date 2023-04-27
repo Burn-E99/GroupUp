@@ -3,7 +3,7 @@ import { dbClient, queries } from '../../db.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import utils from '../../utils.ts';
 import { removeMemberFromEvent } from './utils.ts';
-import { pathIdxEnder, idSeparator, pathIdxSeparator } from '../eventUtils.ts';
+import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 
 export const customId = 'leaveEventViaDM';
 
