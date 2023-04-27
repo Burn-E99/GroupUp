@@ -91,3 +91,44 @@ export const dateTimeFields = (prefillTime = '', prefillTimeZone = '', prefillDa
 		value: prefillDate || undefined,
 	}],
 }];
+
+export const activityTitleId = 'activityTitle';
+export const activitySubtitleId = 'activitySubtitle';
+export const activityMaxPlayersId = 'activityMaxPlayers';
+export const generateCustomActivityFields = (actTitle = '', actSubtitle = '', activityMaxPlayers = ''): ActionRow[] => [{
+	type: MessageComponentTypes.ActionRow,
+	components: [{
+		type: MessageComponentTypes.InputText,
+		customId: activityTitleId,
+		label: 'Activity Title:',
+		placeholder: 'The name of the game or event.',
+		style: TextStyles.Short,
+		minLength: 1,
+		maxLength: 35,
+		value: actTitle || undefined,
+	}],
+}, {
+	type: MessageComponentTypes.ActionRow,
+	components: [{
+		type: MessageComponentTypes.InputText,
+		customId: activitySubtitleId,
+		label: 'Activity Subtitle:',
+		placeholder: 'The specific activity within the game or event.',
+		style: TextStyles.Short,
+		minLength: 1,
+		maxLength: 50,
+		value: actSubtitle || undefined,
+	}],
+}, {
+	type: MessageComponentTypes.ActionRow,
+	components: [{
+		type: MessageComponentTypes.InputText,
+		customId: activityMaxPlayersId,
+		label: 'Maximum Players:',
+		placeholder: 'Please enter a number between 1 and 99.',
+		style: TextStyles.Short,
+		minLength: 1,
+		maxLength: 2,
+		value: activityMaxPlayers || undefined,
+	}],
+}];

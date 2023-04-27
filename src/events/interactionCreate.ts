@@ -1,7 +1,7 @@
 import { Bot, BotWithCache, Interaction, log, LT } from '../../deps.ts';
 import { buttons } from '../buttons/_index.ts';
 import { commands } from '../commands/_index.ts';
-import { idSeparator, fillerChar } from '../buttons/eventUtils.ts';
+import { fillerChar, idSeparator } from '../buttons/eventUtils.ts';
 
 const commandNames: Array<string> = commands.map((command) => command.details.name);
 const buttonNames: Array<string> = buttons.map((button) => button.customId);
