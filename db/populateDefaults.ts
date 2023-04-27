@@ -27,6 +27,7 @@ const actions = [
 	'btn-confirmDelEvent',
 	'btn-editEvent',
 	'btn-eeChangeAct',
+	'btn-eeCustomAct',
 	'btn-eeChangeTime',
 	'btn-eeChangeDesc',
 	'btn-eeMakePublic',

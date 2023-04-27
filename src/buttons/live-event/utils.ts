@@ -51,7 +51,7 @@ setInterval(() => {
 }, oneHour);
 
 // Get Member Counts from the title
-const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
+export const getEventMemberCount = (rawMemberTitle: string): [number, number] => {
 	const [rawCurrentCount, rawMaxCount] = rawMemberTitle.split('/');
 	const currentMemberCount = parseInt(rawCurrentCount.split(':')[1] || '0');
 	const maxMemberCount = parseInt(rawMaxCount || '0');

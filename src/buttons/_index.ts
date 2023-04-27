@@ -18,6 +18,8 @@ import { applyDescriptionButton } from './live-event/applyDescription.ts';
 import { applyDateTimeButton } from './live-event/applyDateTime.ts';
 import { updateEventButton } from './live-event/updateEvent.ts';
 import { toggleWLStatusButton } from './live-event/toggleWLStatus.ts';
+import { editActivityButton } from './live-event/editActivity.ts';
+import { editActivityCustomButton } from './live-event/editActivity-custom.ts';
 
 export const buttons: Array<Button> = [
 	gameSelectionButton,
@@ -39,4 +41,6 @@ export const buttons: Array<Button> = [
 	applyDateTimeButton,
 	updateEventButton,
 	toggleWLStatusButton,
+	editActivityButton,
+	editActivityCustomButton,
 ];

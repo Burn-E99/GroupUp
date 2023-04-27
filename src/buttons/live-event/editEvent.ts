@@ -4,6 +4,7 @@ import { infoColor1, somethingWentWrong, stopThat } from '../../commandUtils.ts'
 import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap, selfDestructMessage } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
+import { customId as editActivityCustomId } from './editActivity.ts';
 import { customId as editDescriptionCustomId } from './editDescription.ts';
 import { customId as editDateTimeCustomId } from './editDateTime.ts';
 import { customId as toggleWLStatusCustomId } from './toggleWLStatus.ts';
@@ -41,7 +42,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					type: MessageComponentTypes.Button,
 					label: 'Change Activity',
 					style: ButtonStyles.Primary,
-					customId: `a${editIdxPath}`, // TODO: add customId
+					customId: `${editActivityCustomId}${editIdxPath}`,
 				}, {
 					type: MessageComponentTypes.Button,
 					label: 'Change Date/Time',
