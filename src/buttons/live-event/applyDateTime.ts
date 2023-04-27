@@ -32,7 +32,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Get Date Object from user input
-		const [eventDateTime, eventDateTimeStr] = getDateFromRawInput(newTime, newTimeZone, newDate);
+		const [eventDateTime, eventDateTimeStr] = getDateFromRawInput(newTime, newTimeZone, newDate); // TODO: verify dt
 
 		if (eventMessage && eventMessage.embeds[0].fields) {
 			// eventMessage.embeds[0].fields[LfgEmbedIndexes.Description].value = newDescription || noDescProvided;

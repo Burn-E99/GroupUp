@@ -57,6 +57,6 @@ export const ready = (rawBot: Bot) => {
 					},
 				],
 			}],
-		}).catch((e: Error) => utils.commonLoggers.messageSendError('ready.ts:71', 'Startup', e));
+		}).catch((e: Error) => utils.commonLoggers.messageSendError('ready.ts@startup', 'Startup', e));
 	}, 1000);
 };

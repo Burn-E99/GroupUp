@@ -53,7 +53,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Get Date Object from user input
-		const [eventDateTime, eventDateTimeStr] = getDateFromRawInput(rawEventTime, rawEventTimeZone, rawEventDate);
+		const [eventDateTime, eventDateTimeStr] = getDateFromRawInput(rawEventTime, rawEventTimeZone, rawEventDate); // TODO: verify dt
 
 		addTokenToMap(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 		bot.helpers.sendInteractionResponse(
