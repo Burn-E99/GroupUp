@@ -33,7 +33,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		});
 
 		bot.helpers.editMessage(evtChannelId, evtMessageId, { embeds: [interaction.message.embeds[0]] }).then(() => {
-			dbClient.execute(queries.updateEvent, [eventTime, evtChannelId, evtMessageId]).then(() => {
+			dbClient.execute(queries.updateEventTime, [eventTime, evtChannelId, evtMessageId]).then(() => {
 				// Acknowledge user so discord doesn't get annoyed
 				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 					type: InteractionResponseTypes.ChannelMessageWithSource,

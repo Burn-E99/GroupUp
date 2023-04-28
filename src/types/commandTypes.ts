@@ -43,3 +43,13 @@ export type UrlIds = {
 	channelId: bigint;
 	messageId: bigint;
 };
+
+export type ActiveEvent = {
+	messageId: bigint;
+	channelId: bigint;
+	guildId: bigint;
+	ownerId: bigint;
+	eventTime: Date;
+	notifiedFlag: number;
+	lockedFlag: number;
+};

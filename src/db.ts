@@ -13,8 +13,11 @@ export const dbClient = await new Client().connect({
 
 export const queries = {
 	callIncCnt: (cmdName: string) => `CALL INC_CNT("${cmdName}");`,
+	selectEvents: (notifiedFlag: number, lockedFlag: number) => `SELECT * FROM active_events WHERE notifiedFlag = ${notifiedFlag} AND lockedFlag = ${lockedFlag} AND eventTime < ?`,
+	selectFailedEvents: 'SELECT * FROM active_events WHERE (notifiedFlag = -1 OR lockedFlag = -1) AND eventTime < ?',
 	insertEvent: 'INSERT INTO active_events(messageId,channelId,guildId,ownerId,eventTime) values(?,?,?,?,?)',
-	updateEvent: 'UPDATE active_events SET eventTime = ? WHERE channelId = ? AND messageId = ?',
+	updateEventTime: 'UPDATE active_events SET eventTime = ? WHERE channelId = ? AND messageId = ?',
+	updateEventFlags: (notifiedFlag: number, lockedFlag: number) => `UPDATE active_events SET notifiedFlag = ${notifiedFlag} AND lockedFlag = ${lockedFlag} WHERE channelId = ? AND messageId = ?`,
 	deleteEvent: 'DELETE FROM active_events WHERE channelId = ? AND messageId = ?',
 };
 

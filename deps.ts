@@ -16,8 +16,6 @@ export {
 	ButtonStyles,
 	ChannelTypes,
 	createBot,
-	editBotMember,
-	editBotStatus,
 	getBotIdFromToken,
 	Intents,
 	InteractionResponseTypes,
