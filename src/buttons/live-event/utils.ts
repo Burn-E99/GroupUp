@@ -6,6 +6,7 @@ import { selfDestructMessage } from '../tokenCleanup.ts';
 import { approveStr, customId as joinRequestCustomId, denyStr } from './joinRequest.ts';
 import { customId as updateEventCustomId } from './updateEvent.ts';
 import { customId as leaveViaDMCustomId } from './leaveViaDM.ts';
+import { dbClient, queries } from '../../db.ts';
 import utils from '../../utils.ts';
 
 // Join status map to prevent spamming the system
@@ -304,6 +305,7 @@ export const joinMemberToEvent = async (
 
 			// Check if we need to notify the owner that their event has filled
 			if (memberList.length === maxMemberCount) {
+				dbClient.execute(queries.callIncCnt('lfg-filled')).catch((e) => utils.commonLoggers.dbError('utils.ts@lfg-filled', 'call sproc INC_CNT on', e));
 				const urlIds: UrlIds = {
 					guildId: evtGuildId,
 					channelId: evtChannelId,
@@ -315,7 +317,7 @@ export const joinMemberToEvent = async (
 					embeds: [{
 						color: successColor,
 						title: `Good news, your event in ${guildName} has filled!`,
-						description: `[Click here to view the event in ${guildName}.](${utils.idsToMessageUrl(urlIds)})`,
+						description: `[Click here](${utils.idsToMessageUrl(urlIds)}) to view the event in ${guildName}.`,
 						fields: evtMessageEmbed.fields,
 					}],
 				}).catch((e: Error) => utils.commonLoggers.messageSendError('utils.ts', 'event filled dm', e));
