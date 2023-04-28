@@ -1,31 +1,47 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "lib": ["deno.window"],
+    "lib": [
+      "deno.window"
+    ],
     "strict": true
   },
   "lint": {
     "files": {
-      "include": ["src/", "db/", "mod.ts", "deps.ts", "config.ts", "config.example.ts"],
+      "include": [
+        "src/",
+        "db/",
+        "mod.ts",
+        "deps.ts",
+        "config.ts",
+        "config.example.ts"
+      ],
       "exclude": []
     },
     "rules": {
-      "tags": ["recommended"],
-      "include": ["ban-untagged-todo"],
+      "tags": [
+        "recommended"
+      ],
+      "include": [
+        "ban-untagged-todo"
+      ],
       "exclude": []
     }
   },
   "fmt": {
-    "files": {
-      "include": ["src/", "db/", "mod.ts", "deps.ts", "config.ts", "config.example.ts"],
-      "exclude": []
-    },
-    "options": {
-      "useTabs": true,
-      "lineWidth": 200,
-      "indentWidth": 2,
-      "singleQuote": true,
-      "proseWrap": "preserve"
-    }
+    "include": [
+      "src/",
+      "db/",
+      "mod.ts",
+      "deps.ts",
+      "config.ts",
+      "config.example.ts"
+    ],
+    "exclude": [],
+    "useTabs": true,
+    "lineWidth": 200,
+    "indentWidth": 2,
+    "singleQuote": true,
+    "proseWrap": "preserve"
   }
 }
