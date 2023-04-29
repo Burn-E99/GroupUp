@@ -60,7 +60,7 @@ await dbClient.execute(`
 		channelId bigint unsigned NOT NULL,
 		guildId bigint unsigned NOT NULL,
 		ownerId bigint unsigned NOT NULL,
-		eventTime timestamp NOT NULL,
+		eventTime datetime NOT NULL,
 		notifiedFlag tinyint(1) NOT NULL DEFAULT 0,
 		lockedFlag tinyint(1) NOT NULL DEFAULT 0,
 		PRIMARY KEY (messageId, channelId)
