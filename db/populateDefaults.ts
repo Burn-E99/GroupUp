@@ -5,6 +5,7 @@ console.log('Attempting to insert default actions into command_cnt');
 const actions = [
 	'msg-mention',
 	'cmd-delete',
+	'cmd-help',
 	'cmd-info',
 	'cmd-report',
 	'cmd-setup',

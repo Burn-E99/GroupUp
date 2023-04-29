@@ -42,10 +42,12 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						color: warnColor,
 						title: dateTimeValid ? 'You cannot create an event in the past.' : 'Could not parse date/time.',
 						description: `Please dismiss this message and try again with a ${dateTimeValid ? 'date in the future' : 'valid date/time'}.`,
-						fields: dateTimeValid ? [{
-							name: 'Date/Time Entered:',
-							value: generateTimeFieldStr(eventDateTimeStr, eventDateTime),
-						}] : undefined,
+						fields: dateTimeValid
+							? [{
+								name: 'Date/Time Entered:',
+								value: generateTimeFieldStr(eventDateTimeStr, eventDateTime),
+							}]
+							: undefined,
 					}],
 				},
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('applyDateTime.ts', interaction, e));

@@ -6,8 +6,8 @@ import { infoColor2, safelyDismissMsg, sendDirectMessage, somethingWentWrong, st
 import { CommandDetails, LFGMember } from '../types/commandTypes.ts';
 import config from '../../config.ts';
 import utils from '../utils.ts';
+import { managerJLASlashName } from './slashCommandNames.ts';
 
-export const eventName = 'event';
 export const joinName = 'join';
 export const leaveName = 'leave';
 export const alternateName = 'alternate';
@@ -37,7 +37,7 @@ const generateOptions = (commandName: string) => ({
 	],
 });
 const details: CommandDetails = {
-	name: eventName,
+	name: managerJLASlashName,
 	description: `${config.name} Manager Command`,
 	type: ApplicationCommandTypes.ChatInput,
 	options: [generateOptions(joinName), generateOptions(leaveName), generateOptions(alternateName)],

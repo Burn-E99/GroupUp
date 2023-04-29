@@ -2,6 +2,7 @@ import { ApplicationCommandFlags, Bot, CreateMessage, Embed, Interaction, Intera
 import config from '../config.ts';
 import { generateGuildSettingKey, lfgChannelSettings } from './db.ts';
 import utils from './utils.ts';
+import { helpSlashName, infoSlashName, reportSlashName } from './commands/slashCommandNames.ts';
 
 export const failColor = 0xe71212;
 export const warnColor = 0xe38f28;
@@ -14,7 +15,8 @@ export const safelyDismissMsg = 'You may safely dismiss this message.';
 export const getRandomStatus = (guildCount: number): string => {
 	const statuses = [
 		`Running V${config.version}`,
-		`${config.prefix}info to learn more`,
+		`${config.prefix}${infoSlashName} to learn more`,
+		`${config.prefix}${helpSlashName} to learn more`,
 		`Running LFGs in ${guildCount} servers`,
 	];
 	return statuses[Math.floor(Math.random() * statuses.length)];
@@ -33,7 +35,7 @@ export const somethingWentWrong = async (bot: Bot, interaction: Interaction, err
 			embeds: [{
 				color: failColor,
 				title: 'Something went wrong...',
-				description: 'You should not be able to get here.  Please try again and if the issue continues, `/report` this issue to the developers with the error code below.',
+				description: `You should not be able to get here.  Please try again and if the issue continues, \`/${reportSlashName}\` this issue to the developers with the error code below.`,
 				fields: [{
 					name: 'Error Code:',
 					value: `\`${errorCode}\``,
@@ -73,7 +75,7 @@ export const infoEmbed: Embed = {
 Want to check out my source code?  Check it out [here](${config.links.sourceCode}).
 Need help with this bot?  Join my support server [here](${config.links.supportServer}).
 
-Ran into a bug?  Report it to my developers using \`/report [issue description]\`.`,
+Ran into a bug?  Report it to my developers using \`/${reportSlashName} [issue description]\`.`,
 	footer: {
 		text: `Current Version: ${config.version}`,
 	},

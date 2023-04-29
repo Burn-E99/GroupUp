@@ -19,7 +19,8 @@ import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { customId as gameSelId } from '../buttons/event-creation/step1-gameSelection.ts';
 import { alternateEventBtnStr, joinEventBtnStr, leaveEventBtnStr, requestToJoinEventBtnStr } from '../buttons/eventUtils.ts';
-import { alternateName, eventLinkName, eventName, joinName, leaveName, userName } from './managerJLA.ts';
+import { alternateName, eventLinkName, joinName, leaveName, userName } from './managerJLA.ts';
+import { createEventSlashName, deleteSlashName, managerJLASlashName, reportSlashName, setupSlashName } from './slashCommandNames.ts';
 
 const withoutMgrRole = 'without-manager-role';
 const withMgrRole = 'with-manager-role';
@@ -27,7 +28,7 @@ const managerRoleStr = 'manager-role';
 const logChannelStr = 'log-channel';
 
 const details: CommandDetails = {
-	name: 'setup',
+	name: setupSlashName,
 	description: `Configures this channel to be a dedicated event channel to be managed by ${config.name}.`,
 	type: ApplicationCommandTypes.ChatInput,
 	defaultMemberPermissions: ['ADMINISTRATOR'],
@@ -77,7 +78,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						color: failColor,
 						title: 'Unable to setup LFG channel.',
 						description:
-							'This channel is already set as an LFG channel.  If you need to edit the channel, please run `/delete lfg-channel` in this channel and then run `/setup` again.\n\nThis will not harm any active events in this channel and simply resets the settings for this channel.',
+							`This channel is already set as an LFG channel.  If you need to edit the channel, please run \`/${deleteSlashName}\` in this channel and then run \`/${setupSlashName}\` again.\n\nThis will not harm any active events in this channel and simply resets the settings for this channel.`,
 					}],
 				},
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('setup.ts', interaction, e));
@@ -132,7 +133,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 									color: failColor,
 									title: 'Unable to setup log channel or manager role.',
 									description:
-										`${config.name} attempted to set the log channel or manager role, but one or both were undefined.  Please try again and if the issue continues, \`/report\` this issue to the developers with the error code below.`,
+										`${config.name} attempted to set the log channel or manager role, but one or both were undefined.  Please try again and if the issue continues, \`/${reportSlashName}\` this issue to the developers with the error code below.`,
 									fields: [{
 										name: 'Error Code:',
 										value: `setupLog${logChannelId}Mgr${managerRoleId}`,
@@ -151,7 +152,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					name: `${config.name} Manager Details:`,
 					value: `${config.name} Managers with the <@&${managerRoleId}> role may edit or delete events in this guild, along with using the following commands to update the activity members:
 
-\`/${eventName} [${joinName} | ${leaveName} | ${alternateName}] [${eventLinkName}] [${userName}]\`
+\`/${managerJLASlashName} [${joinName} | ${leaveName} | ${alternateName}] [${eventLinkName}] [${userName}]\`
 
 The Discord Slash Command system will ensure you provide all the required details.`,
 				});
@@ -335,7 +336,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 							},
 							{
 								name: 'Is this a chat channel that you want events mixed into?',
-								value: 'You do not need to run the `/setup` command, and instead should use the `/lfg create` command.',
+								value: `You do not need to run the \`/${setupSlashName}\` command, and instead should use the \`/${createEventSlashName}\` command.`,
 								inline: true,
 							},
 						],

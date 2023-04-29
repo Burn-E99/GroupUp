@@ -4,9 +4,10 @@ import { failColor, safelyDismissMsg, somethingWentWrong, successColor } from '.
 import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
+import { deleteSlashName, setupSlashName } from './slashCommandNames.ts';
 
 const details: CommandDetails = {
-	name: 'delete-lfg-channel',
+	name: deleteSlashName,
 	description: `Removes all settings from ${config.name} related to this LFG channel.  Events will not be deleted.`,
 	type: ApplicationCommandTypes.ChatInput,
 	defaultMemberPermissions: ['ADMINISTRATOR'],
@@ -27,7 +28,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 						color: failColor,
 						title: 'Unable to delete LFG channel.',
 						description:
-							'This channel is already is not an LFG channel.  If you need to setup the channel, please run `/setup` in this channel.\n\nThis will not harm any active events in this channel and simply resets the settings for this channel.',
+							`This channel is already is not an LFG channel.  If you need to setup the channel, please run \`/${setupSlashName}\` in this channel.\n\nThis will not harm any active events in this channel and simply resets the settings for this channel.`,
 					}],
 				},
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('delete.ts', interaction, e));

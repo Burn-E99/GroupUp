@@ -4,10 +4,11 @@ import { infoColor2, isLFGChannel, somethingWentWrong, successColor } from '../c
 import { dbClient, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
+import { reportSlashName } from './slashCommandNames.ts';
 
 const details: CommandDetails = {
-	name: 'report',
-	description: `Information about ${config.name} and its developer`,
+	name: reportSlashName,
+	description: `Report an issue with ${config.name} to its developer.`,
 	type: ApplicationCommandTypes.ChatInput,
 	options: [
 		{

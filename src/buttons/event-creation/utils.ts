@@ -136,9 +136,12 @@ export const createLFGPost = (
 		data: {
 			flags: ApplicationCommandFlags.Ephemeral,
 			content: eventInFuture
-				? `Please verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${selfDestructMessage(new Date().getTime())
+				? `Please verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${
+					selfDestructMessage(new Date().getTime())
 				}`
-				: `You cannot create an event ${dateTimeValid ? 'in the past' : 'with an invalid date/time'}.  Please change the event's \`Date/Time\` to be ${dateTimeValid ? 'in the future' : 'valid'} with the \`${editEventDetailsBtnName}\` button below.`,
+				: `You cannot create an event ${dateTimeValid ? 'in the past' : 'with an invalid date/time'}.  Please change the event's \`Date/Time\` to be ${
+					dateTimeValid ? 'in the future' : 'valid'
+				} with the \`${editEventDetailsBtnName}\` button below.`,
 			embeds: [{
 				color: eventInFuture ? successColor : warnColor,
 				fields: [{

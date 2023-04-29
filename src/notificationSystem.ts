@@ -3,6 +3,7 @@ import { Bot } from '../deps.ts';
 import { LfgEmbedIndexes } from './buttons/eventUtils.ts';
 import { getEventMemberCount, getGuildName, getLfgMembers } from './buttons/live-event/utils.ts';
 import { failColor, infoColor1, sendDirectMessage, warnColor } from './commandUtils.ts';
+import { reportSlashName } from './commands/slashCommandNames.ts';
 import { dbClient, queries } from './db.ts';
 import { ActiveEvent } from './types/commandTypes.ts';
 import utils from './utils.ts';
@@ -47,7 +48,7 @@ const loudLogFailure = async (bot: Bot, event: ActiveEvent, stepName: string, se
 
 [This event](${eventUrl}) was scheduled to start at <t:${event.eventTime.getTime() / 1000}:F>.
 
-The message containing this event may have been deleted by a moderator or administrator in ${guildName}.  If [the event](${eventUrl}) still exists when you click on the link above, please \`/report\` this issue to the developers with the full error code below.`,
+The message containing this event may have been deleted by a moderator or administrator in ${guildName}.  If [the event](${eventUrl}) still exists when you click on the link above, please \`/${reportSlashName}\` this issue to the developers with the full error code below.`,
 				fields: [{
 					name: 'Error Code:',
 					value: `\`loudLog@${event.guildId}|${event.channelId}|${event.messageId}|${event.ownerId}|${event.eventTime.getTime()}|${event.notifiedFlag}|${event.lockedFlag}@\``,

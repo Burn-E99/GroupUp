@@ -10,11 +10,11 @@ import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';
 import { monthsShort } from './dateTimeUtils.ts';
 import { dbClient, queries } from '../../db.ts';
+import { createEventSlashName } from '../../commands/slashCommandNames.ts';
 
 export const customId = 'gameSel';
-const slashCommandName = 'create-event';
 const details: CommandDetails = {
-	name: slashCommandName,
+	name: createEventSlashName,
 	description: 'Creates a new event in this channel.',
 	type: ApplicationCommandTypes.ChatInput,
 };
@@ -30,9 +30,9 @@ const generateCustomEventRow = (title: string, subtitle: string): ActionRow => (
 });
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction.data && (interaction.data.name === slashCommandName || interaction.data.customId) && interaction.member && interaction.guildId && interaction.channelId) {
+	if (interaction.data && (interaction.data.name === createEventSlashName || interaction.data.customId) && interaction.member && interaction.guildId && interaction.channelId) {
 		// Light Telemetry
-		if (interaction.data.name === slashCommandName) {
+		if (interaction.data.name === createEventSlashName) {
 			dbClient.execute(queries.callIncCnt('cmd-gameSel')).catch((e) => utils.commonLoggers.dbError('step1-gameSelection.ts@cmd', 'call sproc INC_CNT on', e));
 		}
 		if (interaction.data.customId === customId) {
