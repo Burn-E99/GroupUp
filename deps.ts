@@ -1,5 +1,5 @@
 // All external dependencies are to be loaded here to make updating dependency versions much easier
-import { getBotIdFromToken } from 'https://deno.land/x/discordeno@16.0.1/mod.ts';
+import { getBotIdFromToken } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 import config from './config.ts';
 import { LOCALMODE } from './flags.ts';
 export const botId = getBotIdFromToken(LOCALMODE ? config.localToken : config.token);
