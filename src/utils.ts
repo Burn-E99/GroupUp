@@ -20,24 +20,23 @@ const messageUrlToIds = (url: string): UrlIds => {
 
 const capitalizeFirstChar = (input: string) => `${input.charAt(0).toUpperCase()}${input.slice(1)}`;
 
-const genericLogger = (level: LT, message: string) => log(level, message);
 const interactionSendError = (location: string, interaction: Interaction | string, err: Error) =>
-	genericLogger(LT.ERROR, `${location} | Failed to respond to interaction: ${jsonStringifyBig(interaction)} | Error: ${err.name} - ${err.message}`);
+	log(LT.ERROR, `${location} | Failed to respond to interaction: ${jsonStringifyBig(interaction)} | Error: ${err.name} - ${err.message}`);
 const messageEditError = (location: string, message: Message | string, err: Error) =>
-	genericLogger(LT.ERROR, `${location} | Failed to edit message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
+	log(LT.ERROR, `${location} | Failed to edit message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const messageGetError = (location: string, message: Message | string, err: Error) =>
-	genericLogger(LT.ERROR, `${location} | Failed to get message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
+	log(LT.ERROR, `${location} | Failed to get message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const messageSendError = (location: string, message: Message | CreateMessage | string, err: Error) =>
-	genericLogger(LT.ERROR, `${location} | Failed to send message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
+	log(LT.ERROR, `${location} | Failed to send message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const messageDeleteError = (location: string, message: Message | string, err: Error) =>
-	genericLogger(LT.ERROR, `${location} | Failed to delete message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
+	log(LT.ERROR, `${location} | Failed to delete message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const reactionAddError = (location: string, message: Message | string, err: Error, emoji: string) =>
-	genericLogger(LT.ERROR, `${location} | Failed to add emoji (${emoji}) to message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
+	log(LT.ERROR, `${location} | Failed to add emoji (${emoji}) to message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
 const reactionDeleteError = (location: string, message: Message | string, err: Error, emoji: string) =>
-	genericLogger(LT.ERROR, `${location} | Failed to delete emoji (${emoji}) from message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
-const channelUpdateError = (location: string, message: string, err: Error) => genericLogger(LT.ERROR, `${location} | Failed to update channel | ${message} | Error: ${err.name} - ${err.message}`);
+	log(LT.ERROR, `${location} | Failed to delete emoji (${emoji}) from message: ${jsonStringifyBig(message)} | Error: ${err.name} - ${err.message}`);
+const channelUpdateError = (location: string, message: string, err: Error) => log(LT.ERROR, `${location} | Failed to update channel | ${message} | Error: ${err.name} - ${err.message}`);
 
-const dbError = (location: string, type: string, err: Error) => genericLogger(LT.ERROR, `${location} | Failed to ${type} database | Error: ${err.name} - ${err.message}`);
+const dbError = (location: string, type: string, err: Error) => log(LT.ERROR, `${location} | Failed to ${type} database | Error: ${err.name} - ${err.message}`);
 
 export default {
 	capitalizeFirstChar,

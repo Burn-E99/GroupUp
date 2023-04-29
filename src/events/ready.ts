@@ -1,12 +1,11 @@
+import { ActivityTypes, Bot, BotWithCache, log, LT } from '../../deps.ts';
 import config from '../../config.ts';
 import { LOCALMODE } from '../../flags.ts';
-import { ActivityTypes, Bot, BotWithCache, log, LT } from '../../deps.ts';
 import { getRandomStatus, successColor } from '../commandUtils.ts';
 import { ActiveEvent } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { dbClient, queries } from '../db.ts';
-
-const tenMinutes = 10 * 60 * 1000;
+import { deleteEvent, handleFailures, lockEvent, notifyEventMembers, tenMinutes } from '../notificationSystem.ts';
 
 // Storing intervalIds in case bot soft reboots to prevent multiple of these intervals from stacking
 let notificationIntervalId: number;
@@ -40,28 +39,25 @@ export const ready = (rawBot: Bot) => {
 
 	// Interval to handle event notifications and cleanup every minute
 	if (notificationIntervalId) clearInterval(notificationIntervalId);
-	notificationIntervalId = setInterval(() => {
+	notificationIntervalId = setInterval(async () => {
+		log(LT.LOG, 'Running notification system');
 		const now = new Date().getTime();
 
-		// Notify Members of Events
-		dbClient.execute(queries.selectEvents(0, 0), [new Date(now + tenMinutes)]).then((events) => events.rows?.forEach((event) => console.log(event as ActiveEvent))).catch((e) =>
+		// Get all the events
+		const eventsToNotify = await dbClient.execute(queries.selectEvents(0, 0), [new Date(now + tenMinutes)]).catch((e) =>
 			utils.commonLoggers.dbError('ready.ts@notifyMembers', 'SELECT events from', e)
 		);
+		const eventsToLock = await dbClient.execute(queries.selectEvents(1, 0), [new Date(now)]).catch((e) => utils.commonLoggers.dbError('ready.ts@notifyAlternates', 'SELECT events from', e));
+		const eventsToDelete = await dbClient.execute(queries.selectEvents(1, 1), [new Date(now - tenMinutes)]).catch((e) => utils.commonLoggers.dbError('ready.ts@deleteEvent', 'SELECT events from', e));
+		const eventFailuresToHandle = await dbClient.execute(queries.selectFailedEvents, [new Date(now + tenMinutes)]).catch((e) =>
+			utils.commonLoggers.dbError('ready.ts@handleFailures', 'SELECT events from', e)
+		);
 
-		// // Notify Alternates of Events (if NOT full) and lock the event message
-		// dbClient.execute(queries.selectEvents(1, 0), [new Date(now)]).then((events) => console.log(events.rows as ActiveEvent[])).catch((e) =>
-		// 	utils.commonLoggers.dbError('ready.ts@notifyAlternates', 'SELECT events from', e)
-		// );
-
-		// // Delete the event
-		// dbClient.execute(queries.selectEvents(1, 1), [new Date(now - tenMinutes)]).then((events) => console.log(events.rows as ActiveEvent[])).catch((e) =>
-		// 	utils.commonLoggers.dbError('ready.ts@deleteEvent', 'SELECT events from', e)
-		// );
-
-		// // Handle events that failed at some point
-		// dbClient.execute(queries.selectFailedEvents, [new Date(now + tenMinutes)]).then((events) => console.log(events.rows as ActiveEvent[])).catch((e) =>
-		// 	utils.commonLoggers.dbError('ready.ts@deleteEvent', 'SELECT events from', e)
-		// );
+		// Run all the handlers
+		eventsToNotify?.rows?.forEach((event) => notifyEventMembers(bot, event as ActiveEvent));
+		eventsToLock?.rows?.forEach((event) => lockEvent(bot, event as ActiveEvent));
+		eventsToDelete?.rows?.forEach((event) => deleteEvent(bot, event as ActiveEvent));
+		eventFailuresToHandle?.rows?.forEach((event) => handleFailures(bot, event as ActiveEvent));
 	}, 60000);
 
 	// setTimeout added to make sure the startup message does not error out

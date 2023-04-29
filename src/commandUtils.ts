@@ -36,7 +36,7 @@ export const somethingWentWrong = async (bot: Bot, interaction: Interaction, err
 				description: 'You should not be able to get here.  Please try again and if the issue continues, `/report` this issue to the developers with the error code below.',
 				fields: [{
 					name: 'Error Code:',
-					value: errorCode,
+					value: `\`${errorCode}\``,
 				}],
 			}],
 		},

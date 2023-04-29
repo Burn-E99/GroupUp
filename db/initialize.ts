@@ -66,6 +66,18 @@ await dbClient.execute(`
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 `);
 console.log('Table created');
+/**
+ * notifiedFlag
+ * 	0 = Not notified
+ * 	1 = Notified Successfully
+ * 	-1 = Failed to notify
+ * lockedFlag
+ * 	0 = Not locked
+ * 	1 = Locked Successfully
+ * 	-1 = Failed to lock
+ *
+ * If both are -1, the event failed to delete
+ */
 
 await dbClient.close();
 console.log('Done!');
