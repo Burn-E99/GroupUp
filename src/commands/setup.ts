@@ -18,9 +18,11 @@ import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { customId as gameSelId } from '../buttons/event-creation/step1-gameSelection.ts';
-import { alternateEventBtnStr, joinEventBtnStr, leaveEventBtnStr, requestToJoinEventBtnStr } from '../buttons/eventUtils.ts';
+import { alternateEventBtnStr, joinEventBtnStr, leaveEventBtnStr, LfgEmbedIndexes, requestToJoinEventBtnStr } from '../buttons/eventUtils.ts';
 import { alternateName, eventLinkName, joinName, leaveName, userName } from './managerJLA.ts';
 import { createEventSlashName, deleteSlashName, managerJLASlashName, reportSlashName, setupSlashName } from './slashCommandNames.ts';
+import { generateLFGButtons, generateTimeFieldStr } from '../buttons/event-creation/utils.ts';
+import { getLfgMembers } from '../buttons/live-event/utils.ts';
 
 const withoutMgrRole = 'without-manager-role';
 const withMgrRole = 'with-manager-role';
@@ -247,9 +249,27 @@ The Discord Slash Command system will ensure you provide all the required detail
 			}
 
 			// Retrofit all old LFG posts that we found
-			if (oldLfgMsgs.length) {
-				// TODO: Retrofit old LFG posts, should delete ones that have already passed, should begin watching these events
-			}
+			oldLfgMsgs.forEach((oldEventId) => {
+				const oldEvent = messages.get(oldEventId);
+				if (oldEvent && oldEvent.embeds[0].fields && oldEvent.embeds[0].footer) {
+					const eventMembers = [...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].value), ...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.AlternateMembers].value)]
+					const eventDateTime = new Date((oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('tz#')[1] || ' ').slice(0, -1));
+					const eventDateTimeStr = (oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('](')[0] || ' ').slice(1);
+					oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value = generateTimeFieldStr(eventDateTimeStr, eventDateTime);
+					oldEvent.embeds[0].footer.text = oldEvent.embeds[0].footer.text.split(' | ')[0];
+					const ownerName = oldEvent.embeds[0].footer.text.split(': ')[1];
+					const ownerId = eventMembers.find((member) => ownerName === member.name)?.id || 0n;
+					oldEvent.embeds[0].footer.iconUrl = `${config.links.creatorIcon}#${ownerId}`;
+					bot.helpers.editMessage(oldEvent.channelId, oldEvent.id, {
+						content: '',
+						embeds: [oldEvent.embeds[0]],
+						components: [{
+							type: MessageComponentTypes.ActionRow,
+							components: generateLFGButtons(false),
+						}],
+					})
+				}
+			});
 
 			// Store the ids to the db
 			let dbErrorOut = false;
