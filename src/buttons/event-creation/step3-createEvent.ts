@@ -47,7 +47,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			embeds: [interaction.message.embeds[0]],
 			components: [{
 				type: MessageComponentTypes.ActionRow,
-				components: generateLFGButtons(interaction.data.customId.includes(idSeparator)), // TODO: verify we can DM the user if they set this to WL mode
+				components: generateLFGButtons(interaction.data.customId.includes(idSeparator)),
 			}],
 		}).catch((e: Error) => utils.commonLoggers.messageSendError('step3-createEvent.ts', 'createEvent', e));
 		if (!eventMessage) {
