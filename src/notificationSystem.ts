@@ -137,7 +137,7 @@ export const notifyEventMembers = async (bot: Bot, event: ActiveEvent, secondTry
 export const lockEvent = async (bot: Bot, event: ActiveEvent, secondTry = false): Promise<boolean> => {
 	const eventMessage = await bot.helpers.getMessage(event.channelId, event.messageId).catch((e: Error) => utils.commonLoggers.messageGetError('notificationSystem.ts@lock', 'get event', e));
 	if (eventMessage?.embeds[0].fields) {
-		const [currentMemberCount, maxMemberCount] = getEventMemberCount(eventMessage.embeds[0].fields[LfgEmbedIndexes.Activity].name);
+		const [currentMemberCount, maxMemberCount] = getEventMemberCount(eventMessage.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].name);
 		const alternates = getLfgMembers(eventMessage.embeds[0].fields[LfgEmbedIndexes.AlternateMembers].value);
 		const memberMentionString = joinWithAnd(alternates.map((member) => `<@${member.id}>`));
 
@@ -146,6 +146,7 @@ export const lockEvent = async (bot: Bot, event: ActiveEvent, secondTry = false)
 		if (alternatesNeeded) {
 			const activityName = `\`${eventMessage.embeds[0].fields[LfgEmbedIndexes.Activity].name} ${eventMessage.embeds[0].fields[LfgEmbedIndexes.Activity].value}\``;
 			const guildName = await getGuildName(bot, event.guildId);
+			const peopleShort = maxMemberCount - currentMemberCount;
 
 			// Send the notifications to the members
 			alternates.forEach(async (member) => {
@@ -153,9 +154,7 @@ export const lockEvent = async (bot: Bot, event: ActiveEvent, secondTry = false)
 					embeds: [{
 						color: infoColor1,
 						title: `Hello ${member.name}!  An activity in ${guildName} may need your help.`,
-						description: `The ${activityName} in ${guildName} that you marked yourself as an alternate for may be \`${
-							maxMemberCount - currentMemberCount
-						}\` people short.  If you are available, please join up with them.`,
+						description: `The ${activityName} in ${guildName} that you marked yourself as an alternate for may be \`${peopleShort}\` ${peopleShort === 1 ? 'person' : 'people'} short.  If you are available, please join up with them.`,
 					}, eventMessage.embeds[0]],
 				}).catch((e: Error) => utils.commonLoggers.messageSendError('notificationSystem.ts@lock', 'send DM fail', e));
 			});
