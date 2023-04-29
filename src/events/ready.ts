@@ -37,7 +37,7 @@ export const ready = (rawBot: Bot) => {
 		}).catch((e) => log(LT.ERROR, `Failed to update status (in interval): ${utils.jsonStringifyBig(e)}`));
 	}, 30000);
 
-	// Interval to handle event notifications and cleanup every minute
+	// Interval to handle event notifications and cleanup every 30 seconds
 	if (notificationIntervalId) clearInterval(notificationIntervalId);
 	notificationIntervalId = setInterval(async () => {
 		log(LT.LOG, 'Running notification system');
@@ -58,7 +58,7 @@ export const ready = (rawBot: Bot) => {
 		eventsToLock?.rows?.forEach((event) => lockEvent(bot, event as ActiveEvent));
 		eventsToDelete?.rows?.forEach((event) => deleteEvent(bot, event as ActiveEvent));
 		eventFailuresToHandle?.rows?.forEach((event) => handleFailures(bot, event as ActiveEvent));
-	}, 60000);
+	}, 30000);
 
 	// setTimeout added to make sure the startup message does not error out
 	setTimeout(() => {
