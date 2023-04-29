@@ -1,5 +1,5 @@
 import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { somethingWentWrong } from '../../commandUtils.ts';
+import { somethingWentWrong, warnColor } from '../../commandUtils.ts';
 import { eventDateId, eventTimeId, eventTimeZoneId, idSeparator, LfgEmbedIndexes, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
@@ -32,7 +32,25 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Get Date Object from user input
-		const [eventDateTime, eventDateTimeStr] = getDateFromRawInput(newTime, newTimeZone, newDate); // TODO: verify dt
+		const [eventDateTime, eventDateTimeStr, eventInFuture] = getDateFromRawInput(newTime, newTimeZone, newDate); // TODO: verify dt
+		if (!eventInFuture) {
+			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+				type: InteractionResponseTypes.ChannelMessageWithSource,
+				data: {
+					flags: ApplicationCommandFlags.Ephemeral,
+					embeds: [{
+						color: warnColor,
+						title: 'You cannot create an event in the past.',
+						description: 'Please dismiss this message and try again with a date in the future',
+						fields: [{
+							name: 'Date/Time Entered:',
+							value: generateTimeFieldStr(eventDateTimeStr, eventDateTime),
+						}],
+					}],
+				},
+			}).catch((e: Error) => utils.commonLoggers.interactionSendError('applyDateTime.ts', interaction, e));
+			return;
+		}
 
 		if (eventMessage && eventMessage.embeds[0].fields) {
 			// eventMessage.embeds[0].fields[LfgEmbedIndexes.Description].value = newDescription || noDescProvided;

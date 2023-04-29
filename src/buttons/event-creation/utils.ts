@@ -15,7 +15,7 @@ import {
 	requestToJoinEventBtnStr,
 } from '../eventUtils.ts';
 import { selfDestructMessage } from '../tokenCleanup.ts';
-import { successColor } from '../../commandUtils.ts';
+import { successColor, warnColor } from '../../commandUtils.ts';
 import { LFGMember } from '../../types/commandTypes.ts';
 import { customId as gameSelCustomId } from './step1-gameSelection.ts';
 import { customId as createEventCustomId } from './step3-createEvent.ts';
@@ -56,22 +56,29 @@ export const generateActionRow = (baseValue: string, activities: Array<Activity>
 const createEventBtnName = 'Create Event';
 const createWhitelistedBtnName = 'Create Whitelisted Event';
 const editEventDetailsBtnName = 'Edit Event Details';
-const finalizeButtons = (idxPath: string): [ButtonComponent, ButtonComponent, ButtonComponent] => [{
-	type: MessageComponentTypes.Button,
-	label: createEventBtnName,
-	style: ButtonStyles.Success,
-	customId: createEventCustomId,
-}, {
-	type: MessageComponentTypes.Button,
-	label: createWhitelistedBtnName,
-	style: ButtonStyles.Primary,
-	customId: `${createEventCustomId}${idSeparator}`,
-}, {
-	type: MessageComponentTypes.Button,
-	label: editEventDetailsBtnName,
-	style: ButtonStyles.Secondary,
-	customId: `${gameSelCustomId}${idSeparator}${idxPath}${pathIdxEnder}`,
-}];
+const finalizeButtons = (idxPath: string, eventInFuture: boolean): [ButtonComponent, ButtonComponent, ButtonComponent] | [ButtonComponent] => {
+	const editButton: ButtonComponent = {
+		type: MessageComponentTypes.Button,
+		label: editEventDetailsBtnName,
+		style: ButtonStyles.Secondary,
+		customId: `${gameSelCustomId}${idSeparator}${idxPath}${pathIdxEnder}`,
+	};
+	if (eventInFuture) {
+		return [{
+			type: MessageComponentTypes.Button,
+			label: createEventBtnName,
+			style: ButtonStyles.Success,
+			customId: createEventCustomId,
+		}, {
+			type: MessageComponentTypes.Button,
+			label: createWhitelistedBtnName,
+			style: ButtonStyles.Primary,
+			customId: `${createEventCustomId}${idSeparator}`,
+		}, editButton];
+	} else {
+		return [editButton];
+	}
+};
 
 export const generateLFGButtons = (whitelist: boolean): [ButtonComponent, ButtonComponent, ButtonComponent, ButtonComponent, ButtonComponent] => [{
 	type: MessageComponentTypes.Button,
@@ -119,21 +126,19 @@ export const createLFGPost = (
 	memberList: Array<LFGMember>,
 	alternateList: Array<LFGMember>,
 	idxPath: string,
-	editing: boolean,
-	whitelist = false,
+	eventInFuture: boolean,
 ): InteractionResponse => {
 	const icsDetails = `${category}: ${activity.name}`;
 	return {
 		type: InteractionResponseTypes.ChannelMessageWithSource,
 		data: {
-			flags: editing ? ApplicationCommandFlags.Ephemeral : undefined,
-			content: editing
-				? `Please verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the ${editEventDetailsBtnName} button below. \n\n${
-					selfDestructMessage(new Date().getTime())
+			flags: ApplicationCommandFlags.Ephemeral,
+			content: eventInFuture
+				? `Please verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${selfDestructMessage(new Date().getTime())
 				}`
-				: '',
+				: `You cannot create an event in the past.  Please change the event's \`Date/Time\` to be in the future with the \`${editEventDetailsBtnName}\` button below.`,
 			embeds: [{
-				color: successColor,
+				color: eventInFuture ? successColor : warnColor,
 				fields: [{
 					name: `${category}:`,
 					value: activity.name,
@@ -166,7 +171,7 @@ export const createLFGPost = (
 			}],
 			components: [{
 				type: MessageComponentTypes.ActionRow,
-				components: editing ? finalizeButtons(idxPath) : generateLFGButtons(whitelist),
+				components: finalizeButtons(idxPath, eventInFuture),
 			}],
 		},
 	};

@@ -154,7 +154,7 @@ const parseEventDate = (preParsedEventDate: string): [string, string, string] =>
 };
 
 // Take full raw Date/Time input and convert it to a proper Date
-export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string): [Date, string] => {
+export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string): [Date, string, boolean] => {
 	// Verify/Set Time
 	const [parsedEventTimeHours, parsedEventTimeMinutes, parsedEventTimePeriod] = parseEventTime(rawEventTime.replaceAll(':', '').toUpperCase());
 
@@ -164,10 +164,12 @@ export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: stri
 	// Verify/Set Date
 	const [parsedEventYear, parsedEventMonth, parsedEventDay] = parseEventDate(rawEventDate.trim().toUpperCase());
 
+	const parsedDateTime = new Date(`${parsedEventMonth} ${parsedEventDay}, ${parsedEventYear} ${parsedEventTimeHours}:${parsedEventTimeMinutes} ${parsedEventTimePeriod} ${parsedEventTimeZone}`);
 	return [
-		new Date(`${parsedEventMonth} ${parsedEventDay}, ${parsedEventYear} ${parsedEventTimeHours}:${parsedEventTimeMinutes} ${parsedEventTimePeriod} ${parsedEventTimeZone}`),
+		parsedDateTime,
 		`${parsedEventTimeHours}${parsedEventTimePeriod ? ':' : ''}${parsedEventTimeMinutes} ${parsedEventTimePeriod} ${userInputTimeZone} ${parsedEventMonth.slice(0, 1)}${
 			parsedEventMonth.slice(1, 3).toLowerCase()
 		} ${parsedEventDay}, ${parsedEventYear}`,
+		parsedDateTime.getTime() > new Date().getTime(),
 	];
 };
