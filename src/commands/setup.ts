@@ -159,8 +159,19 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 The Discord Slash Command system will ensure you provide all the required details.`,
 				});
 
+
+				// Set permissions for self, skip if we already failed to set roles
+				!logChannelErrorOut && await bot.helpers.editChannelPermissionOverrides(logChannelId, {
+					id: botId,
+					type: OverwriteTypes.Member,
+					allow: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
+				}).catch((e: Error) => {
+					utils.commonLoggers.channelUpdateError('setup.ts', 'self-allow', e);
+					mgrRoleErrorOut = true;
+				});
+
 				// Test sending a message to the logChannel
-				await bot.helpers.sendMessage(logChannelId, {
+				!logChannelErrorOut && await bot.helpers.sendMessage(logChannelId, {
 					embeds: [{
 						title: `This is the channel ${config.name} will be logging events to.`,
 						description: `${config.name} will only send messages here as frequently as your event managers update events.`,
@@ -183,7 +194,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 								fields: [
 									{
 										name: `Please allow ${config.name} to send messages in the requested channel.`,
-										value: `${config.name}`,
+										value: `<#${logChannelId}>`,
 									},
 								],
 							}],
@@ -210,6 +221,16 @@ The Discord Slash Command system will ensure you provide all the required detail
 				deny: ['SEND_MESSAGES'],
 			}).catch((e: Error) => {
 				utils.commonLoggers.channelUpdateError('setup.ts', 'everyone-deny', e);
+				mgrRoleErrorOut = true;
+			});
+
+			// Set permissions for self, skip if we already failed to set roles
+			!mgrRoleErrorOut && await bot.helpers.editChannelPermissionOverrides(interaction.channelId, {
+				id: botId,
+				type: OverwriteTypes.Member,
+				allow: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
+			}).catch((e: Error) => {
+				utils.commonLoggers.channelUpdateError('setup.ts', 'self-allow', e);
 				mgrRoleErrorOut = true;
 			});
 
