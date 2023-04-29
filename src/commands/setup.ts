@@ -254,20 +254,24 @@ The Discord Slash Command system will ensure you provide all the required detail
 				if (oldEvent && oldEvent.embeds[0].fields && oldEvent.embeds[0].footer) {
 					const eventMembers = [...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].value), ...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.AlternateMembers].value)]
 					const eventDateTime = new Date((oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('tz#')[1] || ' ').slice(0, -1));
-					const eventDateTimeStr = (oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('](')[0] || ' ').slice(1);
-					oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value = generateTimeFieldStr(eventDateTimeStr, eventDateTime);
-					oldEvent.embeds[0].footer.text = oldEvent.embeds[0].footer.text.split(' | ')[0];
-					const ownerName = oldEvent.embeds[0].footer.text.split(': ')[1];
-					const ownerId = eventMembers.find((member) => ownerName === member.name)?.id || 0n;
-					oldEvent.embeds[0].footer.iconUrl = `${config.links.creatorIcon}#${ownerId}`;
-					bot.helpers.editMessage(oldEvent.channelId, oldEvent.id, {
-						content: '',
-						embeds: [oldEvent.embeds[0]],
-						components: [{
-							type: MessageComponentTypes.ActionRow,
-							components: generateLFGButtons(false),
-						}],
-					})
+					console.log(oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value)
+					if (!isNaN(eventDateTime.getTime())) {
+						const eventDateTimeStr = (oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('](')[0] || ' ').slice(1);
+						oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value = generateTimeFieldStr(eventDateTimeStr, eventDateTime);
+						oldEvent.embeds[0].footer.text = oldEvent.embeds[0].footer.text.split(' | ')[0];
+						const ownerName = oldEvent.embeds[0].footer.text.split(': ')[1];
+						const ownerId = eventMembers.find((member) => ownerName === member.name)?.id || 0n;
+						oldEvent.embeds[0].footer.iconUrl = `${config.links.creatorIcon}#${ownerId}`;
+						bot.helpers.editMessage(oldEvent.channelId, oldEvent.id, {
+							content: '',
+							embeds: [oldEvent.embeds[0]],
+							components: [{
+								type: MessageComponentTypes.ActionRow,
+								components: generateLFGButtons(false),
+							}],
+						}).catch((e: Error) => utils.commonLoggers.messageEditError('setup.ts', 'retrofit event', e));
+						dbClient.execute(queries.insertEvent, [oldEvent.id, oldEvent.channelId, interaction.guildId, ownerId, eventDateTime]).catch((e) => utils.commonLoggers.dbError('setup.ts@retrofit', 'INSERT event to DB', e));
+					}
 				}
 			});
 
