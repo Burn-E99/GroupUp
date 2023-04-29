@@ -1,4 +1,4 @@
-import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
+import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes, SelectMenuComponent } from '../../../deps.ts';
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
@@ -19,15 +19,15 @@ const details: CommandDetails = {
 	type: ApplicationCommandTypes.ChatInput,
 };
 
-const customEventRow: ActionRow = {
+const generateCustomEventRow = (title: string, subtitle: string): ActionRow => ({
 	type: MessageComponentTypes.ActionRow,
 	components: [{
 		type: MessageComponentTypes.Button,
 		style: ButtonStyles.Primary,
 		label: 'Create Custom Event',
-		customId: createCustomActivityBtnId,
+		customId: `${createCustomActivityBtnId}${idSeparator}${title}${pathIdxSeparator}${subtitle}${pathIdxSeparator}`,
 	}],
-};
+});
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data && (interaction.data.name === slashCommandName || interaction.data.customId) && interaction.member && interaction.guildId && interaction.channelId) {
@@ -90,7 +90,19 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			currentBaseValue = `${currentBaseValue}${idx}${pathIdxSeparator}`;
 		}
 
-		selectMenus.push(customEventRow);
+		// Prefill the custom event modal
+		const prefillArray: Array<string> = [];
+		selectMenus.forEach((menu) => {
+			try {
+				const menuOption = (menu.components[0] as SelectMenuComponent).options.find((option) => option.default);
+				if (menuOption) {
+					prefillArray.push(menuOption.label);
+				}
+			} catch (_e) {
+				// do nothing, don't care
+			}
+		});
+		selectMenus.push(generateCustomEventRow(prefillArray.length ? prefillArray[0] : '', prefillArray.length > 1 ? prefillArray[prefillArray.length - 1] : ''));
 
 		if (interaction.data.customId && interaction.data.customId.includes(fillerChar)) {
 			// Let discord know we didn't ignore the user

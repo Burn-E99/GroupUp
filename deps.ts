@@ -41,6 +41,7 @@ export type {
 	MakeRequired,
 	Message,
 	PermissionStrings,
+	SelectMenuComponent,
 	SelectOption,
 } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 
