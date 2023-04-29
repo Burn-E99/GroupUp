@@ -1,8 +1,8 @@
-import { ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, Interaction } from '../../deps.ts';
+import { ApplicationCommandFlags, ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { alternateMemberToEvent, getGuildName, joinMemberToEvent, removeMemberFromEvent } from '../buttons/live-event/utils.ts';
 import { generateMemberList } from '../buttons/eventUtils.ts';
 import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
-import { infoColor2, sendDirectMessage, somethingWentWrong, stopThat } from '../commandUtils.ts';
+import { infoColor2, safelyDismissMsg, sendDirectMessage, somethingWentWrong, stopThat, warnColor } from '../commandUtils.ts';
 import { CommandDetails, LFGMember } from '../types/commandTypes.ts';
 import config from '../../config.ts';
 import utils from '../utils.ts';
@@ -73,6 +73,25 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 			// Get event from link
 			const eventMessage = await bot.helpers.getMessage(eventIds.channelId, eventIds.messageId).catch((e: Error) => utils.commonLoggers.messageGetError('managerJLA.ts', 'get eventMessage', e));
+
+			// Prevent managers from adding people to locked events
+			if (eventMessage && !eventMessage.components?.length) {
+				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+					type: InteractionResponseTypes.ChannelMessageWithSource,
+					data: {
+						flags: ApplicationCommandFlags.Ephemeral,
+						embeds: [{
+							color: warnColor,
+							title: 'Hey!  Stop that!',
+							description: `You are not allowed to ${actionName} users to an event that has already started.
+
+${safelyDismissMsg}`,
+						}],
+					},
+				}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts@stopThat', interaction, e));
+				return;
+			}
+
 			const userDetails = await bot.helpers.getUser(userToAdd).catch((e: Error) => utils.commonLoggers.messageGetError('managerJLA.ts', 'get userDetails', e));
 			if (eventMessage && userDetails) {
 				// Perform the action

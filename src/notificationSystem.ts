@@ -154,7 +154,9 @@ export const lockEvent = async (bot: Bot, event: ActiveEvent, secondTry = false)
 					embeds: [{
 						color: infoColor1,
 						title: `Hello ${member.name}!  An activity in ${guildName} may need your help.`,
-						description: `The ${activityName} in ${guildName} that you marked yourself as an alternate for may be \`${peopleShort}\` ${peopleShort === 1 ? 'person' : 'people'} short.  If you are available, please join up with them.`,
+						description: `The ${activityName} in ${guildName} that you marked yourself as an alternate for may be \`${peopleShort}\` ${
+							peopleShort === 1 ? 'person' : 'people'
+						} short.  If you are available, please join up with them.`,
 					}, eventMessage.embeds[0]],
 				}).catch((e: Error) => utils.commonLoggers.messageSendError('notificationSystem.ts@lock', 'send DM fail', e));
 			});
