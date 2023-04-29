@@ -76,9 +76,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 							embeds: [{
 								color: failColor,
 								title: 'Invalid Max Member count!',
-								description: `${config.name} parsed the max members as \`${
-									isNaN(activityMaxPlayers) ? 'Not a Number' : activityMaxPlayers
-								}\`, which is outside of the allowed range.  Please re-edit this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`,
+								description: `${config.name} parsed the max members as \`${isNaN(activityMaxPlayers) ? 'Not a Number' : activityMaxPlayers
+									}\`, which is outside of the allowed range.  Please re-edit this activity, but make sure the maximum player count is between 1 and 99.\n\n${safelyDismissMsg}`,
 							}],
 						},
 					}).catch((e: Error) => utils.commonLoggers.interactionSendError('editActivity.ts@invalidPlayer', interaction, e));
@@ -92,6 +91,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				selectedCategory = activityTitle;
 				selectedActivity.name = activitySubtitle;
 				selectedActivity.maxMembers = activityMaxPlayers;
+
+				// Log custom event to see if we should add it as a preset
+				dbClient.execute(queries.insertCustomActivity, [selectedCategory, selectedActivity.name, selectedActivity.maxMembers]).catch((e) => utils.commonLoggers.dbError('editActivity.ts@custom', 'insert into', e))
 			} else {
 				const rawIdxPath: Array<string> = finalizedIdxPath.split(pathIdxSeparator);
 				const idxPath: Array<number> = rawIdxPath.map((rawIdx) => rawIdx ? parseInt(rawIdx) : -1);
@@ -193,13 +195,12 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				data: {
 					embeds: [{
 						title: 'Please select a Game and Activity, or create a Custom Event.',
-						description: `Changing activity for [this event](${
-							utils.idsToMessageUrl({
-								guildId: interaction.guildId,
-								channelId: evtChannelId,
-								messageId: evtMessageId,
-							})
-						}).\n\n${selfDestructMessage(new Date().getTime())}`,
+						description: `Changing activity for [this event](${utils.idsToMessageUrl({
+							guildId: interaction.guildId,
+							channelId: evtChannelId,
+							messageId: evtMessageId,
+						})
+							}).\n\n${selfDestructMessage(new Date().getTime())}`,
 						color: infoColor1,
 					}],
 					flags: ApplicationCommandFlags.Ephemeral,

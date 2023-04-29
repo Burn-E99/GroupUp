@@ -6,6 +6,7 @@ import { addTokenToMap } from '../tokenCleanup.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
 import utils from '../../utils.ts';
+import { dbClient, queries } from '../../db.ts';
 
 export const customId = 'finalize';
 
@@ -24,7 +25,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const idxPath: Array<number> = rawIdxPath.map((rawIdx) => rawIdx ? parseInt(rawIdx) : -1);
 		let category: string;
 		let activity: Activity;
+		let customAct = false;
 		if (idxPath.some((idx) => isNaN(idx) || idx < 0)) {
+			customAct = true;
 			// Handle custom activity
 			category = rawIdxPath[0];
 			activity = {
@@ -40,6 +43,11 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		if (!category || !activity.name || !activity.maxMembers || isNaN(activity.maxMembers)) {
 			// Error out if our activity or category is missing
 			somethingWentWrong(bot, interaction, `missingActivityFromFinalize@${category}_${activity.name}_${activity.maxMembers}`);
+		}
+
+		// Log custom event to see if we should add it as a preset
+		if (customAct) {
+			dbClient.execute(queries.insertCustomActivity, [category, activity.name, activity.maxMembers]).catch((e) => utils.commonLoggers.dbError('step2-finalize.ts@custom', 'insert into', e))
 		}
 
 		const rawEventTime = tempDataMap.get(eventTimeId) || '';

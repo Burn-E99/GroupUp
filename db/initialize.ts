@@ -14,6 +14,7 @@ await dbClient.execute(`DROP PROCEDURE IF EXISTS INC_CNT;`);
 await dbClient.execute(`DROP TABLE IF EXISTS command_cnt;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_settings;`);
 await dbClient.execute(`DROP TABLE IF EXISTS active_events;`);
+await dbClient.execute(`DROP TABLE IF EXISTS custom_activities;`);
 console.log('Tables dropped');
 
 console.log('Attempting to create table command_cnt');
@@ -78,6 +79,19 @@ console.log('Table created');
  *
  * If both are -1, the event failed to delete
  */
+
+console.log('Attempting to create table custom_activities');
+await dbClient.execute(`
+	CREATE TABLE custom_activities (
+		id int unsigned NOT NULL AUTO_INCREMENT,
+		activityTitle char(35) NOT NULL,
+		activitySubtitle char(50) NOT NULL,
+		maxMembers tinyint NOT NULL,
+		PRIMARY KEY (id),
+		UNIQUE KEY custom_activities_id_UNIQUE (id)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+`);
+console.log('Table created');
 
 await dbClient.close();
 console.log('Done!');
