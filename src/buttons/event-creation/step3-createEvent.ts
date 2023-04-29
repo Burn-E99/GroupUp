@@ -1,8 +1,8 @@
-import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
+import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { generateLFGButtons } from './utils.ts';
 import { idSeparator, LfgEmbedIndexes } from '../eventUtils.ts';
 import { deleteTokenEarly } from '../tokenCleanup.ts';
-import { somethingWentWrong } from '../../commandUtils.ts';
+import { dmTestMessage, safelyDismissMsg, sendDirectMessage, somethingWentWrong, warnColor } from '../../commandUtils.ts';
 import { dbClient, queries } from '../../db.ts';
 import utils from '../../utils.ts';
 
@@ -22,6 +22,25 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		// Get OwnerId and EventTime from embed for DB
 		const ownerId: bigint = BigInt(interaction.message.embeds[0].footer?.iconUrl?.split('#')[1] || '0');
 		const eventTime: Date = new Date(parseInt(interaction.message.embeds[0].fields[LfgEmbedIndexes.ICSLink].value.split('?t=')[1].split('&n=')[0] || '0'));
+
+		// Check if we need to ensure DMs are open
+		if (interaction.data.customId.includes(idSeparator)) {
+			const dmSuccess = Boolean(await sendDirectMessage(bot, interaction.member.id, dmTestMessage).catch((e: Error) => utils.commonLoggers.messageSendError('toggleWLStatus.ts', 'send DM fail', e)));
+			if (!dmSuccess) {
+				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+					type: InteractionResponseTypes.ChannelMessageWithSource,
+					data: {
+						flags: ApplicationCommandFlags.Ephemeral,
+						embeds: [{
+							color: warnColor,
+							title: 'Event not created.',
+							description: `In order to create a whitelisted event, your DMs must be open to receive Join Requests.  Please open your DMs and try again.\n\n${safelyDismissMsg}`,
+						}],
+					},
+				}).catch((e: Error) => utils.commonLoggers.interactionSendError('toggleWLStatus.ts@dmFail', interaction, e));
+				return;
+			}
+		}
 
 		// Send Event Message
 		const eventMessage = await bot.helpers.sendMessage(interaction.channelId, {

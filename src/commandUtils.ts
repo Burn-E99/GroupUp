@@ -80,3 +80,11 @@ Ran into a bug?  Report it to my developers using \`/${reportSlashName} [issue d
 		text: `Current Version: ${config.version}`,
 	},
 };
+
+export const dmTestMessage: CreateMessage = {
+	embeds: [{
+		color: infoColor2,
+		title: 'Heyo!  Just making sure I can reach you.',
+		description: 'This message is just to make sure I can DM you any Join Requests to your event.  If you are reading this message, it means you have everything set up correctly.',
+	}],
+};
