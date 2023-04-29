@@ -749,9 +749,8 @@ startBot({
 									const thisLFG = (await getMessage(thisLFGPost.channelId, thisLFGPost.messageId)).embeds[0].fields || [];
 									sendDirectMessage(thisLFGPost.ownerId, {
 										embeds: [{
-											title: `Hello ${(await getUser(thisLFGPost.ownerId)).username}!  Your event in ${
-												lfgMessage.guild?.name || (await getGuild(message.guildId, { counts: false, addToCache: false })).name
-											} has filled up!`,
+											title: `Hello ${(await getUser(thisLFGPost.ownerId)).username}!  Your event in ${lfgMessage.guild?.name || (await getGuild(message.guildId, { counts: false, addToCache: false })).name
+												} has filled up!`,
 											fields: [
 												thisLFG[0],
 												{
@@ -1060,12 +1059,22 @@ startBot({
 				for (const ownerId of owners) {
 					if (args[0] === 'all') {
 						console.log(`Message sent to ${ownerId}`);
-						sendDirectMessage(ownerId, constantCmds.announcement)
+						sendDirectMessage(ownerId, constantCmds.announcement).then(() => sendDirectMessage(ownerId, constantCmds.announcementPart2).catch((e) => {
+							log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
+						})).catch((e) => {
+							log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
+						});
+
 					} else if (args[0] === 'dry') {
 						console.log(`Fake Message sent to ${ownerId}`);
 					}
 				}
-				message.send(constantCmds.announcement);
+				message.send(constantCmds.announcement).then(() => message.send(constantCmds.announcementPart2).catch((e) => {
+					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
+				})).catch((e) => {
+					log(LT.ERROR, `Failed to send message: ${jsonStringifyBig(message)} | ${jsonStringifyBig(e)}`);
+				});
+				
 			}
 		},
 		interactionCreate: async (interact, member) => {
@@ -1173,9 +1182,8 @@ startBot({
 										const thisLFG = (await getMessage(thisLFGPost.channelId, thisLFGPost.messageId)).embeds[0].fields || [];
 										sendDirectMessage(thisLFGPost.ownerId, {
 											embeds: [{
-												title: `Hello ${(await getUser(thisLFGPost.ownerId)).username}!  Your event in ${
-													message.guild?.name || (await getGuild(message.guildId, { counts: false, addToCache: false })).name
-												} has filled up!`,
+												title: `Hello ${(await getUser(thisLFGPost.ownerId)).username}!  Your event in ${message.guild?.name || (await getGuild(message.guildId, { counts: false, addToCache: false })).name
+													} has filled up!`,
 												fields: [
 													thisLFG[0],
 													{
