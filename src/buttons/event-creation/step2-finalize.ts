@@ -53,7 +53,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Get Date Object from user input
-		const [eventDateTime, eventDateTimeStr, eventInFuture] = getDateFromRawInput(rawEventTime, rawEventTimeZone, rawEventDate); // TODO: verify dt
+		const [eventDateTime, eventDateTimeStr, eventInFuture, dateTimeValid] = getDateFromRawInput(rawEventTime, rawEventTimeZone, rawEventDate);
 
 		addTokenToMap(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 		bot.helpers.sendInteractionResponse(
@@ -74,6 +74,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				[],
 				customIdIdxPath,
 				eventInFuture,
+				dateTimeValid,
 			),
 		).catch((e: Error) => utils.commonLoggers.interactionSendError('step2-finalize.ts', interaction, e));
 	} else {

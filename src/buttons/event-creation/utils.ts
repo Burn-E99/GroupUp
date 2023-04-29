@@ -56,6 +56,7 @@ export const generateActionRow = (baseValue: string, activities: Array<Activity>
 const createEventBtnName = 'Create Event';
 const createWhitelistedBtnName = 'Create Whitelisted Event';
 const editEventDetailsBtnName = 'Edit Event Details';
+export const invalidDateTimeStr = '`Invalid Date/Time`';
 const finalizeButtons = (idxPath: string, eventInFuture: boolean): [ButtonComponent, ButtonComponent, ButtonComponent] | [ButtonComponent] => {
 	const editButton: ButtonComponent = {
 		type: MessageComponentTypes.Button,
@@ -127,6 +128,7 @@ export const createLFGPost = (
 	alternateList: Array<LFGMember>,
 	idxPath: string,
 	eventInFuture: boolean,
+	dateTimeValid: boolean,
 ): InteractionResponse => {
 	const icsDetails = `${category}: ${activity.name}`;
 	return {
@@ -136,7 +138,7 @@ export const createLFGPost = (
 			content: eventInFuture
 				? `Please verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${selfDestructMessage(new Date().getTime())
 				}`
-				: `You cannot create an event in the past.  Please change the event's \`Date/Time\` to be in the future with the \`${editEventDetailsBtnName}\` button below.`,
+				: `You cannot create an event ${dateTimeValid ? 'in the past' : 'with an invalid date/time'}.  Please change the event's \`Date/Time\` to be ${dateTimeValid ? 'in the future' : 'valid'} with the \`${editEventDetailsBtnName}\` button below.`,
 			embeds: [{
 				color: eventInFuture ? successColor : warnColor,
 				fields: [{
@@ -145,7 +147,7 @@ export const createLFGPost = (
 					inline: true,
 				}, {
 					name: lfgStartTimeName,
-					value: generateTimeFieldStr(eventDateTimeStr, eventDateTime),
+					value: dateTimeValid ? generateTimeFieldStr(eventDateTimeStr, eventDateTime) : invalidDateTimeStr,
 					inline: true,
 				}, {
 					name: 'Add to Calendar:',

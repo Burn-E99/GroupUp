@@ -154,7 +154,7 @@ const parseEventDate = (preParsedEventDate: string): [string, string, string] =>
 };
 
 // Take full raw Date/Time input and convert it to a proper Date
-export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string): [Date, string, boolean] => {
+export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string): [Date, string, boolean, boolean] => {
 	// Verify/Set Time
 	const [parsedEventTimeHours, parsedEventTimeMinutes, parsedEventTimePeriod] = parseEventTime(rawEventTime.replaceAll(':', '').toUpperCase());
 
@@ -171,5 +171,6 @@ export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: stri
 			parsedEventMonth.slice(1, 3).toLowerCase()
 		} ${parsedEventDay}, ${parsedEventYear}`,
 		parsedDateTime.getTime() > new Date().getTime(),
+		!isNaN(parsedDateTime.getTime()),
 	];
 };

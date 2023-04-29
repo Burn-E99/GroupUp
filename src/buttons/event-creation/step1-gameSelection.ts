@@ -2,7 +2,7 @@ import { ActionRow, ApplicationCommandFlags, ApplicationCommandTypes, Bot, Butto
 import { infoColor1, somethingWentWrong } from '../../commandUtils.ts';
 import { CommandDetails } from '../../types/commandTypes.ts';
 import { Activities } from './activities.ts';
-import { generateActionRow, getNestedActivity } from './utils.ts';
+import { generateActionRow, getNestedActivity, invalidDateTimeStr } from './utils.ts';
 import { dateTimeFields, descriptionTextField, fillerChar, idSeparator, LfgEmbedIndexes, lfgStartTimeName, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap, deleteTokenEarly, generateMapId, selfDestructMessage, tokenMap } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
@@ -53,11 +53,13 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			let prefillDate = '';
 			let prefillDescription = '';
 			if (interaction.message && interaction.message.embeds[0].fields && interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].name === lfgStartTimeName) {
-				let rawEventDateTime = interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('\n')[0].split(' ');
-				const monthIdx = rawEventDateTime.findIndex((item) => monthsShort.includes(item.toUpperCase()));
-				prefillTime = rawEventDateTime.slice(0, monthIdx - 1).join(' ').trim();
-				prefillTimeZone = rawEventDateTime[monthIdx - 1].trim();
-				prefillDate = rawEventDateTime.slice(monthIdx).join(' ').trim();
+				if (interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value !== invalidDateTimeStr) {
+					let rawEventDateTime = interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('\n')[0].split(' ');
+					const monthIdx = rawEventDateTime.findIndex((item) => monthsShort.includes(item.toUpperCase()));
+					prefillTime = rawEventDateTime.slice(0, monthIdx - 1).join(' ').trim();
+					prefillTimeZone = (rawEventDateTime[monthIdx - 1] || '').trim();
+					prefillDate = rawEventDateTime.slice(monthIdx).join(' ').trim();
+				}
 				prefillDescription = interaction.message.embeds[0].fields[LfgEmbedIndexes.Description].value.trim();
 			}
 

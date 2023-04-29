@@ -32,20 +32,20 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Get Date Object from user input
-		const [eventDateTime, eventDateTimeStr, eventInFuture] = getDateFromRawInput(newTime, newTimeZone, newDate); // TODO: verify dt
-		if (!eventInFuture) {
+		const [eventDateTime, eventDateTimeStr, eventInFuture, dateTimeValid] = getDateFromRawInput(newTime, newTimeZone, newDate);
+		if (!eventInFuture || !dateTimeValid) {
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.ChannelMessageWithSource,
 				data: {
 					flags: ApplicationCommandFlags.Ephemeral,
 					embeds: [{
 						color: warnColor,
-						title: 'You cannot create an event in the past.',
-						description: 'Please dismiss this message and try again with a date in the future',
-						fields: [{
+						title: dateTimeValid ? 'You cannot create an event in the past.' : 'Could not parse date/time.',
+						description: `Please dismiss this message and try again with a ${dateTimeValid ? 'date in the future' : 'valid date/time'}.`,
+						fields: dateTimeValid ? [{
 							name: 'Date/Time Entered:',
 							value: generateTimeFieldStr(eventDateTimeStr, eventDateTime),
-						}],
+						}] : undefined,
 					}],
 				},
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('applyDateTime.ts', interaction, e));
