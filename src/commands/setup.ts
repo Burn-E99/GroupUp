@@ -253,8 +253,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 				const oldEvent = messages.get(oldEventId);
 				if (oldEvent && oldEvent.embeds[0].fields && oldEvent.embeds[0].footer) {
 					const eventMembers = [...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].value), ...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.AlternateMembers].value)]
-					const eventDateTime = new Date((oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('tz#')[1] || ' ').slice(0, -1));
-					console.log(oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value)
+					const eventDateTime = new Date(parseInt((oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('tz#')[1] || ' ').slice(0, -1)));
 					if (!isNaN(eventDateTime.getTime())) {
 						const eventDateTimeStr = (oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('](')[0] || ' ').slice(1);
 						oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value = generateTimeFieldStr(eventDateTimeStr, eventDateTime);
