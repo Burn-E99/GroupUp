@@ -194,7 +194,7 @@ This system now requires a log channel which allows you to audit what your Group
 To enable this system, simply run \`/setup with-manager-role\` and fill in the requested fields.`,
 				},
 				{
-					name: 'What if I don\'t want to update?',
+					name: 'What if you don\'t want to update?',
 					value: `As hosting costs money and I am running this bot for free, only the new system (V1.0.0) will be available from the official Group Up Discord bot.
 
 If you *really* want to keep the old text based system, you may do so by hosting the bot yourself.  This is **not recommended and not supported**, but as this project is open source, you may check out [my GitHub](https://github.com/Burn-E99/GroupUp) for details on how to host the last text based version (V0.5.8) privately.`
