@@ -147,7 +147,7 @@ export const constantCmds = {
 		}],
 	},
 	announcement: {
-		content: `Hi!  You\'re receiving this message as you have me in one of your servers.  This is a very important announcement regarding how you and your community uses this bot in your guild.  Please read the following details carefully.
+		content: `Hi!  You're receiving this message as you have me in one of your servers.  This is a very important announcement regarding how you and your community uses this bot in your guild.  Please read the following details carefully.
 
 This announcement feature is reserved for important breaking changes only.  Group Up will be reaching version 1.0 with this major update and will not have any more breaking changes for a significant amount of time.`,
 		embeds: [{
@@ -176,7 +176,7 @@ This announcement feature is reserved for important breaking changes only.  Grou
 2. Go to or create the channel you want Group Up to use for event scheduling.  Group Up will be taking full control of this channel, so please make sure you are OK with that before continuing.
 3. Once in the desired channel, run \`/setup\` and follow on screen prompts.  This will discover any pre-existing events, update them to the new design, and reconfigure the channel to work with the new system.
 
-Note: If there are any pre-existing events, they will end up above the new instructions message Group Up sends.  This is expected and unavoidable.`,
+**Note:** If there are any pre-existing events, they will end up above the new instruction message Group Up sends.  This is expected and unavoidable, but these events should still function fine.`,
 				},
 			],
 		}],
