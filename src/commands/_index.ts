@@ -2,6 +2,7 @@ import { Bot, CreateApplicationCommand, log, LT, MakeRequired } from '../../deps
 import { Command } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 
+import audit from './audit.ts';
 import info from './info.ts';
 import help from './help.ts';
 import report from './report.ts';
@@ -10,7 +11,7 @@ import deleteCmd from './delete.ts';
 import managerJLA from './managerJLA.ts';
 import { gameSelectionCommand } from '../buttons/event-creation/step1-gameSelection.ts';
 
-export const commands: Array<Command> = [deleteCmd, info, report, setup, gameSelectionCommand, managerJLA, help];
+export const commands: Array<Command> = [deleteCmd, info, report, setup, gameSelectionCommand, managerJLA, help, audit];
 
 export const createSlashCommands = async (bot: Bot) => {
 	const globalCommands: MakeRequired<CreateApplicationCommand, 'name'>[] = [];

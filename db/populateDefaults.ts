@@ -4,6 +4,7 @@ import { dbClient } from '../src/db.ts';
 console.log('Attempting to insert default actions into command_cnt');
 const actions = [
 	'msg-mention',
+	'cmd-audit',
 	'cmd-delete',
 	'cmd-help',
 	'cmd-info',
