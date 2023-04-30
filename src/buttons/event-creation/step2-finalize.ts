@@ -2,7 +2,7 @@ import { Bot, Interaction } from '../../../deps.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { createLFGPost, getFinalActivity } from './utils.ts';
 import { eventDateId, eventDescriptionId, eventTimeId, eventTimeZoneId, idSeparator, noDescProvided, pathIdxSeparator } from '../eventUtils.ts';
-import { addTokenToMap } from '../tokenCleanup.ts';
+import { addTokenToMap, deleteTokenEarly } from '../tokenCleanup.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
 import utils from '../../utils.ts';
@@ -12,6 +12,9 @@ export const customId = 'finalize';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member && interaction.member.user) {
+		// User selected activity and has filled out fields, delete the selectMenus
+		await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
+
 		const tempDataMap: Map<string, string> = new Map();
 		for (const row of interaction.data.components) {
 			if (row.components?.[0]) {

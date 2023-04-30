@@ -45,9 +45,6 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const strippedIdxPath = interaction.data.customId?.includes(idSeparator) ? customIdIdxPath : valuesIdxPath;
 		const finalizedIdxPath = strippedIdxPath.substring(0, strippedIdxPath.lastIndexOf(pathIdxEnder));
 		if ((interaction.data.customId?.includes(idSeparator) && interaction.data.customId.endsWith(pathIdxEnder)) || interaction.data?.values?.[0].endsWith(pathIdxEnder)) {
-			// User selected activity, give them the details modal and delete the selectMenus
-			await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
-
 			let prefillTime = '';
 			let prefillTimeZone = '';
 			let prefillDate = '';

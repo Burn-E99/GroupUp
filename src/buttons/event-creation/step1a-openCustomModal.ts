@@ -1,5 +1,4 @@
 import { Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { deleteTokenEarly } from '../tokenCleanup.ts';
 import { generateCustomActivityFields, idSeparator, pathIdxSeparator } from '../eventUtils.ts';
 import { customId as verifyCustomActivityId } from './step1b-verifyCustomActivity.ts';
 import utils from '../../utils.ts';
@@ -14,7 +13,6 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 		const [actTitle, actSubtitle, activityMaxPlayers] = (interaction.data.customId.split(idSeparator)[1] || '').split(pathIdxSeparator);
 
-		await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 			type: InteractionResponseTypes.Modal,
 			data: {

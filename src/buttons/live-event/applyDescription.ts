@@ -1,7 +1,7 @@
 import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { eventDescriptionId, idSeparator, LfgEmbedIndexes, noDescProvided, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
-import { addTokenToMap } from '../tokenCleanup.ts';
+import { addTokenToMap, deleteTokenEarly } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
 import { applyEditButtons, applyEditMessage } from './utils.ts';
 
@@ -9,6 +9,7 @@ export const customId = 'applyDescription';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data?.customId && interaction.data?.components?.length && interaction.member && interaction.channelId && interaction.guildId) {
+		await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 		const [evtChannelId, evtMessageId] = (interaction.data.customId.replaceAll(pathIdxEnder, '').split(idSeparator)[1] || '').split(pathIdxSeparator).map((id) => BigInt(id || '0'));
 		const eventMessage = await bot.helpers.getMessage(evtChannelId, evtMessageId).catch((e: Error) => utils.commonLoggers.messageGetError('applyDescription.ts', 'get eventMessage', e));
 

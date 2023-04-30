@@ -2,7 +2,7 @@ import config from '../../../config.ts';
 import { ApplicationCommandFlags, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
 import { failColor, infoColor1, safelyDismissMsg, somethingWentWrong } from '../../commandUtils.ts';
 import { activityMaxPlayersId, activitySubtitleId, activityTitleId, idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
-import { addTokenToMap, selfDestructMessage } from '../tokenCleanup.ts';
+import { addTokenToMap, deleteTokenEarly, selfDestructMessage } from '../tokenCleanup.ts';
 import { customId as gameSelectionId } from './step1-gameSelection.ts';
 import { customId as openCustomModalId } from './step1a-openCustomModal.ts';
 import utils from '../../utils.ts';
@@ -11,6 +11,7 @@ export const customId = 'verifyCustomActivity';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (interaction.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member) {
+		await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 		// Parse out our data
 		const tempDataMap: Map<string, string> = new Map();
 		for (const row of interaction.data.components) {

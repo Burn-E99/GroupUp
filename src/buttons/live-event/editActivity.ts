@@ -115,6 +115,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			// Get event to apply edit
 			const eventMessage = await bot.helpers.getMessage(evtChannelId, evtMessageId).catch((e: Error) => utils.commonLoggers.messageGetError('editActivity.ts', 'get eventMessage', e));
 			if (eventMessage && eventMessage.embeds[0].fields) {
+				await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 				// Update member lists
 				const [currentMemberCount, _oldMaxMemberCount] = getEventMemberCount(eventMessage.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].name);
 				const currentMembers = getLfgMembers(eventMessage.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].value);

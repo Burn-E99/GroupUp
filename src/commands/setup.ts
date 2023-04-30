@@ -159,7 +159,6 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 The Discord Slash Command system will ensure you provide all the required details.`,
 				});
 
-
 				// Set permissions for self, skip if we already failed to set roles
 				!logChannelErrorOut && await bot.helpers.editChannelPermissionOverrides(logChannelId, {
 					id: botId,
@@ -273,7 +272,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 			oldLfgMsgs.forEach((oldEventId) => {
 				const oldEvent = messages.get(oldEventId);
 				if (oldEvent && oldEvent.embeds[0].fields && oldEvent.embeds[0].footer) {
-					const eventMembers = [...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].value), ...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.AlternateMembers].value)]
+					const eventMembers = [...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].value), ...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.AlternateMembers].value)];
 					const eventDateTime = new Date(parseInt((oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('tz#')[1] || ' ').slice(0, -1)));
 					if (!isNaN(eventDateTime.getTime())) {
 						const eventDateTimeStr = (oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('](')[0] || ' ').slice(1);
@@ -290,7 +289,9 @@ The Discord Slash Command system will ensure you provide all the required detail
 								components: generateLFGButtons(false),
 							}],
 						}).catch((e: Error) => utils.commonLoggers.messageEditError('setup.ts', 'retrofit event', e));
-						dbClient.execute(queries.insertEvent, [oldEvent.id, oldEvent.channelId, interaction.guildId, ownerId, eventDateTime]).catch((e) => utils.commonLoggers.dbError('setup.ts@retrofit', 'INSERT event to DB', e));
+						dbClient.execute(queries.insertEvent, [oldEvent.id, oldEvent.channelId, interaction.guildId, ownerId, eventDateTime]).catch((e) =>
+							utils.commonLoggers.dbError('setup.ts@retrofit', 'INSERT event to DB', e)
+						);
 					}
 				}
 			});
