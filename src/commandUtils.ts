@@ -76,6 +76,16 @@ Want to check out my source code?  Check it out [here](${config.links.sourceCode
 Need help with this bot?  Join my support server [here](${config.links.supportServer}).
 
 Ran into a bug?  Report it to my developers using \`/${reportSlashName} [issue description]\`.`,
+	fields: [{
+		name: 'Privacy Policy and Terms of Service:',
+		value: `**${config.name} does not automatically track or collect user information via Discord.**
+
+${config.name} stores data relating to events, event channels, and text from the \`/${reportSlashName}\` command.
+
+For more details, please check out the Privacy Policy on my GitHub [here](${config.links.sourceCode}/blob/master/PRIVACY.md)
+
+Terms of Service can also be found on my GitHub [here](${config.links.sourceCode}/blob/master/TERMS.md).`,
+	}],
 	footer: {
 		text: `Current Version: ${config.version}`,
 	},

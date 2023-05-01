@@ -8,7 +8,7 @@ import { infoSlashName } from './slashCommandNames.ts';
 
 const details: CommandDetails = {
 	name: infoSlashName,
-	description: `Information about ${config.name} and its developer.`,
+	description: `Information about ${config.name}, its Terms of Service, its Privacy Policy, and its developer.`,
 	type: ApplicationCommandTypes.ChatInput,
 };
 
