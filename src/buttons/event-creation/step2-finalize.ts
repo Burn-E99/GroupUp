@@ -50,7 +50,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 		// Log custom event to see if we should add it as a preset
 		if (customAct) {
-			dbClient.execute(queries.insertCustomActivity, [interaction.guildId, category, activity.name, activity.maxMembers]).catch((e) => utils.commonLoggers.dbError('step2-finalize.ts@custom', 'insert into', e));
+			dbClient.execute(queries.insertCustomActivity, [interaction.guildId, category, activity.name, activity.maxMembers]).catch((e) =>
+				utils.commonLoggers.dbError('step2-finalize.ts@custom', 'insert into', e)
+			);
 		}
 
 		const rawEventTime = tempDataMap.get(eventTimeId) || '';

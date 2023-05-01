@@ -1,5 +1,5 @@
 import config from '../../config.ts';
-import { ApplicationCommandTypes, ApplicationCommandOptionTypes, Bot, Interaction, InteractionResponseTypes, DiscordEmbedField } from '../../deps.ts';
+import { ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, DiscordEmbedField, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { infoColor2, infoEmbed, isLFGChannel, somethingWentWrong } from '../commandUtils.ts';
 import { dbClient, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
@@ -78,7 +78,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				break;
 		}
 	} else {
-		somethingWentWrong(bot, interaction, 'auditMissingData')
+		somethingWentWrong(bot, interaction, 'auditMissingData');
 	}
 };
 

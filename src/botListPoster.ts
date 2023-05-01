@@ -20,7 +20,7 @@ export const updateBotListStatistics = (serverCount: number): void => {
 				log(LT.INFO, `Posted server count to ${botList.name}.  Results: ${JSON.stringify(response)}`);
 			}
 		} catch (err) {
-			log(LT.ERROR, `Failed to update statistics for ${botList.name} | Error: ${err.name} - ${err.message}`)
+			log(LT.ERROR, `Failed to update statistics for ${botList.name} | Error: ${err.name} - ${err.message}`);
 		}
 	});
 };
