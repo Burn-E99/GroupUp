@@ -59,8 +59,9 @@ The message containing this event may have been deleted by a moderator or admini
 	}
 
 	// Log this to bot's log channel
+	const dmSuccessStr = dmSuccess ? 'SUCCESSFULLY' : 'NOT';
 	bot.helpers.sendMessage(config.logChannel, {
-		content: secondFailure ? `Hey <@${config.owner}>, something may have gone wrong.  The owner of this event was ${dmSuccess ? 'SUCCESSFULLY' : 'NOT'} notified.` : undefined,
+		content: secondFailure ? `Hey <@${config.owner}>, something may have gone wrong.  The owner of this event was ${dmSuccessStr} notified.` : undefined,
 		embeds: [{
 			color: secondFailure ? failColor : warnColor,
 			title: `Failed to ${stepName} an event in ${guildName}.  This is the ${secondFailure ? 'second' : 'first'} attempt.`,

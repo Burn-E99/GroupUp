@@ -56,7 +56,6 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		if (eventMessage && eventMessage.embeds[0].fields) {
-			// eventMessage.embeds[0].fields[LfgEmbedIndexes.Description].value = newDescription || noDescProvided;
 			eventMessage.embeds[0].fields[LfgEmbedIndexes.StartTime].value = generateTimeFieldStr(eventDateTimeStr, eventDateTime);
 			const tIdx = eventMessage.embeds[0].fields[LfgEmbedIndexes.ICSLink].value.indexOf('?t=') + 3;
 			const nIdx = eventMessage.embeds[0].fields[LfgEmbedIndexes.ICSLink].value.indexOf('&n=');

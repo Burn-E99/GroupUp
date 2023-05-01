@@ -64,10 +64,14 @@ export const ready = (rawBot: Bot) => {
 
 	// Interval to handle updating botList statistics
 	if (botListPosterIntervalId) clearInterval(botListPosterIntervalId);
-	LOCALMODE ? log(LT.INFO, 'updateListStatistics not running') : botListPosterIntervalId = setInterval(() => {
-		log(LT.LOG, 'Updating all bot lists statistics');
-		updateBotListStatistics(bot.guilds.size + bot.dispatchedGuildIds.size);
-	}, 86400000);
+	if (LOCALMODE) {
+		log(LT.INFO, 'updateListStatistics not running');
+	} else {
+		botListPosterIntervalId = setInterval(() => {
+			log(LT.LOG, 'Updating all bot lists statistics');
+			updateBotListStatistics(bot.guilds.size + bot.dispatchedGuildIds.size);
+		}, 86400000);
+	}
 
 	// setTimeout added to make sure the startup message does not error out
 	setTimeout(() => {
