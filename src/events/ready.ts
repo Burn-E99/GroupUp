@@ -6,10 +6,12 @@ import { ActiveEvent } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { dbClient, queries } from '../db.ts';
 import { deleteEvent, handleFailures, lockEvent, notifyEventMembers, tenMinutes } from '../notificationSystem.ts';
+import { updateBotListStatistics } from '../botListPoster.ts';
 
 // Storing intervalIds in case bot soft reboots to prevent multiple of these intervals from stacking
 let notificationIntervalId: number;
 let botStatusIntervalId: number;
+let botListPosterIntervalId: number;
 
 export const ready = (rawBot: Bot) => {
 	const bot = rawBot as BotWithCache;
@@ -59,6 +61,13 @@ export const ready = (rawBot: Bot) => {
 		eventsToDelete?.rows?.forEach((event) => deleteEvent(bot, event as ActiveEvent));
 		eventFailuresToHandle?.rows?.forEach((event) => handleFailures(bot, event as ActiveEvent));
 	}, 30000);
+
+	// Interval to handle updating botList statistics
+	if (botListPosterIntervalId) clearInterval(botListPosterIntervalId)
+	LOCALMODE ? log(LT.INFO, 'updateListStatistics not running') : botListPosterIntervalId = setInterval(() => {
+		log(LT.LOG, 'Updating all bot lists statistics');
+		updateBotListStatistics(bot.guilds.size + bot.dispatchedGuildIds.size);
+	}, 86400000);
 
 	// setTimeout added to make sure the startup message does not error out
 	setTimeout(() => {
