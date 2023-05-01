@@ -11,8 +11,9 @@ export const guildDelete = async (bot: Bot, guildId: bigint) => {
 	try {
 		await dbClient.execute('DELETE FROM guild_settings WHERE guildId = ?', [guildId]);
 		await dbClient.execute('DELETE FROM active_events WHERE guildId = ?', [guildId]);
+		await dbClient.execute('DELETE FROM custom_activities WHERE guildId = ?', [guildId]);
 	} catch (e) {
-		log(LT.WARN, `Failed to remove guild from DB: ${utils.jsonStringifyBig(e)}`);
+		log(LT.WARN, `Failed to remove guild (${guildId}) from DB: ${utils.jsonStringifyBig(e)}`);
 	}
 
 	// Clean lfgChannelSettings

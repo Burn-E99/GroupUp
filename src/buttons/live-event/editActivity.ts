@@ -94,7 +94,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				selectedActivity.maxMembers = activityMaxPlayers;
 
 				// Log custom event to see if we should add it as a preset
-				dbClient.execute(queries.insertCustomActivity, [selectedCategory, selectedActivity.name, selectedActivity.maxMembers]).catch((e) =>
+				dbClient.execute(queries.insertCustomActivity, [interaction.guildId, selectedCategory, selectedActivity.name, selectedActivity.maxMembers]).catch((e) =>
 					utils.commonLoggers.dbError('editActivity.ts@custom', 'insert into', e)
 				);
 			} else {

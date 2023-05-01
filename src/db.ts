@@ -19,7 +19,7 @@ export const queries = {
 	updateEventTime: 'UPDATE active_events SET eventTime = ? WHERE channelId = ? AND messageId = ?',
 	updateEventFlags: (notifiedFlag: number, lockedFlag: number) => `UPDATE active_events SET notifiedFlag = ${notifiedFlag}, lockedFlag = ${lockedFlag} WHERE channelId = ? AND messageId = ?`,
 	deleteEvent: 'DELETE FROM active_events WHERE channelId = ? AND messageId = ?',
-	insertCustomActivity: 'INSERT INTO custom_activities(activityTitle,activitySubtitle,maxMembers) values(?,?,?)',
+	insertCustomActivity: 'INSERT INTO custom_activities(guildId,activityTitle,activitySubtitle,maxMembers) values(?,?,?,?)',
 };
 
 export const lfgChannelSettings: Map<string, LfgChannelSetting> = new Map();

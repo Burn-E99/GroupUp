@@ -10,6 +10,7 @@ await dbClient.execute(`USE ${config.db.name}`);
 console.log('DB created');
 
 console.log('Attempt to drop all tables');
+await dbClient.execute(`DROP VIEW IF EXISTS db_size;`);
 await dbClient.execute(`DROP PROCEDURE IF EXISTS INC_CNT;`);
 await dbClient.execute(`DROP TABLE IF EXISTS command_cnt;`);
 await dbClient.execute(`DROP TABLE IF EXISTS guild_settings;`);
@@ -84,6 +85,7 @@ console.log('Attempting to create table custom_activities');
 await dbClient.execute(`
 	CREATE TABLE custom_activities (
 		id int unsigned NOT NULL AUTO_INCREMENT,
+		guildId bigint unsigned NOT NULL,
 		activityTitle char(35) NOT NULL,
 		activitySubtitle char(50) NOT NULL,
 		maxMembers tinyint NOT NULL,
