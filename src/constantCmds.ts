@@ -174,9 +174,11 @@ This announcement feature is reserved for important breaking changes only.  Grou
 
 1. The bot will now require the \`MANAGE_GUILD\`, \`MANAGE_CHANNELS\`, \`MANAGE_ROLES\`, and \`MANAGE_MESSAGES\` permissions.  Simply edit the role named \`Group Up\` in your server to add these permissions.  The increased permissions are only necessary for the initial setup.  After the setup is complete, the bot only requires the \`MANAGE_MESSAGES\` permission.
 2. Go to or create the channel you want Group Up to use for event scheduling.  Group Up will be taking full control of this channel, so please make sure you are okay with that before continuing.
-3. Once in the desired channel, run \`/setup\` and follow the on-screen prompts.  This will discover any pre-existing events, update them to the new design, and reconfigure the channel to work with the new system.
-
-**Note:** If there are any pre-existing events, they will end up above the new instruction message Group Up sends.  This is expected and unavoidable, but these events should still function fine.`,
+3. Once in the desired channel, run \`/setup\` and follow the on-screen prompts.  This will discover any pre-existing events, update them to the new design, and reconfigure the channel to work with the new system.`,
+				},
+				{
+					name: 'A Note for Pre-existing Events:',
+					value: 'If there are any pre-existing events, they will end up above the new instruction message Group Up sends.  This is expected and unavoidable, but these events should still function fine.',
 				},
 			],
 		}],
