@@ -1,4 +1,4 @@
-export const auditSlashName = 'audit';
+export const auditSlashName = 'zzz-audit';
 export const createEventSlashName = 'create-event';
 export const deleteSlashName = 'delete-lfg-channel';
 export const managerJLASlashName = 'event';
