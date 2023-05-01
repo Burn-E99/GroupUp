@@ -27,28 +27,30 @@ const oneDay = oneHour * 24;
 const oneWeek = oneDay * 7;
 setInterval(() => {
 	const now = new Date().getTime();
-	joinRequestMap.forEach((joinRequest, key) => {
-		switch (joinRequest.status) {
-			case JoinRequestStatus.Approved:
-				// Delete Approved when over 1 hour old
-				if (joinRequest.timestamp > now - oneHour) {
-					joinRequestMap.delete(key);
-				}
-				break;
-			case JoinRequestStatus.Pending:
-				// Delete Pending when over 1 day old
-				if (joinRequest.timestamp > now - oneDay) {
-					joinRequestMap.delete(key);
-				}
-				break;
-			case JoinRequestStatus.Denied:
-				// Delete Rejected when over 1 week old
-				if (joinRequest.timestamp > now - oneWeek) {
-					joinRequestMap.delete(key);
-				}
-				break;
-		}
-	});
+	if (joinRequestMap.size) {
+		joinRequestMap.forEach((joinRequest, key) => {
+			switch (joinRequest.status) {
+				case JoinRequestStatus.Approved:
+					// Delete Approved when over 1 hour old
+					if (joinRequest.timestamp > now - oneHour) {
+						joinRequestMap.delete(key);
+					}
+					break;
+				case JoinRequestStatus.Pending:
+					// Delete Pending when over 1 day old
+					if (joinRequest.timestamp > now - oneDay) {
+						joinRequestMap.delete(key);
+					}
+					break;
+				case JoinRequestStatus.Denied:
+					// Delete Rejected when over 1 week old
+					if (joinRequest.timestamp > now - oneWeek) {
+						joinRequestMap.delete(key);
+					}
+					break;
+			}
+		});
+	}
 	// Run cleaner every hour
 }, oneHour);
 
