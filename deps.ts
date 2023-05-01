@@ -1,40 +1,49 @@
-// All external dependancies are to be loaded here to make updating dependancy versions much easier
-export {
-	botId,
-	cache,
-	cacheHandlers,
-	deleteMessage,
-	DiscordActivityTypes,
-	DiscordButtonStyles,
-	DiscordInteractionResponseTypes,
-	DiscordInteractionTypes,
-	editBotNickname,
-	editBotStatus,
-	getGuild,
-	getMessage,
-	getUser,
-	hasGuildPermissions,
-	Intents,
-	sendDirectMessage,
-	sendInteractionResponse,
-	sendMessage,
-	startBot,
-	structures,
-} from 'https://deno.land/x/discordeno@12.0.1/mod.ts';
+// All external dependencies are to be loaded here to make updating dependency versions much easier
+import { getBotIdFromToken } from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
+import config from './config.ts';
+import { LOCALMODE } from './flags.ts';
+export const botId = getBotIdFromToken(LOCALMODE ? config.localToken : config.token);
 
+export { enableCachePlugin, enableCacheSweepers } from 'https://deno.land/x/discordeno@17.0.1/plugins/cache/mod.ts';
+export type { BotWithCache } from 'https://deno.land/x/discordeno@17.0.1/plugins/cache/mod.ts';
+
+export {
+	ActivityTypes,
+	ApplicationCommandFlags,
+	ApplicationCommandOptionTypes,
+	ApplicationCommandTypes,
+	BitwisePermissionFlags,
+	ButtonStyles,
+	ChannelTypes,
+	createBot,
+	getBotIdFromToken,
+	Intents,
+	InteractionResponseTypes,
+	MessageComponentTypes,
+	OverwriteTypes,
+	startBot,
+	TextStyles,
+} from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 export type {
 	ActionRow,
+	ApplicationCommand,
+	ApplicationCommandOption,
+	Bot,
 	ButtonComponent,
-	ButtonData,
+	CreateApplicationCommand,
 	CreateMessage,
-	DebugArg,
-	DiscordenoGuild,
-	DiscordenoMember,
-	DiscordenoMessage,
+	DiscordEmbedField,
 	Embed,
-	EmbedField,
+	EventHandlers,
+	Guild,
 	Interaction,
-} from 'https://deno.land/x/discordeno@12.0.1/mod.ts';
+	InteractionResponse,
+	MakeRequired,
+	Message,
+	PermissionStrings,
+	SelectMenuComponent,
+	SelectOption,
+} from 'https://deno.land/x/discordeno@17.0.1/mod.ts';
 
 export { Client } from 'https://deno.land/x/mysql@v2.11.0/mod.ts';
 

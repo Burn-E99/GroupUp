@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# PROVIDE: groupup
+
+. /etc/rc.subr
+
+name="groupup"
+rcvar="groupup_enable"
+pidfile="/var/dbots/GroupUp/groupup.pid"
+
+groupup_root="/var/dbots/GroupUp"
+groupup_write="./logs/"
+groupup_log="/var/log/groupup.log"
+
+groupup_chdir="${groupup_root}"
+command="/usr/sbin/daemon"
+command_args="-f -R 5 -P ${pidfile} -o ${groupup_log} /usr/local/bin/deno run --allow-write=${groupup_write} --allow-net ${groupup_root}/mod.ts"
+
+load_rc_config groupup
+run_rc_command "$1"

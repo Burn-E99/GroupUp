@@ -11,5 +11,9 @@
     "spellright.documentTypes": [],
     "deno.suggest.imports.hosts": {
         "https://deno.land": true
-    }
+    },
+    "cSpell.words": [
+        "sproc",
+        "USTZ"
+    ]
 }
