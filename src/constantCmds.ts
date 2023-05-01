@@ -149,11 +149,11 @@ export const constantCmds = {
 	announcement: {
 		content: `Hi!  You're receiving this message as you have me in one of your servers.  This is a very important announcement regarding how you and your community uses this bot in your guild.  Please read the following details carefully.
 
-This announcement feature is reserved for important breaking changes only.  Group Up will be reaching version 1.0 with this major update and will not have any more breaking changes for a significant amount of time.`,
+This announcement feature is reserved for important breaking changes only.  Group Up will be reaching version 1.0 with this major update, and will not have any more event breaking changes for a significant amount of time.`,
 		embeds: [{
 			color: 0x313bf9,
 			title: 'Version 1.0.0 is coming!',
-			description: `Group Up is coming up on a major milestone, giving your community an even better and more user friendly experience.
+			description: `Group Up is coming up on a major milestone, giving your community an even better and more user-friendly experience.
 
 **NOTICE:** All Guild settings will be deleted when V1.0.0 is released.
 **NOTICE:** All Guilds are forced to use the \`/\` command prefix via the Discord Slash Command system.`,
@@ -172,9 +172,9 @@ This announcement feature is reserved for important breaking changes only.  Grou
 					name: 'What do you need to do?',
 					value: `Once the update is live, there are a couple things you will need to do:
 
-1. The bot will now require the \`MANAGE_GUILD\`, \`MANAGE_CHANNELS\`, \`MANAGE_ROLES\`, and \`MANAGE_MESSAGES\` permissions.  Simply edit the role named 'Group Up' in your server to add these permissions.  The increased permissions are only needed for the initial setup.  After the setup is complete, the bot only requires the \`MANAGE_MESSAGES\` permission.
-2. Go to or create the channel you want Group Up to use for event scheduling.  Group Up will be taking full control of this channel, so please make sure you are OK with that before continuing.
-3. Once in the desired channel, run \`/setup\` and follow on screen prompts.  This will discover any pre-existing events, update them to the new design, and reconfigure the channel to work with the new system.
+1. The bot will now require the \`MANAGE_GUILD\`, \`MANAGE_CHANNELS\`, \`MANAGE_ROLES\`, and \`MANAGE_MESSAGES\` permissions.  Simply edit the role named \`Group Up\` in your server to add these permissions.  The increased permissions are only necessary for the initial setup.  After the setup is complete, the bot only requires the \`MANAGE_MESSAGES\` permission.
+2. Go to or create the channel you want Group Up to use for event scheduling.  Group Up will be taking full control of this channel, so please make sure you are okay with that before continuing.
+3. Once in the desired channel, run \`/setup\` and follow the on-screen prompts.  This will discover any pre-existing events, update them to the new design, and reconfigure the channel to work with the new system.
 
 **Note:** If there are any pre-existing events, they will end up above the new instruction message Group Up sends.  This is expected and unavoidable, but these events should still function fine.`,
 				},
@@ -187,9 +187,9 @@ This announcement feature is reserved for important breaking changes only.  Grou
 			fields: [
 				{
 					name: 'If you used the Group Up Manager system before V1.0.0:',
-					value: `The Group Up Manager System is many times more powerful now.  This system grants managers the ability to edit events, and delete events in addition to the prior Join/Leave/Alternate options.
+					value: `The Group Up Manager System is more powerful now.  This system now grants managers the ability to edit and delete events in addition to the original Join/Leave/Alternate commands.
 
-This system now requires a log channel which allows you to audit what your Group Up Managers are doing.  Additionally, the owner of events that a Group Up Manager modifies will be notified of any changes.
+This system now requires a log channel which allows you to audit what your Group Up Managers are doing.  Additionally, the owner of an event that a Group Up Manager modifies will be notified of any changes.
 
 To enable this system, simply run \`/setup with-manager-role\` and fill in the requested fields.`,
 				},
@@ -201,11 +201,11 @@ If you *really* want to keep the old text based system, you may do so by hosting
 				},
 				{
 					name: 'Have more questions?',
-					value: 'I have tried to anticipate every question possible, but if I have missed your question, please join [my support server](https://discord.gg/peHASXMZYv).',
+					value: 'I have tried to anticipate every possible question, but if you still have any, please join [my support server](https://discord.gg/peHASXMZYv).',
 				},
 				{
 					name: 'Final Words',
-					value: `As I want to avoid these unexpected/undesirable DMs in the future, please join [my support server](https://discord.gg/peHASXMZYv).  All future announcements will be sent via this server.
+					value: `As I want to avoid these unexpected DMs in the future, please join [my support server](https://discord.gg/peHASXMZYv).  All future announcements will be sent via this server.
 
 Thank you for using Group Up, and I hope you enjoy this major update.
 
