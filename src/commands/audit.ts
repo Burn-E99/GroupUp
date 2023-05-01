@@ -1,6 +1,6 @@
 import config from '../../config.ts';
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, DiscordEmbedField, Interaction, InteractionResponseTypes } from '../../deps.ts';
-import { infoColor2, infoEmbed, isLFGChannel, somethingWentWrong } from '../commandUtils.ts';
+import { infoColor2, isLFGChannel, somethingWentWrong } from '../commandUtils.ts';
 import { dbClient, queries } from '../db.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
