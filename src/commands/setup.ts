@@ -224,6 +224,9 @@ The Discord Slash Command system will ensure you provide all the required detail
 				mgrRoleErrorOut = true;
 			});
 
+			const x = await bot.helpers.getRoles(interaction.guildId);
+			x.forEach(role => console.log(role))
+
 			// Set permissions for self, skip if we already failed to set roles
 			!mgrRoleErrorOut && await bot.helpers.editChannelPermissionOverrides(interaction.channelId, {
 				id: botId,
