@@ -110,10 +110,11 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				name: 'Editing/Deleting your event:',
 				value: 'To edit or delete your event, simply click on the ✏️ or 🗑️ buttons respectively.',
 			}];
+			const sendMessagePermSting = '`SEND_MESSAGES`\n`VIEW_CHANNEL`\n`EMBED_LINKS`'
 			const permissionFields: Array<DiscordEmbedField> = [
 				{
 					name: `Please make sure ${config.name} has the following permissions for the current channel:`,
-					value: '`SEND_MESSAGES`\n`VIEW_CHANNEL`\n`EMBED_LINKS`',
+					value: sendMessagePermSting,
 				},
 				{
 					name: `Please make sure ${config.name} has the following permissions:`,
@@ -164,18 +165,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 The Discord Slash Command system will ensure you provide all the required details.`,
 				});
 
-				// Set permissions for self, skip if we already failed to set roles
-				!logChannelErrorOut && await bot.helpers.editChannelPermissionOverrides(logChannelId, {
-					id: botId,
-					type: OverwriteTypes.Member,
-					allow: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-				}).catch((e: Error) => {
-					utils.commonLoggers.channelUpdateError('setup.ts', 'self-allow', e);
-					mgrRoleErrorOut = true;
-				});
-
 				// Test sending a message to the logChannel
-				!logChannelErrorOut && await bot.helpers.sendMessage(logChannelId, {
+				await bot.helpers.sendMessage(logChannelId, {
 					embeds: [{
 						title: `This is the channel ${config.name} will be logging events to.`,
 						description: `${config.name} will only send messages here as frequently as your event managers update events.`,
@@ -197,8 +188,8 @@ The Discord Slash Command system will ensure you provide all the required detail
 								description: `${config.name} attempted to send a message to the specified log channel.`,
 								fields: [
 									{
-										name: `Please allow ${config.name} to send messages in the requested channel.`,
-										value: `<#${logChannelId}>`,
+										name: `Please make sure ${config.name} has the following permissions in the requested channel:`,
+										value: `${sendMessagePermSting}\n\nRequested Channel: <#${logChannelId}>`,
 									},
 								],
 							}],
