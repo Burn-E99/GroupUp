@@ -225,13 +225,20 @@ The Discord Slash Command system will ensure you provide all the required detail
 				mgrRoleErrorOut = true;
 			});
 
-			const x = await bot.helpers.getRoles(interaction.guildId);
-			x.forEach(role => log(LT.INFO, `${utils.jsonStringifyBig(role)}`))
+			const guildRoles = await bot.helpers.getRoles(interaction.guildId);
+			let botRoleId = 0n
+			guildRoles.some(role => {
+				if (role.botId === botId) {
+					botRoleId = role.id;
+					return true;
+				}
+				return false;
+			})
 
 			// Set permissions for self, skip if we already failed to set roles
 			!mgrRoleErrorOut && await bot.helpers.editChannelPermissionOverrides(interaction.channelId, {
-				id: botId,
-				type: OverwriteTypes.Member,
+				id: botRoleId,
+				type: OverwriteTypes.Role,
 				allow: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
 			}).catch((e: Error) => {
 				utils.commonLoggers.channelUpdateError('setup.ts', 'self-allow', e);
