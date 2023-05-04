@@ -10,6 +10,7 @@ import {
 	DiscordEmbedField,
 	Interaction,
 	InteractionResponseTypes,
+	LT, log,
 	MessageComponentTypes,
 	OverwriteTypes,
 } from '../../deps.ts';
@@ -225,7 +226,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 			});
 
 			const x = await bot.helpers.getRoles(interaction.guildId);
-			x.forEach(role => console.log(role))
+			x.forEach(role => log(LT.INFO, `${role}`))
 
 			// Set permissions for self, skip if we already failed to set roles
 			!mgrRoleErrorOut && await bot.helpers.editChannelPermissionOverrides(interaction.channelId, {
