@@ -65,9 +65,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				}
 
 				// Remove any pipe characters to avoid issues down the process
-				const activityTitle = (tempDataMap.get(activityTitleId) || '').replace(/\|/g, '');
-				const activitySubtitle = (tempDataMap.get(activitySubtitleId) || '').replace(/\|/g, '');
-				const activityMaxPlayers = parseInt(tempDataMap.get(activityMaxPlayersId) || '0');
+				const activityTitle = (tempDataMap.get(activityTitleId) ?? '').replace(/\|/g, '');
+				const activitySubtitle = (tempDataMap.get(activitySubtitleId) ?? '').replace(/\|/g, '');
+				const activityMaxPlayers = parseInt(tempDataMap.get(activityMaxPlayersId) ?? '0');
 				if (isNaN(activityMaxPlayers) || activityMaxPlayers < 1 || activityMaxPlayers > 99) {
 					bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 						type: InteractionResponseTypes.ChannelMessageWithSource,
@@ -114,7 +114,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 			// Get event to apply edit
 			const eventMessage = await bot.helpers.getMessage(evtChannelId, evtMessageId).catch((e: Error) => utils.commonLoggers.messageGetError('editActivity.ts', 'get eventMessage', e));
-			if (eventMessage && eventMessage.embeds[0].fields) {
+			if (eventMessage?.embeds[0].fields) {
 				await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 				// Update member lists
 				const [currentMemberCount, _oldMaxMemberCount] = getEventMemberCount(eventMessage.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].name);
@@ -173,7 +173,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 		selectMenus.push(makeCustomEventRow(interaction.data.customId.replaceAll(fillerChar, '').split(idSeparator)[1] || ''));
 
-		if (interaction.data.customId && interaction.data.customId.includes(fillerChar)) {
+		if (interaction.data.customId.includes(fillerChar)) {
 			// Let discord know we didn't ignore the user
 			await bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.DeferredUpdateMessage,

@@ -128,7 +128,7 @@ export const notifyEventMembers = async (bot: Bot, event: ActiveEvent, secondTry
 		dbClient.execute(queries.updateEventFlags(1, 0), [event.channelId, event.messageId]).catch((e) => utils.commonLoggers.dbError('notificationSystem.ts@notifySuccess', 'update event in', e));
 		return true;
 	} else {
-		if (!secondTry) loudLogFailure(bot, event, notifyStepName);
+		if (!secondTry) loudLogFailure(bot, event, notifyStepName).catch((e) => utils.commonLoggers.messageSendError('notificationSystem.ts@notify', 'loudLog Failed', e));
 		// Update DB to indicate notifications have not been sent out
 		dbClient.execute(queries.updateEventFlags(-1, 0), [event.channelId, event.messageId]).catch((e) => utils.commonLoggers.dbError('notificationSystem.ts@notifyFail', 'update event in', e));
 		return false;
@@ -182,7 +182,7 @@ export const lockEvent = async (bot: Bot, event: ActiveEvent, secondTry = false)
 		dbClient.execute(queries.updateEventFlags(1, 1), [event.channelId, event.messageId]).catch((e) => utils.commonLoggers.dbError('notificationSystem.ts@lockSuccess', 'update event in', e));
 		return true;
 	} else {
-		if (!secondTry) loudLogFailure(bot, event, lockStepName);
+		if (!secondTry) loudLogFailure(bot, event, lockStepName).catch((e) => utils.commonLoggers.messageSendError('notificationSystem.ts@lock', 'loudLog Failed', e));
 		// Update DB to indicate event has not been locked
 		dbClient.execute(queries.updateEventFlags(1, -1), [event.channelId, event.messageId]).catch((e) => utils.commonLoggers.dbError('notificationSystem.ts@lockFail', 'update event in', e));
 		return false;
@@ -202,7 +202,7 @@ export const deleteEvent = async (bot: Bot, event: ActiveEvent, secondTry = fals
 		dbClient.execute(queries.deleteEvent, [event.channelId, event.messageId]).catch((e) => utils.commonLoggers.dbError('notificationSystem.ts@deleteSuccess', 'delete event from', e));
 		return true;
 	} else {
-		if (!secondTry) loudLogFailure(bot, event, deleteStepName);
+		if (!secondTry) loudLogFailure(bot, event, deleteStepName).catch((e) => utils.commonLoggers.messageSendError('notificationSystem.ts@delete', 'loudLog Failed', e));
 		// Update DB to indicate delete failed
 		dbClient.execute(queries.updateEventFlags(-1, -1), [event.channelId, event.messageId]).catch((e) => utils.commonLoggers.dbError('notificationSystem.ts@deleteFail', 'update event in', e));
 		return false;
@@ -232,7 +232,7 @@ export const handleFailures = async (bot: Bot, event: ActiveEvent) => {
 
 	if (!rerunSuccess) {
 		// Failed at completing a step!  Event may have been deleted?
-		loudLogFailure(bot, event, stepName, true);
+		loudLogFailure(bot, event, stepName, true).catch((e) => utils.commonLoggers.messageSendError('notificationSystem.ts@rerun', 'loudLog Failed', e));
 		dbClient.execute(queries.deleteEvent, [event.channelId, event.messageId]).catch((e) => utils.commonLoggers.dbError('notificationSystem.ts@handleFailures', 'delete event from', e));
 	}
 };

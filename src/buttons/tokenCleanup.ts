@@ -19,7 +19,7 @@ export const addTokenToMap = (bot: Bot, interaction: Interaction, guildId: bigin
 		token: interaction.token,
 		timeoutId: setTimeout(
 			(guildId, channelId, userId) => {
-				deleteTokenEarly(bot, interaction, guildId, channelId, userId);
+				deleteTokenEarly(bot, interaction, guildId, channelId, userId).catch((e) => utils.commonLoggers.interactionSendError('tokenCleanup.ts:addTokenToMap', interaction, e));
 			},
 			tokenTimeoutMS,
 			guildId,
@@ -30,8 +30,8 @@ export const addTokenToMap = (bot: Bot, interaction: Interaction, guildId: bigin
 
 export const deleteTokenEarly = async (bot: Bot, interaction: Interaction, guildId: bigint, channelId: bigint, userId: bigint) => {
 	const tokenMapEntry = tokenMap.get(generateMapId(guildId, channelId, userId));
-	if (tokenMapEntry && tokenMapEntry.token) {
-		await bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(guildId, channelId, userId))?.token || '').catch((e: Error) =>
+	if (tokenMapEntry?.token) {
+		await bot.helpers.deleteOriginalInteractionResponse(tokenMap.get(generateMapId(guildId, channelId, userId))?.token ?? '').catch((e: Error) =>
 			utils.commonLoggers.interactionSendError('tokenCleanup.ts:deleteTokenEarly', interaction, e)
 		);
 		clearTimeout(tokenMapEntry.timeoutId);

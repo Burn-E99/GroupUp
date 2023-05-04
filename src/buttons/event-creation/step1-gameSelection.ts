@@ -49,7 +49,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			let prefillTimeZone = '';
 			let prefillDate = '';
 			let prefillDescription = '';
-			if (interaction.message && interaction.message.embeds[0].fields && interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].name === lfgStartTimeName) {
+			if (interaction.message?.embeds[0].fields && interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].name === lfgStartTimeName) {
 				if (interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value !== invalidDateTimeStr) {
 					let rawEventDateTime = interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('\n')[0].split(' ');
 					const monthIdx = rawEventDateTime.findIndex((item) => monthsShort.includes(item.toUpperCase()));
@@ -103,7 +103,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		});
 		selectMenus.push(generateCustomEventRow(prefillArray.length ? prefillArray[0] : '', prefillArray.length > 1 ? prefillArray[prefillArray.length - 1] : ''));
 
-		if (interaction.data.customId && interaction.data.customId.includes(fillerChar)) {
+		if (interaction.data.customId?.includes(fillerChar)) {
 			// Let discord know we didn't ignore the user
 			await bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.DeferredUpdateMessage,

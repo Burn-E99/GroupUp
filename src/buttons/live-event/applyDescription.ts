@@ -17,13 +17,13 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		for (const row of interaction.data.components) {
 			if (row.components?.[0]) {
 				const textField = row.components[0];
-				tempDataMap.set(textField.customId || 'missingCustomId', textField.value || '');
+				tempDataMap.set(textField.customId || 'missingCustomId', textField.value || noDescProvided);
 			}
 		}
 		const newDescription = tempDataMap.get(eventDescriptionId);
 
-		if (eventMessage && eventMessage.embeds[0].fields) {
-			eventMessage.embeds[0].fields[LfgEmbedIndexes.Description].value = newDescription || noDescProvided;
+		if (eventMessage?.embeds[0].fields) {
+			eventMessage.embeds[0].fields[LfgEmbedIndexes.Description].value = newDescription ?? noDescProvided;
 
 			// Send edit confirmation
 			addTokenToMap(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);

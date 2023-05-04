@@ -55,10 +55,10 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			);
 		}
 
-		const rawEventTime = tempDataMap.get(eventTimeId) || '';
-		const rawEventTimeZone = tempDataMap.get(eventTimeZoneId) || '';
-		const rawEventDate = tempDataMap.get(eventDateId) || '';
-		const eventDescription = tempDataMap.get(eventDescriptionId) || noDescProvided;
+		const rawEventTime = tempDataMap.get(eventTimeId) ?? '';
+		const rawEventTimeZone = tempDataMap.get(eventTimeZoneId) ?? '';
+		const rawEventDate = tempDataMap.get(eventDateId) ?? '';
+		const eventDescription = tempDataMap.get(eventDescriptionId) ?? noDescProvided;
 		if (!rawEventTime || !rawEventTimeZone || !rawEventDate) {
 			// Error out if user somehow failed to provide one of the fields (eventDescription is allowed to be null/empty)
 			somethingWentWrong(bot, interaction, `missingFieldFromEventDescription@${rawEventTime}_${rawEventTimeZone}_${rawEventDate}`);

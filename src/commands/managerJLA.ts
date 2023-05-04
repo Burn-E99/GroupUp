@@ -61,8 +61,8 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			for (const option of interaction.data.options[0].options) {
 				tempDataMap.set(option.name || 'missingCustomId', option.value as string || '');
 			}
-			const eventLink = tempDataMap.get(eventLinkName) || '';
-			const userToAdd = BigInt(tempDataMap.get(userName) || '0');
+			const eventLink = tempDataMap.get(eventLinkName) ?? '';
+			const userToAdd = BigInt(tempDataMap.get(userName) ?? '0');
 			const eventIds = utils.messageUrlToIds(eventLink);
 
 			// Verify fields exist

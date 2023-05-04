@@ -55,7 +55,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			return;
 		}
 
-		if (eventMessage && eventMessage.embeds[0].fields) {
+		if (eventMessage?.embeds[0].fields) {
 			eventMessage.embeds[0].fields[LfgEmbedIndexes.StartTime].value = generateTimeFieldStr(eventDateTimeStr, eventDateTime);
 			const tIdx = eventMessage.embeds[0].fields[LfgEmbedIndexes.ICSLink].value.indexOf('?t=') + 3;
 			const nIdx = eventMessage.embeds[0].fields[LfgEmbedIndexes.ICSLink].value.indexOf('&n=');

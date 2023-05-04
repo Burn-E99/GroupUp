@@ -22,9 +22,9 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Remove any pipe characters to avoid issues down the process
-		const activityTitle = (tempDataMap.get(activityTitleId) || '').replace(/\|/g, '');
-		const activitySubtitle = (tempDataMap.get(activitySubtitleId) || '').replace(/\|/g, '');
-		const activityMaxPlayers = parseInt(tempDataMap.get(activityMaxPlayersId) || '0');
+		const activityTitle = (tempDataMap.get(activityTitleId) ?? '').replace(/\|/g, '');
+		const activitySubtitle = (tempDataMap.get(activitySubtitleId) ?? '').replace(/\|/g, '');
+		const activityMaxPlayers = parseInt(tempDataMap.get(activityMaxPlayersId) ?? '0');
 		if (isNaN(activityMaxPlayers) || activityMaxPlayers < 1 || activityMaxPlayers > 99) {
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.ChannelMessageWithSource,

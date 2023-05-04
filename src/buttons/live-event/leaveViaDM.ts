@@ -15,7 +15,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		const [evtGuildId, evtChannelId, evtMessageId] = (interaction.data.customId.replaceAll(pathIdxEnder, '').split(idSeparator)[1] || '').split(pathIdxSeparator).map((id) => BigInt(id || '0'));
 		const eventMessage = await bot.helpers.getMessage(evtChannelId, evtMessageId).catch((e: Error) => utils.commonLoggers.messageGetError('editActivity.ts', 'get eventMessage', e));
 
-		if (eventMessage && eventMessage.embeds[0]) {
+		if (eventMessage?.embeds[0]) {
 			// Remove user from event
 			removeMemberFromEvent(bot, interaction, eventMessage.embeds[0], evtMessageId, evtChannelId, interaction.user.id, evtGuildId, true);
 		} else {

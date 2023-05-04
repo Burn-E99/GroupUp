@@ -10,7 +10,6 @@ import {
 	DiscordEmbedField,
 	Interaction,
 	InteractionResponseTypes,
-	LT, log,
 	MessageComponentTypes,
 	OverwriteTypes,
 } from '../../deps.ts';
@@ -110,7 +109,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				name: 'Editing/Deleting your event:',
 				value: 'To edit or delete your event, simply click on the ✏️ or 🗑️ buttons respectively.',
 			}];
-			const sendMessagePermSting = '`SEND_MESSAGES`\n`VIEW_CHANNEL`\n`EMBED_LINKS`'
+			const sendMessagePermSting = '`SEND_MESSAGES`\n`VIEW_CHANNEL`\n`EMBED_LINKS`';
 			const permissionFields: Array<DiscordEmbedField> = [
 				{
 					name: `Please make sure ${config.name} has the following permissions for the current channel:`,
@@ -258,7 +257,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 			// Retrofit all old LFG posts that we found
 			oldLfgMsgs.forEach((oldEventId) => {
 				const oldEvent = messages.get(oldEventId);
-				if (oldEvent && oldEvent.embeds[0].fields && oldEvent.embeds[0].footer) {
+				if (oldEvent?.embeds[0].fields && oldEvent.embeds[0].footer) {
 					const eventMembers = [...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.JoinedMembers].value), ...getLfgMembers(oldEvent.embeds[0].fields[LfgEmbedIndexes.AlternateMembers].value)];
 					const eventDateTime = new Date(parseInt((oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('tz#')[1] || ' ').slice(0, -1)));
 					if (!isNaN(eventDateTime.getTime())) {
@@ -339,10 +338,12 @@ The Discord Slash Command system will ensure you provide all the required detail
 			} else {
 				// Clean up DB and map
 				lfgChannelSettings.delete(lfgChannelSettingKey);
-				await dbClient.execute('DELETE FROM guild_settings WHERE guildId = ? AND lfgChannelId = ?', [interaction.guildId, interaction.channelId]).catch((e) => utils.commonLoggers.dbError('setup.ts', 'delete guild/lfgChannel', e));
+				await dbClient.execute('DELETE FROM guild_settings WHERE guildId = ? AND lfgChannelId = ?', [interaction.guildId, interaction.channelId]).catch((e) =>
+					utils.commonLoggers.dbError('setup.ts', 'delete guild/lfgChannel', e)
+				);
 
 				if (introMsg) {
-					bot.helpers.deleteMessage(interaction.channelId, introMsg.id, 'embed missing').catch((e) => utils.commonLoggers.messageDeleteError('setup.ts', 'embed missing cleanup', e))
+					bot.helpers.deleteMessage(interaction.channelId, introMsg.id, 'embed missing').catch((e) => utils.commonLoggers.messageDeleteError('setup.ts', 'embed missing cleanup', e));
 				}
 
 				// Could not send initial message

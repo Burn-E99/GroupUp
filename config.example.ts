@@ -1,6 +1,6 @@
 export const config = {
 	'name': 'Group Up', // Name of the bot
-	'version': '1.0.0', // Version of the bot
+	'version': '1.0.1', // Version of the bot
 	'token': 'the_bot_token', // Discord API Token for this bot
 	'localToken': 'local_testing_token', // Discord API Token for a secondary OPTIONAL testing bot, THIS MUST BE DIFFERENT FROM "token"
 	'prefix': '/', // Prefix for all commands
