@@ -206,7 +206,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 				await bot.helpers.editChannelPermissionOverrides(interaction.channelId, {
 					id: managerRoleId,
 					type: OverwriteTypes.Role,
-					allow: ['SEND_MESSAGES'],
+					allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
 				}).catch((e: Error) => {
 					utils.commonLoggers.channelUpdateError('setup.ts', 'manager-allow', e);
 					mgrRoleErrorOut = true;
@@ -217,6 +217,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 			!mgrRoleErrorOut && await bot.helpers.editChannelPermissionOverrides(interaction.channelId, {
 				id: interaction.guildId,
 				type: OverwriteTypes.Role,
+				allow: ['VIEW_CHANNEL'],
 				deny: ['SEND_MESSAGES'],
 			}).catch((e: Error) => {
 				utils.commonLoggers.channelUpdateError('setup.ts', 'everyone-deny', e);
