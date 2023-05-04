@@ -112,6 +112,10 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			}];
 			const permissionFields: Array<DiscordEmbedField> = [
 				{
+					name: `Please make sure ${config.name} has the following permissions for the current channel:`,
+					value: '`SEND_MESSAGES`\n`VIEW_CHANNEL`\n`EMBED_LINKS`',
+				},
+				{
 					name: `Please make sure ${config.name} has the following permissions:`,
 					value: '`MANAGE_GUILD`\n`MANAGE_CHANNELS`\n`MANAGE_ROLES`\n`MANAGE_MESSAGES`\n\nThe only permission that is required after setup completes is `MANAGE_MESSAGES`.',
 				},
@@ -225,26 +229,6 @@ The Discord Slash Command system will ensure you provide all the required detail
 				mgrRoleErrorOut = true;
 			});
 
-			const guildRoles = await bot.helpers.getRoles(interaction.guildId);
-			let botRoleId = 0n
-			guildRoles.some(role => {
-				if (role.botId === botId) {
-					botRoleId = role.id;
-					return true;
-				}
-				return false;
-			})
-
-			// Set permissions for self, skip if we already failed to set roles
-			!mgrRoleErrorOut && await bot.helpers.editChannelPermissionOverrides(interaction.channelId, {
-				id: botRoleId,
-				type: OverwriteTypes.Role,
-				allow: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-			}).catch((e: Error) => {
-				utils.commonLoggers.channelUpdateError('setup.ts', 'self-allow', e);
-				mgrRoleErrorOut = true;
-			});
-
 			if (mgrRoleErrorOut) {
 				// Cannot update role overrides on channel, error out
 				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
@@ -347,7 +331,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 				}],
 			}).catch((e: Error) => utils.commonLoggers.messageSendError('setup.ts', 'init-msg', e));
 
-			if (introMsg) {
+			if (introMsg?.embeds[0].title) {
 				bot.helpers.pinMessage(interaction.channelId, introMsg.id).catch((e: Error) => utils.commonLoggers.messageSendError('setup.ts', 'pin-init-msg', e));
 				// Complete the interaction
 				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
@@ -362,6 +346,14 @@ The Discord Slash Command system will ensure you provide all the required detail
 					},
 				}).catch((e: Error) => utils.commonLoggers.interactionSendError('setup.ts', interaction, e));
 			} else {
+				// Clean up DB and map
+				lfgChannelSettings.delete(lfgChannelSettingKey);
+				await dbClient.execute('DELETE FROM guild_settings WHERE guildId = ? AND lfgChannelId = ?', [interaction.guildId, interaction.channelId]).catch((e) => utils.commonLoggers.dbError('setup.ts', 'delete guild/lfgChannel', e));
+
+				if (introMsg) {
+					bot.helpers.deleteMessage(interaction.channelId, introMsg.id, 'embed missing').catch((e) => utils.commonLoggers.messageDeleteError('setup.ts', 'embed missing cleanup', e))
+				}
+
 				// Could not send initial message
 				bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 					type: InteractionResponseTypes.ChannelMessageWithSource,
