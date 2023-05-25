@@ -47,6 +47,10 @@ export const Activities: Array<Activity> = [
 				name: 'Dungeons',
 				options: [
 					{
+						name: 'Ghosts of the Deep',
+						maxMembers: 3,
+					},
+					{
 						name: 'Spire of the Watcher',
 						maxMembers: 3,
 					},
@@ -145,8 +149,16 @@ export const Activities: Array<Activity> = [
 				],
 			},
 			{
-				name: 'Miscellaneous',
+				name: 'Miscellaneous/Seasonal',
 				options: [
+					{
+						name: 'Fishing',
+						maxMembers: 3,
+					},
+					{
+						name: 'Deep Dive',
+						maxMembers: 3,
+					},
 					{
 						name: 'Defiant Battlegrounds',
 						maxMembers: 3,
