@@ -160,6 +160,10 @@ export const Activities: Array<Activity> = [
 						maxMembers: 3,
 					},
 					{
+						name: 'Salvage',
+						maxMembers: 6,
+					},
+					{
 						name: 'Defiant Battlegrounds',
 						maxMembers: 3,
 					},
