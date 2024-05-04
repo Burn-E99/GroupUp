@@ -14,6 +14,10 @@ export const Activities: Array<Activity> = [
 				name: 'Raids',
 				options: [
 					{
+						name: 'Crota\'s End',
+						maxMembers: 6,
+					},
+					{
 						name: 'Root of Nightmares',
 						maxMembers: 6,
 					},
@@ -46,6 +50,10 @@ export const Activities: Array<Activity> = [
 			{
 				name: 'Dungeons',
 				options: [
+					{
+						name: 'Warlord\'s Ruin',
+						maxMembers: 3,
+					},
 					{
 						name: 'Ghosts of the Deep',
 						maxMembers: 3,
