@@ -1,5 +1,6 @@
 import { Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { dateTimeFields, idSeparator, LfgEmbedIndexes, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { monthsShort } from '../event-creation/dateTimeUtils.ts';
@@ -15,7 +16,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 
 		const [evtChannelId, evtMessageId] = (interaction.data.customId.replaceAll(pathIdxEnder, '').split(idSeparator)[1] || '').split(pathIdxSeparator).map((id) => BigInt(id || '0'));
 		const eventMessage = await bot.helpers.getMessage(evtChannelId, evtMessageId).catch((e: Error) => utils.commonLoggers.messageGetError('editDateTime.ts', 'get eventMessage', e));
-		let rawEventDateTime = eventMessage?.embeds[0].fields ? eventMessage.embeds[0].fields[LfgEmbedIndexes.StartTime].value.trim().split('\n')[0].split(' ') : [];
+		const rawEventDateTime = eventMessage?.embeds[0].fields ? eventMessage.embeds[0].fields[LfgEmbedIndexes.StartTime].value.trim().split('\n')[0].split(' ') : [];
 		const monthIdx = rawEventDateTime.findIndex((item) => monthsShort.includes(item.toUpperCase()));
 		const prefillTime = rawEventDateTime.slice(0, monthIdx - 1).join(' ').trim();
 		const prefillTimeZone = rawEventDateTime[monthIdx - 1].trim();

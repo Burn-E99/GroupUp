@@ -1,5 +1,6 @@
 import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../../db/common.ts';
 import { failColor, infoColor1, infoColor2, safelyDismissMsg, sendDirectMessage, somethingWentWrong, successColor } from '../../commandUtils.ts';
 import { generateMemberList, idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import utils from '../../utils.ts';

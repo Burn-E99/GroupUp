@@ -9,7 +9,8 @@ import utils from '../../utils.ts';
 import { customId as createCustomActivityBtnId } from './step1a-openCustomModal.ts';
 import { customId as finalizeEventBtnId } from './step2-finalize.ts';
 import { monthsShort } from './dateTimeUtils.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import { createEventSlashName } from '../../commands/slashCommandNames.ts';
 
 export const customId = 'gameSel';
@@ -51,7 +52,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			let prefillDescription = '';
 			if (interaction.message?.embeds[0].fields && interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].name === lfgStartTimeName) {
 				if (interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value !== invalidDateTimeStr) {
-					let rawEventDateTime = interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('\n')[0].split(' ');
+					const rawEventDateTime = interaction.message.embeds[0].fields[LfgEmbedIndexes.StartTime].value.split('\n')[0].split(' ');
 					const monthIdx = rawEventDateTime.findIndex((item) => monthsShort.includes(item.toUpperCase()));
 					prefillTime = rawEventDateTime.slice(0, monthIdx - 1).join(' ').trim();
 					prefillTimeZone = (rawEventDateTime[monthIdx - 1] || '').trim();

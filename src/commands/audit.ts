@@ -1,7 +1,8 @@
 import config from '../../config.ts';
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, DiscordEmbedField, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { infoColor2, isLFGChannel, somethingWentWrong } from '../commandUtils.ts';
-import { dbClient, queries } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { queries } from '../db/common.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { auditSlashName } from './slashCommandNames.ts';
@@ -39,7 +40,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		dbClient.execute(queries.callIncCnt('cmd-audit')).catch((e) => utils.commonLoggers.dbError('audit.ts@inc', 'call sproc INC_CNT on', e));
 		const auditName = interaction.data.options[0].name;
 		switch (auditName) {
-			case auditDbName:
+			case auditDbName: {
 				// Get DB statistics
 				const auditQuery = await dbClient.query(`SELECT * FROM db_size;`).catch((e) => utils.commonLoggers.dbError('audit.ts@dbSize', 'query', e));
 
@@ -71,6 +72,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 					},
 				).catch((e: Error) => utils.commonLoggers.interactionSendError('audit.ts@dbSize', interaction, e));
 				break;
+			}
 			case auditCustomActivities:
 			case auditGuildName:
 			default:

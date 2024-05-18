@@ -3,7 +3,8 @@ import { dmTestMessage, safelyDismissMsg, sendDirectMessage, somethingWentWrong,
 import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { deleteTokenEarly } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import { generateLFGButtons } from '../event-creation/utils.ts';
 
 export const customId = 'toggleWLStatus';

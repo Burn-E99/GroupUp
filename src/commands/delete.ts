@@ -1,7 +1,8 @@
 import config from '../../config.ts';
 import { ApplicationCommandFlags, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { failColor, safelyDismissMsg, somethingWentWrong, successColor } from '../commandUtils.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../db/common.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { deleteSlashName, setupSlashName } from './slashCommandNames.ts';

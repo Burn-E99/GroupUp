@@ -1,5 +1,6 @@
 import { Bot, Interaction, InteractionResponseTypes } from '../../../deps.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import { descriptionTextField, idSeparator, LfgEmbedIndexes, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import utils from '../../utils.ts';

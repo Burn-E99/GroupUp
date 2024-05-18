@@ -4,7 +4,8 @@ import { generateMemberList, idSeparator, LfgEmbedIndexes, pathIdxEnder, pathIdx
 import { deleteTokenEarly } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
 import config from '../../../config.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../../db/common.ts';
 import { getGuildName } from './utils.ts';
 
 export const customId = 'updateEvent';

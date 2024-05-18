@@ -3,7 +3,8 @@ import { generateLFGButtons } from './utils.ts';
 import { idSeparator, LfgEmbedIndexes } from '../eventUtils.ts';
 import { deleteTokenEarly } from '../tokenCleanup.ts';
 import { dmTestMessage, safelyDismissMsg, sendDirectMessage, somethingWentWrong, warnColor } from '../../commandUtils.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import utils from '../../utils.ts';
 
 export const customId = 'createEvent';

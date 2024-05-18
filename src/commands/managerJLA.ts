@@ -1,7 +1,8 @@
 import { ApplicationCommandFlags, ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { alternateMemberToEvent, getGuildName, joinMemberToEvent, removeMemberFromEvent } from '../buttons/live-event/utils.ts';
 import { generateMemberList } from '../buttons/eventUtils.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../db/common.ts';
 import { infoColor2, safelyDismissMsg, sendDirectMessage, somethingWentWrong, stopThat, warnColor } from '../commandUtils.ts';
 import { CommandDetails, LFGMember } from '../types/commandTypes.ts';
 import config from '../../config.ts';

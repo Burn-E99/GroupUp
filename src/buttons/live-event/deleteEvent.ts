@@ -1,5 +1,6 @@
 import { Bot, Interaction, InteractionResponseTypes, MessageComponentTypes, TextStyles } from '../../../deps.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../../db/common.ts';
 import { somethingWentWrong, stopThat } from '../../commandUtils.ts';
 import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { confirmedCustomId, confirmStr, customId as deleteConfirmedCustomId } from './deleteConfirmed.ts';
@@ -7,7 +8,7 @@ import utils from '../../utils.ts';
 
 export const customId = 'deleteEvent';
 
-const execute = async (bot: Bot, interaction: Interaction) => {
+const execute = (bot: Bot, interaction: Interaction) => {
 	if (interaction.data?.customId && interaction.member && interaction.member.user && interaction.channelId && interaction.guildId && interaction.message && interaction.message.embeds[0]) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-delEvent')).catch((e) => utils.commonLoggers.dbError('deleteEvent.ts', 'call sproc INC_CNT on', e));

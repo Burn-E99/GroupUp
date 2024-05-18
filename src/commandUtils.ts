@@ -1,6 +1,6 @@
 import { ApplicationCommandFlags, Bot, CreateMessage, Embed, Interaction, InteractionResponseTypes } from '../deps.ts';
 import config from '../config.ts';
-import { generateGuildSettingKey, lfgChannelSettings } from './db.ts';
+import { generateGuildSettingKey, lfgChannelSettings } from './db/common.ts';
 import utils from './utils.ts';
 import { helpSlashName, infoSlashName, reportSlashName } from './commands/slashCommandNames.ts';
 
@@ -27,7 +27,7 @@ export const isLFGChannel = (guildId: bigint, channelId: bigint) => {
 };
 
 // Tell user to try again or report issue
-export const somethingWentWrong = async (bot: Bot, interaction: Interaction, errorCode: string) =>
+export const somethingWentWrong = (bot: Bot, interaction: Interaction, errorCode: string) =>
 	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 		type: InteractionResponseTypes.ChannelMessageWithSource,
 		data: {
@@ -45,7 +45,7 @@ export const somethingWentWrong = async (bot: Bot, interaction: Interaction, err
 	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts@somethingWentWrong', interaction, e));
 
 // Smack the user for trying to modify an event that isn't theirs
-export const stopThat = async (bot: Bot, interaction: Interaction, stopWhat: string) =>
+export const stopThat = (bot: Bot, interaction: Interaction, stopWhat: string) =>
 	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 		type: InteractionResponseTypes.ChannelMessageWithSource,
 		data: {

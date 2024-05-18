@@ -1,7 +1,8 @@
 import config from '../../config.ts';
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes, Bot, Interaction, InteractionResponseTypes } from '../../deps.ts';
 import { infoColor2, isLFGChannel, somethingWentWrong, successColor } from '../commandUtils.ts';
-import { dbClient, queries } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { queries } from '../db/common.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { reportSlashName } from './slashCommandNames.ts';

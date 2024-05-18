@@ -18,7 +18,8 @@ import {
 import { addTokenToMap, deleteTokenEarly, generateMapId, selfDestructMessage, tokenMap } from '../tokenCleanup.ts';
 import utils from '../../utils.ts';
 import config from '../../../config.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import { customId as editActivityCustomCustomId } from './editActivity-custom.ts';
 import { applyEditButtons, applyEditMessage, getEventMemberCount, getLfgMembers } from './utils.ts';
 import { LFGMember } from '../../types/commandTypes.ts';

@@ -6,7 +6,8 @@ import { addTokenToMap, deleteTokenEarly } from '../tokenCleanup.ts';
 import { Activities, Activity } from './activities.ts';
 import { getDateFromRawInput } from './dateTimeUtils.ts';
 import utils from '../../utils.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 
 export const customId = 'finalize';
 

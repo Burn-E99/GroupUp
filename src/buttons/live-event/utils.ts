@@ -6,7 +6,8 @@ import { selfDestructMessage } from '../tokenCleanup.ts';
 import { approveStr, customId as joinRequestCustomId, denyStr } from './joinRequest.ts';
 import { customId as updateEventCustomId } from './updateEvent.ts';
 import { customId as leaveViaDMCustomId } from './leaveViaDM.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import utils from '../../utils.ts';
 
 // Join status map to prevent spamming the system
@@ -128,7 +129,7 @@ ${safelyDismissMsg}`,
 };
 
 // Generic no response response
-const noEdit = async (bot: Bot, interaction: Interaction, loudAcknowledge: boolean) => {
+const noEdit = (bot: Bot, interaction: Interaction, loudAcknowledge: boolean) => {
 	if (loudAcknowledge) {
 		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 			type: InteractionResponseTypes.ChannelMessageWithSource,

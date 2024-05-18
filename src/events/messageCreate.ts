@@ -2,9 +2,10 @@ import config from '../../config.ts';
 import utils from '../utils.ts';
 import { Bot, botId, Message } from '../../deps.ts';
 import { infoEmbed } from '../commandUtils.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../db/common.ts';
 
-export const messageCreate = async (bot: Bot, message: Message) => {
+export const messageCreate = (bot: Bot, message: Message) => {
 	// Ignore self
 	if (botId === message.authorId) return;
 

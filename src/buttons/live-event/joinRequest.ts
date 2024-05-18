@@ -2,7 +2,8 @@ import { Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageCompon
 import { sendDirectMessage, somethingWentWrong, successColor, warnColor } from '../../commandUtils.ts';
 import { generateMapId, getLfgMembers, joinMemberToEvent, joinRequestMap, joinRequestResponseButtons, JoinRequestStatus } from './utils.ts';
 import { alternateEventBtnStr, idSeparator } from '../eventUtils.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import { customId as alternateRequestCustomId } from './alternateRequest.ts';
 import utils from '../../utils.ts';
 

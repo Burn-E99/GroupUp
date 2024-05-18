@@ -1,7 +1,8 @@
 import config from '../../config.ts';
 import { Bot, log, LT } from '../../deps.ts';
 import { warnColor } from '../commandUtils.ts';
-import { dbClient, lfgChannelSettings } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { lfgChannelSettings } from '../db/common.ts';
 import utils from '../utils.ts';
 
 export const guildDelete = async (bot: Bot, guildId: bigint) => {

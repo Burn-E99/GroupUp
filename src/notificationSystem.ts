@@ -4,7 +4,8 @@ import { LfgEmbedIndexes } from './buttons/eventUtils.ts';
 import { getEventMemberCount, getGuildName, getLfgMembers } from './buttons/live-event/utils.ts';
 import { failColor, infoColor1, sendDirectMessage, warnColor } from './commandUtils.ts';
 import { reportSlashName } from './commands/slashCommandNames.ts';
-import { dbClient, queries } from './db.ts';
+import { dbClient } from './db/client.ts';
+import { queries } from './db/common.ts';
 import { ActiveEvent } from './types/commandTypes.ts';
 import utils from './utils.ts';
 

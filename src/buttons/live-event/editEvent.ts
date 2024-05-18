@@ -1,5 +1,6 @@
 import { ActionRow, ApplicationCommandFlags, Bot, ButtonStyles, Interaction, InteractionResponseTypes, MessageComponentTypes } from '../../../deps.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../../db/common.ts';
 import { infoColor1, somethingWentWrong, stopThat } from '../../commandUtils.ts';
 import { idSeparator, pathIdxEnder, pathIdxSeparator } from '../eventUtils.ts';
 import { addTokenToMap, selfDestructMessage } from '../tokenCleanup.ts';
@@ -11,7 +12,7 @@ import { customId as toggleWLStatusCustomId } from './toggleWLStatus.ts';
 
 export const customId = 'editEvent';
 
-const execute = async (bot: Bot, interaction: Interaction) => {
+const execute = (bot: Bot, interaction: Interaction) => {
 	if (
 		interaction.data?.customId && interaction.member && interaction.channelId && interaction.guildId && interaction.message && interaction.message.components &&
 		interaction.message.components[0].components

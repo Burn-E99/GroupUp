@@ -1,5 +1,6 @@
 import { Bot, Interaction } from '../../../deps.ts';
-import { dbClient, queries } from '../../db.ts';
+import { dbClient } from '../../db/client.ts';
+import { queries } from '../../db/common.ts';
 import { somethingWentWrong } from '../../commandUtils.ts';
 import utils from '../../utils.ts';
 import { alternateMemberToEvent } from './utils.ts';

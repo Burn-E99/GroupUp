@@ -4,7 +4,8 @@ import { LOCALMODE } from '../../flags.ts';
 import { getRandomStatus, successColor } from '../commandUtils.ts';
 import { ActiveEvent } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
-import { dbClient, queries } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { queries } from '../db/common.ts';
 import { deleteEvent, handleFailures, lockEvent, notifyEventMembers, tenMinutes } from '../notificationSystem.ts';
 import { updateBotListStatistics } from '../botListPoster.ts';
 
@@ -27,7 +28,7 @@ export const ready = (rawBot: Bot) => {
 
 	// Interval to rotate the status text every 30 seconds to show off more commands
 	if (botStatusIntervalId) clearInterval(botStatusIntervalId);
-	botStatusIntervalId = setInterval(async () => {
+	botStatusIntervalId = setInterval(() => {
 		log(LT.LOG, 'Changing bot status');
 		bot.helpers.editBotStatus({
 			activities: [{

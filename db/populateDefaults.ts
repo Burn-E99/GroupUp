@@ -1,5 +1,5 @@
 // This file will populate the tables with default values
-import { dbClient } from '../src/db.ts';
+import { dbClient } from '../src/db/client.ts';
 
 console.log('Attempting to insert default actions into command_cnt');
 const actions = [

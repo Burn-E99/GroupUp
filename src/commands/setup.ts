@@ -14,7 +14,8 @@ import {
 	OverwriteTypes,
 } from '../../deps.ts';
 import { failColor, infoColor2, safelyDismissMsg, somethingWentWrong, successColor } from '../commandUtils.ts';
-import { dbClient, generateGuildSettingKey, lfgChannelSettings, queries } from '../db.ts';
+import { dbClient } from '../db/client.ts';
+import { generateGuildSettingKey, lfgChannelSettings, queries } from '../db/common.ts';
 import { CommandDetails } from '../types/commandTypes.ts';
 import utils from '../utils.ts';
 import { customId as gameSelId } from '../buttons/event-creation/step1-gameSelection.ts';
