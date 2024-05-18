@@ -11,7 +11,7 @@ I am hosting this bot for public use and you may find its invite link below.  If
 
 After inviting the bot, if you want to create a dedicated event channel, simply run `/setup` in the desired channel and follow the on-screen prompts.  If you don't want a dedicated channel, just run `/create-event` anywhere.
 
-Note: The `MANAGE_GUILD`, `MANAGE_CHANNELS`, and `MANAGE_ROLES` permissions are only necessary for the `/setup` command.  Once you create all of the event channel that you need, you may remove these permissions from the bot without causing any issues.
+Note: The `MANAGE_GUILD`, `MANAGE_CHANNELS`, and `MANAGE_ROLES` permissions are only necessary for the `/setup` command.  Once you create all of the event channels that you need, you may remove these permissions from the bot without causing any issues.
 
 [Bot Invite Link](https://discord.com/api/oauth2/authorize?client_id=847256159123013722&permissions=268527664&scope=bot%20applications.commands)
 

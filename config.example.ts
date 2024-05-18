@@ -12,7 +12,7 @@ export const config = {
 		'password': '', // Password for the account, user account may need to be authenticated with the "Standard" Authentication Type if this does not work out of the box
 		'name': '', // Name of the database Schema to use for the bot
 	},
-	'link': { // Links to various sites
+	'links': { // Links to various sites
 		'sourceCode': 'https://github.com/Burn-E99/GroupUp', // Link to the repository
 		'supportServer': '', // Invite link to the Discord support server
 		'addToCalendar': '', // Link to where the icsGenerator is hosted

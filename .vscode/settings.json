@@ -13,7 +13,26 @@
         "https://deno.land": true
     },
     "cSpell.words": [
+        "DEVMODE",
+        "LOCALMODE",
         "sproc",
         "USTZ"
-    ]
+    ],
+    "macros.list": {
+        "updateDbImport": [
+            {"command": "type", "args": {"text": "\nimport dbc"}},
+            {"command": "$delay", "args": {"delay": 100}},
+            "acceptSelectedSuggestion",
+            "cursorDown",
+            "deleteWordLeft",
+            "deleteRight",
+            "deleteRight",
+            "cursorEnd",
+            "cursorWordLeft",
+            "cursorWordLeft",
+            "cursorLeft",
+            {"command": "type", "args": {"text": "/common"}},
+            "workbench.action.files.save"
+        ]
+    }
 }
