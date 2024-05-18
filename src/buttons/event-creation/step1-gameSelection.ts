@@ -111,7 +111,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:ping', interaction, e));
 
 			// Update the original game selector
-			await bot.helpers.editOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token || '', {
+			await bot.helpers.editOriginalInteractionResponse(tokenMap.get(generateMapId(interaction.guildId, interaction.channelId, interaction.member.id))?.token ?? '', {
 				components: selectMenus,
 			}).catch((e: Error) => utils.commonLoggers.interactionSendError('step1-gameSelection.ts:edit', interaction, e));
 		} else {

@@ -12,7 +12,7 @@ import { queries } from '../../db/common.ts';
 export const customId = 'finalize';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction.data?.components?.length && interaction.guildId && interaction.channelId && interaction.member && interaction.member.user) {
+	if (interaction.data?.components?.length && interaction.guildId && interaction.channelId && interaction?.member?.user) {
 		// User selected activity and has filled out fields, delete the selectMenus
 		await deleteTokenEarly(bot, interaction, interaction.guildId, interaction.channelId, interaction.member.id);
 

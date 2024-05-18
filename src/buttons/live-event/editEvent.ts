@@ -14,8 +14,7 @@ export const customId = 'editEvent';
 
 const execute = (bot: Bot, interaction: Interaction) => {
 	if (
-		interaction.data?.customId && interaction.member && interaction.channelId && interaction.guildId && interaction.message && interaction.message.components &&
-		interaction.message.components[0].components
+		interaction.data?.customId && interaction.member && interaction.channelId && interaction.guildId && interaction?.message?.components?.[0].components
 	) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-editEvent')).catch((e) => utils.commonLoggers.dbError('editEvent.ts', 'call sproc INC_CNT on', e));

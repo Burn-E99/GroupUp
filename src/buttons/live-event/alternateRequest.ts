@@ -8,7 +8,7 @@ import { alternateMemberToEvent } from './utils.ts';
 export const customId = 'alternateRequest';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction.data?.customId && interaction.user && interaction.message && interaction.message.embeds[0] && interaction.message.embeds[0].description) {
+	if (interaction.data?.customId && interaction.user && interaction?.message?.embeds?.[0]?.description) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-joinReqAlt')).catch((e) => utils.commonLoggers.dbError('alternateRequest.ts', 'call sproc INC_CNT on', e));
 

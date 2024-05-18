@@ -11,7 +11,7 @@ export const customId = 'createEvent';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (
-		interaction.data?.customId && interaction.member && interaction.guildId && interaction.channelId && interaction.message && interaction.message.embeds[0] && interaction.message.embeds[0].fields
+		interaction.data?.customId && interaction.member && interaction.guildId && interaction.channelId && interaction?.message?.embeds?.[0]?.fields
 	) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt(interaction.data.customId.includes(idSeparator) ? 'btn-createWLEvt' : 'btn-createEvt')).catch((e) =>

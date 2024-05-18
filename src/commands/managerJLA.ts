@@ -45,7 +45,7 @@ const details: CommandDetails = {
 };
 
 const execute = async (bot: Bot, interaction: Interaction) => {
-	if (interaction.data?.options?.[0].options && interaction.channelId && interaction.guildId && interaction.member && interaction.member.user) {
+	if (interaction.data?.options?.[0].options && interaction.channelId && interaction.guildId && interaction?.member?.user) {
 		// Get action and log to db
 		const actionName = interaction.data.options[0].name;
 		dbClient.execute(queries.callIncCnt(`cmd-${actionName}`)).catch((e) => utils.commonLoggers.dbError('managerJLA.ts', 'call sproc INC_CNT on', e));

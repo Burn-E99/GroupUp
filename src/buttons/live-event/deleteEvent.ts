@@ -9,7 +9,7 @@ import utils from '../../utils.ts';
 export const customId = 'deleteEvent';
 
 const execute = (bot: Bot, interaction: Interaction) => {
-	if (interaction.data?.customId && interaction.member && interaction.member.user && interaction.channelId && interaction.guildId && interaction.message && interaction.message.embeds[0]) {
+	if (interaction.data?.customId && interaction?.member?.user && interaction.channelId && interaction.guildId && interaction?.message?.embeds?.[0]) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-delEvent')).catch((e) => utils.commonLoggers.dbError('deleteEvent.ts', 'call sproc INC_CNT on', e));
 

@@ -27,7 +27,7 @@ import { customId as editEventCustomId } from '../live-event/editEvent.ts';
 
 export const getNestedActivity = (idxPath: Array<number>, activities: Array<Activity>): Array<Activity> => {
 	const nextIdx = idxPath[0];
-	if (idxPath.length && activities[nextIdx] && activities[nextIdx].options) {
+	if (idxPath.length && activities[nextIdx]?.options) {
 		idxPath.shift();
 		return getNestedActivity(idxPath, activities[nextIdx].options || []);
 	} else {
@@ -160,7 +160,7 @@ export const createLFGPost = (
 					name: 'Description:',
 					value: eventDescription,
 				}, {
-					name: generateMemberTitle(memberList, activity.maxMembers || 0),
+					name: generateMemberTitle(memberList, activity.maxMembers ?? 0),
 					value: generateMemberList(memberList),
 					inline: true,
 				}, {

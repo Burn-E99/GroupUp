@@ -129,9 +129,9 @@ ${safelyDismissMsg}`,
 };
 
 // Generic no response response
-const noEdit = (bot: Bot, interaction: Interaction, loudAcknowledge: boolean) => {
+const noEdit = async (bot: Bot, interaction: Interaction, loudAcknowledge: boolean) => {
 	if (loudAcknowledge) {
-		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+		await bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 			type: InteractionResponseTypes.ChannelMessageWithSource,
 			data: {
 				flags: ApplicationCommandFlags.Ephemeral,
@@ -145,7 +145,7 @@ ${safelyDismissMsg}`,
 			},
 		}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
 	} else {
-		bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
+		await bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 			type: InteractionResponseTypes.DeferredUpdateMessage,
 		}).catch((e: Error) => utils.commonLoggers.interactionSendError('utils.ts', interaction, e));
 	}

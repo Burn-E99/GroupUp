@@ -8,7 +8,7 @@ import { removeMemberFromEvent } from './utils.ts';
 export const customId = 'leaveEvent';
 
 const execute = (bot: Bot, interaction: Interaction) => {
-	if (interaction.data?.customId && interaction.member && interaction.channelId && interaction.guildId && interaction.message && interaction.message.embeds[0]) {
+	if (interaction.data?.customId && interaction.member && interaction.channelId && interaction.guildId && interaction?.message?.embeds?.[0]) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt('btn-leaveEvent')).catch((e) => utils.commonLoggers.dbError('leaveEvent.ts', 'call sproc INC_CNT on', e));
 

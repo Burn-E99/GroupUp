@@ -13,8 +13,7 @@ export const denyStr = 'denied';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (
-		interaction.data?.customId && interaction.user && interaction.channelId && interaction.message && interaction.message.embeds[0] && interaction.message.embeds[0].fields &&
-		interaction.message.embeds[0].description
+		interaction.data?.customId && interaction.user && interaction.channelId && interaction?.message?.embeds?.[0]?.fields && interaction?.message?.embeds?.[0]?.description
 	) {
 		const memberRequesting = getLfgMembers(interaction.message.embeds[0].fields[0].value || '')[0];
 		const approved = interaction.data.customId.includes(approveStr);

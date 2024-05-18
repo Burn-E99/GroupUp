@@ -11,8 +11,7 @@ export const customId = 'joinEvent';
 
 const execute = async (bot: Bot, interaction: Interaction) => {
 	if (
-		interaction.data?.customId && interaction.member && interaction.member.user && interaction.channelId && interaction.guildId && interaction.message && interaction.message.embeds[0] &&
-		interaction.message.embeds[0].fields
+		interaction.data?.customId && interaction?.member?.user && interaction.channelId && interaction.guildId && interaction?.message?.embeds?.[0]?.fields
 	) {
 		// Light Telemetry
 		dbClient.execute(queries.callIncCnt(interaction.data.customId.includes(idSeparator) ? 'btn-joinWLEvent' : 'btn-joinEvent')).catch((e) =>
@@ -62,7 +61,7 @@ ${safelyDismissMsg}`,
 
 If this request is urgent, please speak with${urgentManagerStr}the owner of [this event](${messageUrl}), <@${ownerId}>, to resolve the issue.
 
-The status of your recent Join Request for [this event](${messageUrl}) is: \`${joinRequestMap.get(joinRequestKey)?.status || 'Failed to retrieve status'}\`
+The status of your recent Join Request for [this event](${messageUrl}) is: \`${joinRequestMap.get(joinRequestKey)?.status ?? 'Failed to retrieve status'}\`
 
 ${safelyDismissMsg}`,
 						}],

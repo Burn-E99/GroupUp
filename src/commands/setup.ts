@@ -241,7 +241,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 			const msgsToDel: Array<bigint> = [];
 			const oldLfgMsgs: Array<bigint> = [];
 			messages.forEach((msg) => {
-				if (msg.authorId === botId && msg.embeds.length && msg.embeds[0].footer && msg.embeds[0].footer.text.includes('Created by:')) {
+				if (msg.authorId === botId && msg.embeds.length && msg.embeds[0].footer?.text.includes('Created by:')) {
 					oldLfgMsgs.push(msg.id);
 				} else {
 					msgsToDel.push(msg.id);
@@ -266,7 +266,7 @@ The Discord Slash Command system will ensure you provide all the required detail
 						oldEvent.embeds[0].fields[LfgEmbedIndexes.StartTime].value = generateTimeFieldStr(eventDateTimeStr, eventDateTime);
 						oldEvent.embeds[0].footer.text = oldEvent.embeds[0].footer.text.split(' | ')[0];
 						const ownerName = oldEvent.embeds[0].footer.text.split(': ')[1];
-						const ownerId = eventMembers.find((member) => ownerName === member.name)?.id || 0n;
+						const ownerId = eventMembers.find((member) => ownerName === member.name)?.id ?? 0n;
 						oldEvent.embeds[0].footer.iconUrl = `${config.links.creatorIcon}#${ownerId}`;
 						bot.helpers.editMessage(oldEvent.channelId, oldEvent.id, {
 							content: '',
