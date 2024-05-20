@@ -1,3 +1,5 @@
+import { log, LT } from '../../../deps.ts';
+
 // Activity should either have maxMembers or options specified, NOT both
 export type Activity = {
 	name: string;
@@ -14,7 +16,7 @@ export const Activities: Array<Activity> = [
 				name: 'Raids',
 				options: [
 					{
-						name: 'Crota\'s End',
+						name: "Crota's End",
 						maxMembers: 6,
 					},
 					{
@@ -22,7 +24,7 @@ export const Activities: Array<Activity> = [
 						maxMembers: 6,
 					},
 					{
-						name: 'King\'s Fall',
+						name: "King's Fall",
 						maxMembers: 6,
 					},
 					{
@@ -51,7 +53,7 @@ export const Activities: Array<Activity> = [
 				name: 'Dungeons',
 				options: [
 					{
-						name: 'Warlord\'s Ruin',
+						name: "Warlord's Ruin",
 						maxMembers: 3,
 					},
 					{
@@ -241,3 +243,33 @@ export const Activities: Array<Activity> = [
 		],
 	},
 ];
+
+// Activities Verification, verifies fields are proper lengths and amount of activities will actually fit in Discord
+const actVerification = (currentAct: Activity, currentDepth = 0) => {
+	if (currentDepth > 4) {
+		log(LT.ERROR, `'${currentAct.name}' is too deep (${currentDepth} > 4)!`);
+	}
+	if (currentAct.name.length > 100) {
+		log(LT.ERROR, `'${currentAct.name}' is too long (${currentAct.name.length} > 100)!`);
+	}
+	if (currentAct.options && currentAct.maxMembers) {
+		log(LT.ERROR, `'${currentAct.name}' has both maxMembers and options specified (ONLY ONE ALLOWED)!`);
+	}
+	if (!currentAct.options && !currentAct.maxMembers) {
+		log(LT.ERROR, `'${currentAct.name}' is missing both maxMembers and options specified (ONE IS NEEDED)!`);
+	}
+	if (currentAct.options) {
+		if (currentAct.options.length > 25) {
+			log(LT.ERROR, `'${currentAct.name}' has too many options (${currentAct.options.length} > 25)!`);
+		}
+		for (const act of currentAct.options) {
+			actVerification(act, currentDepth + 1);
+		}
+	}
+};
+
+// Use a fake root activity to allow testing to occur simply
+actVerification({
+	name: 'root',
+	options: Activities,
+});
