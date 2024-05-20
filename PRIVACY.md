@@ -3,7 +3,7 @@
 ### Public Bot Information
 Publicly available versions of `Group Up#1305` (Discord ID: `847256159123013722`) (herein referred to as _The Bot_ or _Bot_) do not automatically track or collect user information via Discord.
 
-Upon inviting _The Bot_ to a user's guild, _The Bot_ sends the guild name, Discord Guild ID, and current count of guild members to Burn_E99#1062 (herein referred to as _The Developer_) via a private Discord Guild.  The guild name, Discord Guild ID, and current count of guild members are only used to roughly gage how popular _The Bot_ is and to determine if _The Bot_'s hosting solution needs to be improved.  These pieces of information will never be sold or shared with anyone.
+Upon inviting _The Bot_ to a user's guild, _The Bot_ sends the guild name, Discord Guild ID, and current count of guild members to `@burn_e99` (herein referred to as _The Developer_) via a private Discord Guild.  The guild name, Discord Guild ID, and current count of guild members are only used to roughly gage how popular _The Bot_ is and to determine if _The Bot_'s hosting solution needs to be improved.  These pieces of information will never be sold or shared with anyone.
 
 _The Bot_ reads every message that it is allowed to, meaning if _The Bot_ is allowed to see a channel in a guild, it reads every new message sent in said channel.  This is for the automated cleanup of designated Event Channels.
 
@@ -38,4 +38,4 @@ Due to the nature of open source code, _Rehosts_ may not use the same codebase t
 If you wish to remove all data that _The Bot_ has on your Guild, simply remove _The Bot_ from your Guild.  Upon removal, _The Bot_ deletes all data on Event Channel, all data on Events created in the Guild, and all Custom Activities created in the Guild.
 
 ## User Data Deletion
-If you would like to ensure that all of your submitted reports are removed from _The Bot_'s private development server, please contact _The Developer_ via Discord (by sending a direct message to `Burn_E99#1062`) or via email (<ean@milligan.dev>) with a message along the lines of `"Please remove all of my submitted reports from your development server."`.  Submitted reports are deleted from the server as they are processed, which happens roughly once a week, but this can be accelerated if requested.
+If you would like to ensure that all of your submitted reports are removed from _The Bot_'s private development server, please contact _The Developer_ via Discord (by sending a direct message to `@burn_e99`) or via email (<ean@milligan.dev>) with a message along the lines of `"Please remove all of my submitted reports from your development server."`.  Submitted reports are deleted from the server as they are processed, which happens roughly once a week, but this can be accelerated if requested.
