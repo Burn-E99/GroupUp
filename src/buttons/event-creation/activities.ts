@@ -154,6 +154,14 @@ export const Activities: Array<Activity> = [
 						name: '//node.ovrd.AVALON//',
 						maxMembers: 3,
 					},
+					{
+						name: 'Zero Hour',
+						maxMembers: 3,
+					},
+					{
+						name: 'Whisper',
+						maxMembers: 3,
+					},
 				],
 			},
 			{
