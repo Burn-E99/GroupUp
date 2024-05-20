@@ -138,7 +138,7 @@ export const createLFGPost = (
 		data: {
 			flags: ApplicationCommandFlags.Ephemeral,
 			content: eventInFuture
-				? `Please verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${
+				? `🛑🛑🛑 HEY! ONE MORE THING! 🛑🛑🛑\n\nPlease verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${
 					selfDestructMessage(new Date().getTime())
 				}`
 				: `You cannot create an event ${dateTimePastFutureStr}.  Please change the event's \`Date/Time\` to be ${dateTimeValidStr} with the \`${editEventDetailsBtnName}\` button below.`,
