@@ -1,3 +1,4 @@
+import config from '../../config.ts';
 import { ActionRow, MessageComponentTypes, TextStyles } from '../../deps.ts';
 import { LFGMember } from '../types/commandTypes.ts';
 import { isDSTActive } from './event-creation/dateTimeUtils.ts';
@@ -84,7 +85,7 @@ export const dateTimeFields = (prefillTime = '', prefillTimeZone = '', prefillDa
 		type: MessageComponentTypes.InputText,
 		customId: eventDateId,
 		label: 'Start Date:',
-		placeholder: 'Enter date as "MONTH/DAY/YEAR" or "Month Day, Year"',
+		placeholder: `Enter date as "${config.defaultDateFormat}" or "Month Day, Year"`,
 		style: TextStyles.Short,
 		minLength: 1,
 		maxLength: 20,
