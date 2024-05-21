@@ -134,8 +134,8 @@ const parseEventTimeZone = (preParsedEventTimeZone: string): [string, string] =>
 			addPlusSign = true;
 		}
 		// Determine if we need to prepend UTC/GMT, handle adding the + into the string
-		if (!preParsedEventTimeZone.startsWith('UTC') && preParsedEventTimeZone.startsWith('GMT')) {
-			preParsedEventTimeZone = `UTC${addPlusSign && '+'}${preParsedEventTimeZone}`;
+		if (!preParsedEventTimeZone.startsWith('UTC') || preParsedEventTimeZone.startsWith('GMT')) {
+			preParsedEventTimeZone = `UTC${addPlusSign ? '+' : ''}${preParsedEventTimeZone.startsWith('GMT') ? preParsedEventTimeZone.slice(3) : preParsedEventTimeZone}`;
 		} else if (addPlusSign) {
 			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, 3)}+${preParsedEventTimeZone.slice(3)}`;
 		}
