@@ -1,6 +1,7 @@
 import { CreateMessage, Interaction, log, LT, Message } from '../deps.ts';
 import { UrlIds } from './types/commandTypes.ts';
 
+// deno-lint-ignore no-explicit-any
 const jsonStringifyBig = (input: any) => {
 	return JSON.stringify(input, (_key, value) => typeof value === 'bigint' ? value.toString() + 'n' : value);
 };
