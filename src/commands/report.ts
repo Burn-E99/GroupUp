@@ -31,6 +31,9 @@ const execute = (bot: Bot, interaction: Interaction) => {
 				color: infoColor2,
 				title: 'USER REPORT:',
 				description: interaction.data.options[0].value as string,
+				footer: {
+					text: `${interaction.guildId}-${interaction.user.id}`,
+				},
 			}],
 		}).catch((e: Error) => utils.commonLoggers.interactionSendError('report.ts:28', interaction, e));
 		bot.helpers.sendInteractionResponse(
