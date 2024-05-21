@@ -164,6 +164,10 @@ export const Activities: Array<Activity> = [
 						name: 'The Whisper',
 						maxMembers: 3,
 					},
+					{
+						name: 'Presage',
+						maxMembers: 3,
+					},
 				],
 			},
 			{
