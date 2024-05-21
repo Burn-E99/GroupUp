@@ -161,7 +161,7 @@ export const Activities: Array<Activity> = [
 						maxMembers: 3,
 					},
 					{
-						name: 'Whisper',
+						name: 'The Whisper',
 						maxMembers: 3,
 					},
 				],
@@ -169,6 +169,31 @@ export const Activities: Array<Activity> = [
 			{
 				name: 'Miscellaneous/Seasonal',
 				options: [
+					{
+						name: 'Pantheon',
+						options: [
+							{
+								name: 'Atraks Sovereign (Week 1)',
+								maxMembers: 6,
+							},
+							{
+								name: 'Oryx Exalted (Week 2)',
+								maxMembers: 6,
+							},
+							{
+								name: 'Rhulk Indomitable (Week 3)',
+								maxMembers: 6,
+							},
+							{
+								name: 'Nezarec Sublime (Week 4)',
+								maxMembers: 6,
+							},
+						]
+					},
+					{
+						name: 'Onslaught',
+						maxMembers: 3,
+					},
 					{
 						name: 'Fishing',
 						maxMembers: 3,
