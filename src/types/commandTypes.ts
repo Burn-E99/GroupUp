@@ -1,4 +1,4 @@
-import { ApplicationCommandOption, ApplicationCommandTypes, PermissionStrings } from '../../deps.ts';
+import { ApplicationCommandOption, ApplicationCommandTypes, Bot, BotWithCache, Interaction, PermissionStrings } from '../../deps.ts';
 
 export type CommandDetails = {
 	name: string;
@@ -11,12 +11,12 @@ export type CommandDetails = {
 
 export type Command = {
 	details: CommandDetails;
-	execute: Function;
+	execute: ((bot: Bot, interaction: Interaction) => void) | ((bot: BotWithCache, interaction: Interaction) => void);
 };
 
 export type Button = {
 	customId: string;
-	execute: Function;
+	execute: ((bot: Bot, interaction: Interaction) => void) | ((bot: BotWithCache, interaction: Interaction) => void);
 };
 
 export type LfgChannelSetting = {

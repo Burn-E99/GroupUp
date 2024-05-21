@@ -188,7 +188,7 @@ export const Activities: Array<Activity> = [
 								name: 'Nezarec Sublime (Week 4)',
 								maxMembers: 6,
 							},
-						]
+						],
 					},
 					{
 						name: 'Onslaught',
