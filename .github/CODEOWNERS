@@ -1,6 +1,6 @@
 *	@burn-e99
 
-config.example.ts @davidopluslau
-README.md @davidopluslau
+# config.example.ts @davidopluslau
+# README.md @davidopluslau
 
-src/buttons/event-creation/activities.ts @davidopluslau
+# src/buttons/event-creation/activities.ts @davidopluslau
