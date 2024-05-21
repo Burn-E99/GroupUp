@@ -31,7 +31,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				type: InteractionResponseTypes.ChannelMessageWithSource,
 				data: {
 					flags: ApplicationCommandFlags.Ephemeral,
-					content: applyEditMessage(new Date().getTime()),
+					content: applyEditMessage(new Date().getTime(), ''),
 					embeds: [eventMessage.embeds[0]],
 					components: applyEditButtons(interaction.data.customId.split(idSeparator)[1] || ''),
 				},
