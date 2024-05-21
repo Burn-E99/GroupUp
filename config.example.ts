@@ -1,4 +1,4 @@
-export const config = {// !! NOTICE !! All fields below are required unless they are explicitly noted as OPTIONAL.  If a field is OPTIONAL, do not remove it from this file, just leave it at the default value
+export const config = { // !! NOTICE !! All fields below are required unless they are explicitly noted as OPTIONAL.  If a field is OPTIONAL, do not remove it from this file, just leave it at the default value
 	'name': 'Group Up', // Name of the bot
 	'version': '1.1.0', // Version of the bot
 	'token': 'the_bot_token', // Discord API Token for this bot
