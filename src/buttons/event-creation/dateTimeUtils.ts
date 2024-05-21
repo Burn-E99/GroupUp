@@ -1,6 +1,10 @@
 import config from '../../../config.ts';
 import {editEventDetailsBtnName} from './utils.ts';
 
+enum DateTimeFormats {
+	MMDDYYYY = 'MONTH/DAY/YEAR',
+	DDMMYYYY = 'DAY/MONTH/YEAR',
+}
 const monthsLong: Array<string> = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
 export const monthsShort: Array<string> = monthsLong.map((month) => month.slice(0, 3));
 const tzMap: Map<string, string> = new Map([
@@ -146,7 +150,43 @@ const parseEventTimeZone = (preParsedEventTimeZone: string): [string, string] =>
 // Takes user input Date and makes it actually usable
 const parseEventDate = (preParsedEventDate: string): [string, string, string] => {
 	const today = new Date();
-	let [parsedEventMonth, parsedEventDay, parsedEventYear] = preParsedEventDate.split(/[\s,\\/-]+/g);
+	let parsedEventMonth:string, parsedEventDay:string, parsedEventYear:string;
+	const [parsedSlot1, parsedSlot2, parsedSlot3] = preParsedEventDate.split(/[\s,\\/-]+/g);
+
+	const slot1AsInt = parseInt(parsedSlot1);
+	const slot2AsInt = parseInt(parsedSlot2);
+	if (!isNaN(slot1AsInt) && slot1AsInt > 999) {
+		// First parsing slot appears to be a year, assume user used ISO8601 format
+		parsedEventYear = parsedSlot1;
+		parsedEventMonth = parsedSlot2;
+		parsedEventDay = parsedSlot3;
+	} else if (!isNaN(slot1AsInt) && slot1AsInt > 12) {
+		// First parsing slot appears to be a day, assume user used DDMMYYYY format
+		parsedEventDay = parsedSlot1;
+		parsedEventMonth = parsedSlot2;
+		parsedEventYear = parsedSlot3;
+	} else if (!isNaN(slot2AsInt) && slot2AsInt > 12) {
+		// Second parsing slot appears to be a day, assume user used MMDDYYYY format
+		parsedEventMonth = parsedSlot1;
+		parsedEventDay = parsedSlot2;
+		parsedEventYear = parsedSlot3;
+	} else {
+		// Year was not first, and cannot locate a day from the string, fall back to bot's default setting
+		if (config.defaultDateFormat === DateTimeFormats.DDMMYYYY) {
+			parsedEventDay = parsedSlot1;
+			parsedEventMonth = parsedSlot2;
+			parsedEventYear = parsedSlot3;
+		} else if (config.defaultDateFormat === DateTimeFormats.MMDDYYYY) {
+			parsedEventMonth = parsedSlot1;
+			parsedEventDay = parsedSlot2;
+			parsedEventYear = parsedSlot3;
+		} else {
+			// Worst case scenario and should not happen, but in case config.defaultDateFormat is screwed up, fall back to MMDDYYYY
+			parsedEventMonth = parsedSlot1;
+			parsedEventDay = parsedSlot2;
+			parsedEventYear = parsedSlot3;
+		}
+	}
 
 	if (isNaN(parseInt(parsedEventDay))) {
 		// User only provided one word, we're assuming it was TOMORROW, and all others will be treated as today

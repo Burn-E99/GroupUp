@@ -18,6 +18,7 @@ export const config = {// !! NOTICE !! All fields below are required unless they
 		'addToCalendar': '', // Link to where the icsGenerator is hosted, OPTIONAL
 		'creatorIcon': '', // Link to where the GroupUpSinglePerson.png (or similar image) is hosted
 	},
+	'defaultDateFormat': 'MONTH/DAY/YEAR', // Default format that Group Up will suggest to the user.  Must match one of the options in the 'DateTimeFormats' enum inside 'src/buttons/event-creation/dateTimeUtils.ts'
 	'logChannel': 0n, // Discord channel ID where the bot should put startup messages and other error messages needed, OPTIONAL
 	'reportChannel': 0n, // Discord channel ID where reports will be sent when using the built-in report command, OPTIONAL
 	'devServer': 0n, // Discord guild ID where testing of indev features/commands will be handled, used in conjunction with the DEVMODE bool in mod.ts, OPTIONAL
