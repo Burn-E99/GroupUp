@@ -2,7 +2,7 @@ import { ApplicationCommandFlags, Bot, Interaction, InteractionResponseTypes, Me
 import { generateLFGButtons } from './utils.ts';
 import { idSeparator, LfgEmbedIndexes } from '../eventUtils.ts';
 import { deleteTokenEarly } from '../tokenCleanup.ts';
-import { dmTestMessage, safelyDismissMsg, sendDirectMessage, somethingWentWrong, warnColor } from '../../commandUtils.ts';
+import { commonFixes, dmTestMessage, safelyDismissMsg, sendDirectMessage, somethingWentWrong, warnColor } from '../../commandUtils.ts';
 import { dbClient } from '../../db/client.ts';
 import { queries } from '../../db/common.ts';
 import utils from '../../utils.ts';
@@ -52,7 +52,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 			}],
 		}).catch((e: Error) => utils.commonLoggers.messageSendError('step3-createEvent.ts', 'createEvent', e));
 		if (!eventMessage) {
-			somethingWentWrong(bot, interaction, 'creatingEventSendMessageFinalizeEventStep');
+			somethingWentWrong(bot, interaction, 'creatingEventSendMessageFinalizeEventStep', commonFixes.CANT_SEND_MESSAGE);
 			return;
 		}
 

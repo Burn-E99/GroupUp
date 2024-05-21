@@ -106,7 +106,7 @@ ${safelyDismissMsg}`,
 						timestamp: new Date().getTime(),
 					});
 				}).catch((e: Error) => {
-					somethingWentWrong(bot, interaction, 'failedToDMOwnerInRequestToJoinEventButton');
+					somethingWentWrong(bot, interaction, 'failedToDMOwnerInRequestToJoinEventButton', `${config.name} could not message <@${ownerId}>.  This likely means <@${ownerId}> has turned off DMs.`);
 					utils.commonLoggers.messageSendError('joinEvent.ts@dmOwner', 'failed to DM owner for join request', e);
 				});
 			}

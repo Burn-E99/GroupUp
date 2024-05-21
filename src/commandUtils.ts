@@ -27,7 +27,7 @@ export const isLFGChannel = (guildId: bigint, channelId: bigint) => {
 };
 
 // Tell user to try again or report issue
-export const somethingWentWrong = (bot: Bot, interaction: Interaction, errorCode: string) =>
+export const somethingWentWrong = (bot: Bot, interaction: Interaction, errorCode: string, possibleFix = 'No fix provided.') =>
 	bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 		type: InteractionResponseTypes.ChannelMessageWithSource,
 		data: {
@@ -35,14 +35,23 @@ export const somethingWentWrong = (bot: Bot, interaction: Interaction, errorCode
 			embeds: [{
 				color: failColor,
 				title: 'Something went wrong...',
-				description: `You should not be able to get here.  Please try again and if the issue continues, \`/${reportSlashName}\` this issue to the developers with the error code below.`,
+				description:
+					`You should not be able to get here.  If ${config.name} has seen this error before, the developer may have a possible fix for you to try.  If one is provided, please attempt it before \`/${reportSlashName}\`ing it.  If the issue continues, please \`/${reportSlashName}\` this issue to the developer with the error code below.`,
 				fields: [{
 					name: 'Error Code:',
 					value: `\`${errorCode}\``,
+				}, {
+					name: 'Possible Fix:',
+					value: possibleFix,
 				}],
 			}],
 		},
 	}).catch((e: Error) => utils.commonLoggers.interactionSendError('commandUtils.ts@somethingWentWrong', interaction, e));
+
+// Possible fixes for the user to try before reporting.
+export const commonFixes = {
+	CANT_SEND_MESSAGE: `Please verify ${config.name} has permission to send messages in this channel.`,
+};
 
 // Smack the user for trying to modify an event that isn't theirs
 export const stopThat = (bot: Bot, interaction: Interaction, stopWhat: string) =>
