@@ -33,7 +33,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 		}
 
 		// Get Date Object from user input
-		const [eventDateTime, eventDateTimeStr, eventInFuture, dateTimeValid] = getDateFromRawInput(newTime, newTimeZone, newDate);
+		const [eventDateTime, eventDateTimeStr, eventInFuture, dateTimeValid, usTZWarning] = getDateFromRawInput(newTime, newTimeZone, newDate, false);
 		if (!eventInFuture || !dateTimeValid) {
 			bot.helpers.sendInteractionResponse(interaction.id, interaction.token, {
 				type: InteractionResponseTypes.ChannelMessageWithSource,
@@ -70,7 +70,7 @@ const execute = async (bot: Bot, interaction: Interaction) => {
 				type: InteractionResponseTypes.ChannelMessageWithSource,
 				data: {
 					flags: ApplicationCommandFlags.Ephemeral,
-					content: applyEditMessage(new Date().getTime()),
+					content: applyEditMessage(new Date().getTime(), usTZWarning),
 					embeds: [eventMessage.embeds[0]],
 					components: applyEditButtons(interaction.data.customId.split(idSeparator)[1] || ''),
 				},

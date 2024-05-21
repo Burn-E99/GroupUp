@@ -1,3 +1,6 @@
+import config from '../../../config.ts';
+import {editEventDetailsBtnName} from './utils.ts';
+
 const monthsLong: Array<string> = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
 export const monthsShort: Array<string> = monthsLong.map((month) => month.slice(0, 3));
 const tzMap: Map<string, string> = new Map([
@@ -52,7 +55,8 @@ const tzMap: Map<string, string> = new Map([
 	['CHST', '+10:00'],
 	['SST', '-11:00'],
 ]);
-const shorthandUSTZ: Array<string> = ['ET', 'CT', 'MT', 'PT'];
+const shorthandUSTZ: Array<string> = ['ET', 'CT', 'MT', 'PT', 'HT', 'AKT'];
+const allUSTZ: Array<string> = ['EST', 'CST', 'MST', 'PST', 'HST', 'AKST', 'EDT', 'CDT', 'MDT', 'PDT', 'HDT', 'AKDT'];
 
 // Takes user input Time and makes it actually usable
 const parseEventTime = (preParsedEventTime: string): [string, string, string] => {
@@ -93,14 +97,31 @@ export const isDSTActive = (): boolean => {
 	return today.getTimezoneOffset() < Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
 };
 
+const editButtonMessage = `click \`${editEventDetailsBtnName}\` and change`;
+const warningText = (incorrectTZ: string, correctTZ: string, newEvent: boolean) =>
+	`⚠️⚠️⚠️ WARNING! Did you mean to enter \`${incorrectTZ}\` for the time zone? ⚠️⚠️⚠️\nCurrently (as of the posting of this message), Daylight Savings Time is ${isDSTActive() ? '' : 'not '}active in most of the United States.  If DST is ${
+		isDSTActive() ? '' : 'not '
+	}in effect for you (and will be when this event is scheduled to happen), ${newEvent ? editButtonMessage : 'please dismiss this message and start over, using'} the time zone ${newEvent ? 'to ' : ''}\`${correctTZ}\`, or shorten it to \`${correctTZ.slice(0, -2)}T\` to let ${config.name} automatically use the correct time zone.\n\n`;
+
+const usTZDSTCheck = (timeZone: string, newEvent: boolean): string => {
+	if (allUSTZ.includes(timeZone)) {
+		if (isDSTActive() && timeZone.endsWith('ST')) {
+			return warningText(timeZone, `${timeZone.slice(0, -2)}DT`, newEvent);
+		} else if (!isDSTActive() && timeZone.endsWith('DT')) {
+			return warningText(timeZone, `${timeZone.slice(0, -2)}ST`, newEvent);
+		}
+	}
+	return '';
+};
+
 // Takes user input Time Zone and makes it actually usable
 const parseEventTimeZone = (preParsedEventTimeZone: string): [string, string] => {
 	if (shorthandUSTZ.includes(preParsedEventTimeZone)) {
 		// Handle shorthand US timezones, adding S for standard time and D for Daylight Savings
 		if (isDSTActive()) {
-			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, 1)}DT`;
+			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, -1)}DT`;
 		} else {
-			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, 1)}ST`;
+			preParsedEventTimeZone = `${preParsedEventTimeZone.slice(0, -1)}ST`;
 		}
 	}
 	if (tzMap.has(preParsedEventTimeZone)) {
@@ -154,12 +175,13 @@ const parseEventDate = (preParsedEventDate: string): [string, string, string] =>
 };
 
 // Take full raw Date/Time input and convert it to a proper Date
-export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string): [Date, string, boolean, boolean] => {
+export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: string, rawEventDate: string, newEvent: boolean): [Date, string, boolean, boolean, string] => {
 	// Verify/Set Time
 	const [parsedEventTimeHours, parsedEventTimeMinutes, parsedEventTimePeriod] = parseEventTime(rawEventTime.replaceAll(':', '').toUpperCase());
 
 	// Verify/Set Time Zone
 	const [parsedEventTimeZone, userInputTimeZone] = parseEventTimeZone(rawEventTimeZone.replaceAll(' ', '').trim().toUpperCase());
+	const usTZWarning = usTZDSTCheck(userInputTimeZone, newEvent);
 
 	// Verify/Set Date
 	const [parsedEventYear, parsedEventMonth, parsedEventDay] = parseEventDate(rawEventDate.trim().toUpperCase());
@@ -172,5 +194,6 @@ export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: stri
 		} ${parsedEventDay}, ${parsedEventYear}`,
 		parsedDateTime.getTime() > new Date().getTime(),
 		!isNaN(parsedDateTime.getTime()),
+		usTZWarning
 	];
 };

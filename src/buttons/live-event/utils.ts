@@ -353,8 +353,8 @@ export const joinRequestResponseButtons = (disabled: boolean): ActionRow[] => [{
 }];
 
 export const applyEditButtonName = 'Apply Edit';
-export const applyEditMessage = (currentTime: number) =>
-	`Please verify the updated event below, then click on the \`${applyEditButtonName}\` button.  If this does not look right, please dismiss this message and start over.\n\n${
+export const applyEditMessage = (currentTime: number, usTZWarning: string) =>
+	`${usTZWarning}Please verify the updated event below, then click on the \`${applyEditButtonName}\` button.  If this does not look right, please dismiss this message and start over.\n\n${
 		selfDestructMessage(currentTime)
 	}`;
 export const applyEditButtons = (idxPath: string): ActionRow[] => [{

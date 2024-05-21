@@ -55,7 +55,7 @@ export const generateActionRow = (baseValue: string, activities: Array<Activity>
 
 const createEventBtnName = 'Create Event';
 const createWhitelistedBtnName = 'Create Whitelisted Event';
-const editEventDetailsBtnName = 'Edit Event Details';
+export const editEventDetailsBtnName = 'Edit Event Details';
 export const invalidDateTimeStr = '`Invalid Date/Time`';
 const finalizeButtons = (idxPath: string, eventInFuture: boolean): [ButtonComponent, ButtonComponent, ButtonComponent] | [ButtonComponent] => {
 	const editButton: ButtonComponent = {
@@ -129,6 +129,7 @@ export const createLFGPost = (
 	idxPath: string,
 	eventInFuture: boolean,
 	dateTimeValid: boolean,
+	usTZWarning: string,
 ): InteractionResponse => {
 	const icsDetails = `${category}: ${activity.name}`;
 	const dateTimePastFutureStr = dateTimeValid ? 'in the past' : 'with an invalid date/time';
@@ -138,7 +139,7 @@ export const createLFGPost = (
 		data: {
 			flags: ApplicationCommandFlags.Ephemeral,
 			content: eventInFuture
-				? `🛑🛑🛑 HEY! ONE MORE THING! 🛑🛑🛑\n\nPlease verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${
+				? `${usTZWarning}🛑🛑🛑 HEY! ONE MORE THING! 🛑🛑🛑\n\nPlease verify the information below, then click on the \`${createEventBtnName}\` or \`${createWhitelistedBtnName}\` button, or change the event \`Date/Time\` or \`Description\` with the \`${editEventDetailsBtnName}\` button below. \n\n${
 					selfDestructMessage(new Date().getTime())
 				}`
 				: `You cannot create an event ${dateTimePastFutureStr}.  Please change the event's \`Date/Time\` to be ${dateTimeValidStr} with the \`${editEventDetailsBtnName}\` button below.`,
