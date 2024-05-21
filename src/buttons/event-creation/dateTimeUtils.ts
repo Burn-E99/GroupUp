@@ -1,5 +1,5 @@
 import config from '../../../config.ts';
-import {editEventDetailsBtnName} from './utils.ts';
+import { editEventDetailsBtnName } from './utils.ts';
 
 enum DateTimeFormats {
 	MMDDYYYY = 'MONTH/DAY/YEAR',
@@ -103,9 +103,11 @@ export const isDSTActive = (): boolean => {
 
 const editButtonMessage = `click \`${editEventDetailsBtnName}\` and change`;
 const warningText = (incorrectTZ: string, correctTZ: string, newEvent: boolean) =>
-	`⚠️⚠️⚠️ WARNING! Did you mean to enter \`${incorrectTZ}\` for the time zone? ⚠️⚠️⚠️\nCurrently (as of the posting of this message), Daylight Savings Time is ${isDSTActive() ? '' : 'not '}active in most of the United States.  If DST is ${
+	`⚠️⚠️⚠️ WARNING! Did you mean to enter \`${incorrectTZ}\` for the time zone? ⚠️⚠️⚠️\nCurrently (as of the posting of this message), Daylight Savings Time is ${
 		isDSTActive() ? '' : 'not '
-	}in effect for you (and will be when this event is scheduled to happen), ${newEvent ? editButtonMessage : 'please dismiss this message and start over, using'} the time zone ${newEvent ? 'to ' : ''}\`${correctTZ}\`, or shorten it to \`${correctTZ.slice(0, -2)}T\` to let ${config.name} automatically use the correct time zone.\n\n`;
+	}active in most of the United States.  If DST is ${isDSTActive() ? '' : 'not '}in effect for you (and will be when this event is scheduled to happen), ${
+		newEvent ? editButtonMessage : 'please dismiss this message and start over, using'
+	} the time zone ${newEvent ? 'to ' : ''}\`${correctTZ}\`, or shorten it to \`${correctTZ.slice(0, -2)}T\` to let ${config.name} automatically use the correct time zone.\n\n`;
 
 const usTZDSTCheck = (timeZone: string, newEvent: boolean): string => {
 	if (allUSTZ.includes(timeZone)) {
@@ -147,11 +149,11 @@ const parseEventTimeZone = (preParsedEventTimeZone: string): [string, string] =>
 	}
 };
 
-// Takes user input Date and makes it actually usable
-const parseEventDate = (preParsedEventDate: string): [string, string, string] => {
-	const today = new Date();
-	let parsedEventMonth:string, parsedEventDay:string, parsedEventYear:string;
-	const [parsedSlot1, parsedSlot2, parsedSlot3] = preParsedEventDate.split(/[\s,\\/-]+/g);
+const determineDateTimeOrder = (parsedSlot1: string, parsedSlot2: string, parsedSlot3: string): [string, string, string] => {
+	// Default these to MMDDYYYY in case something goes wrong and does not properly override them
+	let parsedEventMonth = parsedSlot1;
+	let parsedEventDay = parsedSlot2;
+	let parsedEventYear = parsedSlot3;
 
 	const slot1AsInt = parseInt(parsedSlot1);
 	const slot2AsInt = parseInt(parsedSlot2);
@@ -170,23 +172,26 @@ const parseEventDate = (preParsedEventDate: string): [string, string, string] =>
 		parsedEventMonth = parsedSlot1;
 		parsedEventDay = parsedSlot2;
 		parsedEventYear = parsedSlot3;
-	} else {
+	} else if (config.defaultDateFormat === DateTimeFormats.DDMMYYYY) {
 		// Year was not first, and cannot locate a day from the string, fall back to bot's default setting
-		if (config.defaultDateFormat === DateTimeFormats.DDMMYYYY) {
-			parsedEventDay = parsedSlot1;
-			parsedEventMonth = parsedSlot2;
-			parsedEventYear = parsedSlot3;
-		} else if (config.defaultDateFormat === DateTimeFormats.MMDDYYYY) {
-			parsedEventMonth = parsedSlot1;
-			parsedEventDay = parsedSlot2;
-			parsedEventYear = parsedSlot3;
-		} else {
-			// Worst case scenario and should not happen, but in case config.defaultDateFormat is screwed up, fall back to MMDDYYYY
-			parsedEventMonth = parsedSlot1;
-			parsedEventDay = parsedSlot2;
-			parsedEventYear = parsedSlot3;
-		}
+		parsedEventDay = parsedSlot1;
+		parsedEventMonth = parsedSlot2;
+		parsedEventYear = parsedSlot3;
+	} else if (config.defaultDateFormat === DateTimeFormats.MMDDYYYY) {
+		// Year was not first, and cannot locate a day from the string, fall back to bot's default setting
+		parsedEventMonth = parsedSlot1;
+		parsedEventDay = parsedSlot2;
+		parsedEventYear = parsedSlot3;
 	}
+
+	return [parsedEventMonth, parsedEventDay, parsedEventYear];
+};
+
+// Takes user input Date and makes it actually usable
+const parseEventDate = (preParsedEventDate: string): [string, string, string] => {
+	const today = new Date();
+	const [parsedSlot1, parsedSlot2, parsedSlot3] = preParsedEventDate.split(/[\s,\\/-]+/g);
+	let [parsedEventMonth, parsedEventDay, parsedEventYear] = determineDateTimeOrder(parsedSlot1, parsedSlot2, parsedSlot3);
 
 	if (isNaN(parseInt(parsedEventDay))) {
 		// User only provided one word, we're assuming it was TOMORROW, and all others will be treated as today
@@ -234,6 +239,6 @@ export const getDateFromRawInput = (rawEventTime: string, rawEventTimeZone: stri
 		} ${parsedEventDay}, ${parsedEventYear}`,
 		parsedDateTime.getTime() > new Date().getTime(),
 		!isNaN(parsedDateTime.getTime()),
-		usTZWarning
+		usTZWarning,
 	];
 };
