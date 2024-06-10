@@ -16,6 +16,10 @@ export const Activities: Array<Activity> = [
 				name: 'Raids',
 				options: [
 					{
+						name: "Salvation's Edge",
+						maxMembers: 6,
+					},
+					{
 						name: "Crota's End",
 						maxMembers: 6,
 					},
