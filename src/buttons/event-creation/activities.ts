@@ -178,6 +178,10 @@ export const Activities: Array<Activity> = [
 				name: 'Miscellaneous/Seasonal',
 				options: [
 					{
+						name: 'Excision',
+						maxMembers: 12,
+					},
+					{
 						name: 'Pantheon',
 						options: [
 							{

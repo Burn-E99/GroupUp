@@ -1,6 +1,6 @@
 export const config = { // !! NOTICE !! All fields below are required unless they are explicitly noted as OPTIONAL.  If a field is OPTIONAL, do not remove it from this file, just leave it at the default value
 	'name': 'Group Up', // Name of the bot
-	'version': '1.1.3', // Version of the bot
+	'version': '1.1.4', // Version of the bot
 	'token': 'the_bot_token', // Discord API Token for this bot
 	'localToken': 'local_testing_token', // Discord API Token for a secondary OPTIONAL testing bot, THIS SHOULD BE DIFFERENT FROM "token"
 	'prefix': '/', // Prefix for all commands, as this bot uses slash commands, this needs to be '/'
