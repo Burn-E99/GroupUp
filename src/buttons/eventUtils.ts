@@ -27,7 +27,7 @@ export const alternateEventBtnStr = 'Join as Alternate';
 export const noDescProvided = 'No description provided.';
 
 // Member List generators
-const escapeMemberNameForDisplay = (input: memberName): string => memberName.replace(/[_*]/g, '\\$&');
+const escapeMemberNameForDisplay = (memberName: string): string => memberName.replace(/[_*]/g, '\\$&');
 export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
 export const generateMemberList = (memberList: Array<LFGMember>): string =>
 	memberList.length ? memberList.map((member) => `${escapeMemberNameForDisplay(member.name)} - <@${member.id}>`).join('\n') : noMembersStr;
