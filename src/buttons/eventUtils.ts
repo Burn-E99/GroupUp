@@ -29,11 +29,10 @@ export const noDescProvided = 'No description provided.';
 // Member List generators
 const escapeMemberNameForDisplay = (input: memberName): string => memberName.replace(/[_*]/g, '\\$&');
 export const generateMemberTitle = (memberList: Array<LFGMember>, maxMembers: number): string => `Members Joined: ${memberList.length}/${maxMembers}`;
-export const generateMemberList = (memberList: Array<LFGMember>): string => memberList.length ? memberList.map((member) =>
-	`${escapeMemberNameForDisplay(member.name)} - <@${member.id}>`).join('\n') : noMembersStr;
+export const generateMemberList = (memberList: Array<LFGMember>): string =>
+	memberList.length ? memberList.map((member) => `${escapeMemberNameForDisplay(member.name)} - <@${member.id}>`).join('\n') : noMembersStr;
 export const generateAlternateList = (alternateList: Array<LFGMember>): string =>
-	alternateList.length ? alternateList.map((member) =>
-		`${escapeMemberNameForDisplay(member.name)} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : noMembersStr;
+	alternateList.length ? alternateList.map((member) => `${escapeMemberNameForDisplay(member.name)} - <@${member.id}>${member.joined ? ' *' : ''}`).join('\n') : noMembersStr;
 
 // Fields for event creation and editing modals
 export const eventTimeId = 'eventTime';
