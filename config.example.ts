@@ -19,10 +19,10 @@ export const config = { // !! NOTICE !! All fields below are required unless the
 		'creatorIcon': '', // Link to where the GroupUpSinglePerson.png (or similar image) is hosted
 	},
 	'defaultDateFormat': 'MONTH/DAY/YEAR', // Default format that Group Up will suggest to the user.  Must match one of the options in the 'DateTimeFormats' enum inside 'src/buttons/event-creation/dateTimeUtils.ts'
-	'logChannel': 0n, // Discord channel ID where the bot should put startup messages and other error messages needed, OPTIONAL
-	'reportChannel': 0n, // Discord channel ID where reports will be sent when using the built-in report command, OPTIONAL
-	'devServer': 0n, // Discord guild ID where testing of indev features/commands will be handled, used in conjunction with the DEVMODE bool in mod.ts, OPTIONAL
-	'owner': 0n, // Discord user ID of the bot admin
+	'logChannel': 0n, // Discord channel ID where the bot should put startup messages and other error messages needed. This value is a bigint, so please ensure you have a `n` after the ID you get from Discord. OPTIONAL
+	'reportChannel': 0n, // Discord channel ID where reports will be sent when using the built-in report command. This value is a bigint, so please ensure you have a `n` after the ID you get from Discord. OPTIONAL
+	'devServer': 0n, // Discord guild ID where testing of indev features/commands will be handled, used in conjunction with the DEVMODE bool in mod.ts. This value is a bigint, so please ensure you have a `n` after the ID you get from Discord. OPTIONAL
+	'owner': 0n, // Discord user ID of the bot admin. This value is a bigint, so please ensure you have a `n` after the ID you get from Discord.
 	'botLists': [ // Array of objects containing all bot lists that stats should be posted to, OPTIONAL
 		{ // Bot List object, duplicate for each bot list
 			'name': 'Bot List Name', // Name of bot list, not used
