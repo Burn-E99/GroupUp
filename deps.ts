@@ -47,4 +47,4 @@ export type {
 
 export { Client } from 'https://deno.land/x/mysql@v2.11.0/mod.ts';
 
-export { initLog, log, LogTypes as LT } from 'https://raw.githubusercontent.com/Burn-E99/Log4Deno/V1.1.0/mod.ts';
+export { initLog, log, LogTypes as LT } from 'https://raw.githubusercontent.com/Burn-E99/Log4Deno/V2.0.0/mod.ts';

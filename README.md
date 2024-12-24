@@ -1,4 +1,4 @@
-# Group Up - An Event Scheduling Discord Bot | V1.1.6 - 2024/07/06
+# Group Up - An Event Scheduling Discord Bot | V2.0.0 - 2024/12/24
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/summary/new_code?id=GroupUp)  
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GroupUp&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=GroupUp) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=GroupUp&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=GroupUp) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GroupUp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=GroupUp) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=GroupUp&metric=bugs)](https://sonarcloud.io/summary/new_code?id=GroupUp) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=GroupUp&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=GroupUp) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GroupUp&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=GroupUp)  
 
@@ -43,7 +43,12 @@ If you run into any errors or problems with the bot, or think you have a good id
 ---
 
 ## Self Hosting Group Up
-Group Up is built on [Deno](https://deno.land/) `v1.33.1` using [Discordeno](https://discordeno.mod.land/) `v17.0.1`.  If you choose to run this yourself, you will need to rename `config.example.ts` to `config.ts` and edit some values.  You will need to create a new [Discord Application](https://discord.com/developers/applications) and copy the newly generated token into the `"token"` field.  If you want to utilize some of the bots dev features, you will need to fill in the keys `"logChannel"` and `"reportChannel"` with text channel IDs and `"devServer"` with a guild ID.
+Group Up is built on [Deno](https://deno.land/) using [Discordeno](https://discordeno.mod.land/) `v17.0.1`.
+
+Group Up `V1.1.6` and lower requires Deno `V.33.1`.  
+Group Up `V2.0.0` and up requires Deno `V2.0.0`.
+
+If you choose to run this yourself, you will need to rename `config.example.ts` to `config.ts` and edit some values.  You will need to create a new [Discord Application](https://discord.com/developers/applications) and copy the newly generated token into the `"token"` field.  If you want to utilize some of the bots dev features, you will need to fill in the keys `"logChannel"` and `"reportChannel"` with text channel IDs and `"devServer"` with a guild ID.
 
 You will also need to install and setup a MySQL database with a user for the bot to use to add/modify the database.  This user must have the `"DB Manager"` admin rights and `"REFERENCES"` Global Privileges.  Once the DB is installed and a user is setup, run the provided `db\initialize.ts` to create the schema and tables.  After this, run `db\populateDefaults.ts` to insert some needed values into the tables.
 
