@@ -16,6 +16,14 @@ export const Activities: Array<Activity> = [
 				name: 'Raids',
 				options: [
 					{
+						name: 'The Desert Perpetual (Epic)',
+						maxMembers: 6,
+					},
+					{
+						name: 'The Desert Perpetual',
+						maxMembers: 6,
+					},
+					{
 						name: "Salvation's Edge",
 						maxMembers: 6,
 					},
@@ -56,6 +64,18 @@ export const Activities: Array<Activity> = [
 			{
 				name: 'Dungeons',
 				options: [
+					{
+						name: 'Equilibrium',
+						maxMembers: 3,
+					},
+					{
+						name: 'Sundered Doctrine',
+						maxMembers: 3,
+					},
+					{
+						name: "Vesper's Host",
+						maxMembers: 3,
+					},
 					{
 						name: "Warlord's Ruin",
 						maxMembers: 3,
