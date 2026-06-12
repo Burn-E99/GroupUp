@@ -111,10 +111,27 @@ export const Activities: Array<Activity> = [
 				],
 			},
 			{
+				name: 'Pantheon',
+				options: [
+					{
+						name: 'Calus Resplendent',
+						maxMembers: 6,
+					},
+					{
+						name: 'Morgeth Surpassing',
+						maxMembers: 6,
+					},
+				],
+			},
+			{
 				name: 'Crucible',
 				options: [
 					{
-						name: 'Crucible Labs',
+						name: 'Rumble',
+						maxMembers: 6,
+					},
+					{
+						name: 'Control',
 						maxMembers: 6,
 					},
 					{
@@ -122,11 +139,15 @@ export const Activities: Array<Activity> = [
 						maxMembers: 3,
 					},
 					{
-						name: 'Clash',
+						name: 'Mayhem',
 						maxMembers: 6,
 					},
 					{
-						name: 'Weekly Mode',
+						name: 'Lockdown',
+						maxMembers: 6,
+					},
+					{
+						name: 'Sparrow Racing League',
 						maxMembers: 3,
 					},
 					{
@@ -160,16 +181,45 @@ export const Activities: Array<Activity> = [
 				name: 'Vanguard',
 				options: [
 					{
-						name: 'Vanguard Ops',
+						name: 'Quickplay',
 						maxMembers: 3,
 					},
 					{
-						name: 'Nightfall',
+						name: 'Quickplay: Master',
 						maxMembers: 3,
 					},
 					{
-						name: 'Grandmaster Nightfall',
+						name: 'Grandmaster',
 						maxMembers: 3,
+					},
+					{
+						name: 'Arena',
+						options: [
+							{
+								name: 'Quickplay',
+								maxMembers: 3,
+							},
+							{
+								name: 'Quickplay: Master',
+								maxMembers: 3,
+							},
+							{
+								name: 'Nightmare Containment',
+								maxMembers: 3,
+							},
+							{
+								name: 'Ketchcrash',
+								maxMembers: 3,
+							},
+							{
+								name: 'Astral Alignment',
+								maxMembers: 3,
+							},
+							{
+								name: 'Override: Europa',
+								maxMembers: 3,
+							},
+						],
 					},
 				],
 			},
@@ -181,15 +231,43 @@ export const Activities: Array<Activity> = [
 						maxMembers: 3,
 					},
 					{
+						name: 'Heliostat',
+						maxMembers: 3,
+					},
+					{
+						name: 'Derealize',
+						maxMembers: 3,
+					},
+					{
+						name: "Kell's Fall",
+						maxMembers: 3,
+					},
+					{
+						name: 'Encore',
+						maxMembers: 3,
+					},
+					{
+						name: 'Starcrossed',
+						maxMembers: 3,
+					},
+					{
+						name: "Operation: Seraph's Shield",
+						maxMembers: 3,
+					},
+					{
+						name: 'Vox Obscura',
+						maxMembers: 3,
+					},
+					{
+						name: 'Presage',
+						maxMembers: 3,
+					},
+					{
 						name: 'Zero Hour',
 						maxMembers: 3,
 					},
 					{
 						name: 'The Whisper',
-						maxMembers: 3,
-					},
-					{
-						name: 'Presage',
 						maxMembers: 3,
 					},
 				],
@@ -198,45 +276,25 @@ export const Activities: Array<Activity> = [
 				name: 'Miscellaneous/Seasonal',
 				options: [
 					{
-						name: 'Excision',
-						maxMembers: 12,
-					},
-					{
-						name: 'Pantheon',
-						options: [
-							{
-								name: 'Atraks Sovereign (Week 1)',
-								maxMembers: 6,
-							},
-							{
-								name: 'Oryx Exalted (Week 2)',
-								maxMembers: 6,
-							},
-							{
-								name: 'Rhulk Indomitable (Week 3)',
-								maxMembers: 6,
-							},
-							{
-								name: 'Nezarec Sublime (Week 4)',
-								maxMembers: 6,
-							},
-						],
-					},
-					{
 						name: 'Onslaught',
 						maxMembers: 3,
 					},
 					{
-						name: 'Fishing',
-						maxMembers: 3,
+						name: 'Crawl',
+						options: [
+							{
+								name: 'The Coil',
+								maxMembers: 3,
+							},
+							{
+								name: 'Contest of Elders',
+								maxMembers: 3,
+							},
+						],
 					},
 					{
-						name: 'Deep Dive',
-						maxMembers: 3,
-					},
-					{
-						name: 'Salvage',
-						maxMembers: 6,
+						name: 'Excision',
+						maxMembers: 12,
 					},
 					{
 						name: 'Defiant Battlegrounds',
@@ -244,7 +302,7 @@ export const Activities: Array<Activity> = [
 					},
 					{
 						name: 'Terminal Overload',
-						maxMembers: 12,
+						maxMembers: 6,
 					},
 					{
 						name: 'Vex Incursion Zone',
