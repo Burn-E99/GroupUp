@@ -121,6 +121,10 @@ export const Activities: Array<Activity> = [
 						name: 'Morgeth Surpassing',
 						maxMembers: 6,
 					},
+					{
+						name: 'Insurrection Prime Revolutionary',
+						maxMembers: 6,
+					},
 				],
 			},
 			{
